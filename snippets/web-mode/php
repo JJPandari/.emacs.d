@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# contributor: 
+# name: php
+# key: php
+# --
+<?php $1 ?>

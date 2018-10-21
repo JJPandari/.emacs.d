@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# contributor: 
+# name: peq
+# key: peq
+# --
+<?=$1?>

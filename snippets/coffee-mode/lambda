@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: lambda
+# key: lam
+# see: coffee-newline-and-indent
+# expand-env: ((yas-indent-line 'fixed))
+# --
+($1) -> $0
