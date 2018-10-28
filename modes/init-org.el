@@ -382,7 +382,25 @@ typical word processor."
      (sqlite . t))))
 
 
-(setq org-bullets-bullet-list '("🐉" "🐬" "🐠" "🐤"))
+(use-package org
+  :config
+  (general-define-key
+   :states '(normal)
+   :keymaps org-mode-map
+   "<return>" 'switch-to-buffer
+   ;; "g o" 'org-todo
+   "H" 'org-shiftleft
+   "L" 'org-shiftright))
+
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("🐳" "🐬" "🐠" "🐟" "🐤")
+        org-src-fontify-natively t
+        org-agenda-files '("~/org")))
+
+(use-package evil-org
+  :hook (org-mode . evil-org-mode))
 
 
 (provide 'init-org)

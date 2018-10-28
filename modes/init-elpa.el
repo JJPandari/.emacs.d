@@ -15,7 +15,7 @@
       (append '(("melpa-cn" . "https://elpa.emacs-china.org/melpa/")
                ("org-cn"   . "https://elpa.emacs-china.org/org/")
                ("gnu-cn"   . "https://elpa.emacs-china.org/gnu/")
-               ("melpa-stable" . "http://elpa.emacs-china.org/melpa-stable/"))
+               ("melpa-stable-cn" . "http://elpa.emacs-china.org/melpa-stable/"))
               package-archives))
 
 
@@ -82,8 +82,10 @@ locate PACKAGE."
 (add-hook 'package-menu-mode-hook 'jester/maybe-widen-package-menu-columns)
 
 
+(setq use-package-always-ensure t
+      use-package-always-defer t)
 (require-package 'use-package)
-(setq use-package-always-ensure t)
+(require 'use-package)
 
 
 (provide 'init-elpa)

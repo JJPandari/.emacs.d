@@ -51,3 +51,5 @@ site-lisp/package/
 /plantuml.jar
 /magithub
 /.cache
+/.youdao
+/*.keyfreq

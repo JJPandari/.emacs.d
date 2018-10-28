@@ -1,7 +1,10 @@
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
-(setq desktop-path (list user-emacs-directory)
-      desktop-auto-save-timeout 600)
-(desktop-save-mode 1)
+;; (setq desktop-dirname "~/.emacs.d")
+(require 'desktop)
+;; (desktop-save-mode 1)
+;; (run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname)))
+;; (push '(company-posframe-mode . nil)
+;;       desktop-minor-mode-table)
 
 (defadvice desktop-read (around time-restore activate)
     (let ((start-time (current-time)))
@@ -27,14 +30,6 @@
 ;;----------------------------------------------------------------------------
 (setq-default history-length 1000)
 (add-hook 'after-init-hook 'savehist-mode)
-
-(require-package 'session)
-
-(setq session-save-file (expand-file-name ".session" user-emacs-directory))
-(setq session-name-disable-regexp "\\(?:\\`'/tmp\\|\\.git/[A-Z_]+\\'\\)")
-(setq session-save-file-coding-system 'utf-8)
-
-(add-hook 'after-init-hook 'session-initialize)
 
 ;; save a bunch of variables to the desktop file
 ;; for lists specify the len of the maximal saved data also
@@ -67,6 +62,10 @@
                 (shell-command-history    . 50)
                 tags-file-name
                 tags-table-list)))
+
+(add-to-list 'desktop-modes-not-to-save 'dired-mode)
+(add-to-list 'desktop-modes-not-to-save 'Info-mode)
+(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
 
 
 (provide 'init-sessions)

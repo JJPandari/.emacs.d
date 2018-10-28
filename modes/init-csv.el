@@ -1,7 +1,7 @@
-(require-package 'csv-mode)
+(use-package csv-mode
+  :mode "\\.[Cc][Ss][Vv]\\'"
+  :init
+  (setq csv-separators '("," ";" "|" " ")))
 
-(add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
-
-(setq csv-separators '("," ";" "|" " "))
 
 (provide 'init-csv)

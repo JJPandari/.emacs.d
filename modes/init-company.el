@@ -1,46 +1,115 @@
 ;; WAITING: haskell-mode sets tags-table-list globally, breaks tags-completion-at-point-function
 ;; TODO Default sort order should place [a-z] before punctuation
 
-(setq tab-always-indent 'complete)
 (add-to-list 'completion-styles 'initials t)
 
-(when (maybe-require-package 'company)
-  (add-hook 'after-init-hook 'global-company-mode)
-  (after-load 'company
-    (diminish 'company-mode "CMP")
-    (define-key company-mode-map (kbd "M-/") 'company-complete)
-    (define-key company-active-map (kbd "M-/") 'company-other-backend)
-    (define-key company-active-map (kbd "C-n") 'company-select-next)
-    (define-key company-active-map (kbd "C-p") 'company-select-previous)
-    (setq-default company-dabbrev-other-buffers 'all
-                  company-tooltip-align-annotations t))
-  (global-set-key (kbd "M-C-/") 'company-complete)
-  (when (maybe-require-package 'company-quickhelp)
-    (add-hook 'after-init-hook 'company-quickhelp-mode))
+(use-package company
+  :demand t
+  :config
+  (global-company-mode 1)
+  (setq
+   ;; search completion from all buffers, not just same mode buffers.
+   company-dabbrev-code-other-buffers 'all
+   company-minimum-prefix-length 2)
 
-  (defun jester/local-push-company-backend (backend)
-    "Add BACKEND to a buffer-local version of `company-backends'."
-    (make-local-variable 'company-backends)
-    (push backend company-backends)))
+  (general-define-key
+   :keymaps 'company-active-map
+   "M-n" nil
+   "M-p" nil
+   "C-n" #'company-select-next
+   "C-p" #'company-select-previous
+   "C-," #'company-complete-common
+   "C-l" nil
+   "C-w" nil
+   ;; TODO C-m complete common?
+   "RET" nil
+   "<return>" nil
 
-;; Suspend page-break-lines-mode while company menu is active
-;; (see https://github.com/company-mode/company-mode/issues/416)
-(after-load 'company
-  (after-load 'page-break-lines
-    (defvar jester/page-break-lines-on-p nil)
-    (make-variable-buffer-local 'jester/page-break-lines-on-p)
+   "<tab>" 'expand-snippet-or-complete-selection
+   "C-j" nil
+   "C-k" nil
+   "C-d" nil
+   "C-b" 'company-show-doc-buffer
+   "C-s" nil
+   "C-/" nil
+   )
 
-    (defun jester/page-break-lines-disable (&rest ignore)
-      (when (setq jester/page-break-lines-on-p (bound-and-true-p page-break-lines-mode))
-        (page-break-lines-mode -1)))
+  (general-define-key
+   :states '(insert emacs)
+   "<tab>" 'tab-indent-or-complete
+   ))
 
-    (defun jester/page-break-lines-maybe-reenable (&rest ignore)
-      (when jester/page-break-lines-on-p
-        (page-break-lines-mode 1)))
+(use-package company-posframe
+  :hook (company-mode . company-posframe-mode)
+  :config
+  )
 
-    (add-hook 'company-completion-started-hook 'jester/page-break-lines-disable)
-    (add-hook 'company-completion-finished-hook 'jester/page-break-lines-maybe-reenable)
-    (add-hook 'company-completion-cancelled-hook 'jester/page-break-lines-maybe-reenable)))
+;;----------------------------------------------------------------------------
+;; Make tab do both yas expand and company.
+;;----------------------------------------------------------------------------
+;; https://emacs.stackexchange.com/a/7925/12854
+(defun check-expansion ()
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "->") t nil)))))
+
+(defun do-yas-expand ()
+  (let ((yas-fallback-behavior 'return-nil))
+    (yas-expand)))
+
+(defun tab-indent-or-complete ()
+  (interactive)
+  (cond
+   ((minibufferp)
+    (minibuffer-complete))
+   (t
+    ;; (indent-for-tab-command)
+    (if (and (or (not yas-minor-mode)
+                 (null (do-yas-expand)))
+             (check-expansion))
+        (progn
+          (company-manual-begin)
+          (if (null company-candidates)
+              (progn
+                (company-abort)
+                (hippie-expand nil)
+                ;; (indent-for-tab-command)
+                )))
+      ))))
+
+;; (defun tab-complete-or-next-field ()
+;;   (interactive)
+;;   (if (or (not yas-minor-mode)
+;;           (null (do-yas-expand)))
+;;       (if company-candidates
+;;           (company-complete-selection)
+;;         (if (check-expansion)
+;;             (progn
+;;               (company-manual-begin)
+;;               (if (null company-candidates)
+;;                   (progn
+;;                     (company-abort)
+;;                     (yas-next-field))))
+;;           (yas-next-field)))))
+
+(defun expand-snippet-or-complete-selection ()
+  (interactive)
+  (if (or (not yas-minor-mode)
+          (null (do-yas-expand))
+          (company-abort))
+      (company-complete-selection)))
+
+(defun abort-company-or-yas ()
+  (interactive)
+  (if (null company-candidates)
+      (yas-abort-snippet)
+    (company-abort)))
+
+
+
 
 
 

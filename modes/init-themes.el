@@ -15,11 +15,4 @@
 
 (add-hook 'after-init-hook 'reapply-themes)
 
-;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-
-;; after theme loaded https://emacs-china.org/t/topic/5994
-;; (if (eq (frame-parameter frame 'background-mode) 'light)
-;;     (add-to-list 'default-frame-alist '(ns-appearance . light))
-;;   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
-
 (provide 'init-themes)

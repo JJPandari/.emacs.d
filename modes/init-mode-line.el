@@ -1,24 +1,3 @@
-(defun spaceline--unicode-number (str)
-  "Return a nice unicode representation of a single-digit number STR."
-  (cond
-   ((string= "1" str) "➊")
-   ((string= "2" str) "➋")
-   ((string= "3" str) "➌")
-   ((string= "4" str) "➍")
-   ((string= "5" str) "➎")
-   ((string= "6" str) "➏")
-   ((string= "7" str) "➐")
-   ((string= "8" str) "➑")
-   ((string= "9" str) "➒")
-   ((string= "0" str) "➓")))
-
-(defun jester/winum-mode-line ()
-  "The current window number. Requires `window-numbering-mode' to be enabled."
-  (when (bound-and-true-p window-numbering-mode)
-    (let* ((num (window-numbering-get-number))
-           (str (when num (int-to-string num))))
-      (spaceline--unicode-number str))))
-
 (defun jester/mode-line-fill (face reserve)
   "Return empty space using FACE and leaving RESERVE space on the right."
   (unless reserve
@@ -33,136 +12,98 @@
 (defvar jester/flycheck-mode-line
 ;; (setq jester/flycheck-mode-line ;; this is for debug
       '(:eval
-        (pcase flycheck-last-status-change
-          (`not-checked nil)
-          (`no-checker "❄")
-          (`running (propertize "..." 'face 'success))
-          (`errored (propertize "!" 'face 'error))
-          (`finished
-           (let* ((error-counts (flycheck-count-errors flycheck-current-errors))
-                  (no-errors (cdr (assq 'error error-counts)))
-                  (no-warnings (cdr (assq 'warning error-counts)))
-                  (face (cond (no-errors 'error)
-                              (no-warnings 'warning)
-                              (t 'success))))
-             (append
-              (if no-errors
-                  (list
-                   (propertize "❌" 'face '(:family "Apple Color Emoji" :height 0.7))
-                   (propertize (format "%s" (or no-errors 0))
-                               'face 'error))
-                nil)
-              (if no-warnings
-                  (list
-                   (propertize "⚠" 'face '(:family "Apple Color Emoji" :height 0.8))
-                   (propertize (format "%s" (or no-warnings 0))
-                               'face 'warning))
-                nil)
-              )))
-          (`interrupted ".")
-          (`suspicious '(propertize "?" 'face 'warning)))))
+        (when (featurep 'flycheck) (pcase flycheck-last-status-change
+           (`not-checked nil)
+           (`no-checker "❄")
+           (`running (propertize "..." 'face 'success))
+           (`errored (propertize "!" 'face 'error))
+           (`finished
+            (let* ((error-counts (flycheck-count-errors flycheck-current-errors))
+                   (no-errors (cdr (assq 'error error-counts)))
+                   (no-warnings (cdr (assq 'warning error-counts)))
+                   (face (cond (no-errors 'error)
+                               (no-warnings 'warning)
+                               (t 'success))))
+              (append
+               (if no-errors
+                   (list
+                    (propertize "❌" 'face '(:family "Apple Color Emoji" :height 0.7))
+                    (propertize (format "%s" (or no-errors 0))
+                                'face 'error))
+                 nil)
+               (if no-warnings
+                   (list
+                    (propertize "⚠" 'face '(:family "Apple Color Emoji" :height 0.8))
+                    (propertize (format "%s" (or no-warnings 0))
+                                'face 'warning))
+                 nil))))
+           (`interrupted ".")
+           (`suspicious '(propertize "?" 'face 'warning))))))
 
 (defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode))
 
-(with-eval-after-load 'anzu
-  (with-eval-after-load 'evil-anzu
-    (with-eval-after-load 'which-func
-      (setq-default mode-line-format
-                    ;; (setq mode-line-format ;; this is for debug
-                    (list
+(setq-default mode-line-format
+              ;; (setq mode-line-format ;; this is for debug
+              (list
 
-                     " %1"
-                     ;; evil state
-                     '(:eval evil-mode-line-tag)
+               " %1"
+               ;; evil state
+               '(:eval evil-mode-line-tag)
 
-                     " %+"
+               " %+"
 
-                     ;; anzu
-                     '(:eval (if anzu--state " " ""))
-                     anzu--mode-line-format
+               ;; anzu
+               '(:eval (when (and (featurep 'anzu) anzu--state) " "))
+               "%1"
+               (when (featurep 'anzu) anzu--mode-line-format)
 
-                     ;; "%1"
-                     ;; '(:eval (propertize
-                     ;;          (jester/winum-mode-line)
-                     ;;          'face
-                     ;;          'font-lock-type-face))
+               "%1 "
+               ;; the buffer name; the file name as a tool tip
+               '(:eval (propertize "%b " 'face 'font-lock-keyword-face
+                                   'help-echo (buffer-file-name)))
 
-                     "%1 "
-                     ;; the buffer name; the file name as a tool tip
-                     '(:eval (propertize "%b " 'face 'font-lock-keyword-face
-                                         'help-echo (buffer-file-name)))
+               ;; the current major mode for the buffer.
+               '(:eval (propertize "%m" 'face 'font-lock-string-face
+                                   'help-echo buffer-file-coding-system))
 
-                     ;; the current major mode for the buffer.
-                     '(:eval (propertize "%m" 'face 'font-lock-string-face
-                                         'help-echo buffer-file-coding-system))
+               '(:eval (when (and (featurep 'flycheck) flycheck-mode) " "))
+               "%1"
+               jester/flycheck-mode-line
 
-                     ;; " [" ;; insert vs overwrite mode, input-method in a tooltip
-                     ;; '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
-                     ;;                     'face 'font-lock-preprocessor-face
-                     ;;                     'help-echo (concat "Buffer is in "
-                     ;;                                        (if overwrite-mode
-                     ;;                                            "overwrite"
-                     ;;                                          "insert") " mode")))
+               " %1"
+               '(:eval (when (featurep 'which-func) (unless (member major-mode jester/which-function-mode-line-off-modes) which-func-format)))
 
-                     ;; ;; was this buffer modified since the last save?
-                     ;; '(:eval (when (buffer-modified-p)
-                     ;;           (concat ","  (propertize "Mod"
-                     ;;                                    'face 'font-lock-warning-face
-                     ;;                                    'help-echo "Buffer has been modified"))))
+               ;; git info
+               '(:eval (when vc-mode
+                         (s-replace "Git" (propertize "" 'face '(:family "all-the-icons" :height 1.0)) vc-mode)))
 
-                     ;; ;; is this buffer read-only?
-                     ;; '(:eval (when buffer-read-only
-                     ;;           (concat ","  (propertize "RO"
-                     ;;                                    'face 'font-lock-type-face
-                     ;;                                    'help-echo "Buffer is read-only"))))
-                     ;; "] "
+               ;; minor modes
+               ;; minor-mode-alist
 
-                     " %1"
-                     jester/flycheck-mode-line
+               ;; " "
+               ;; global-mode-string (like org) goes in mode-line-misc-info
+               ;; mode-line-misc-info
 
-                     " %1"
-                     '(:eval (unless (member major-mode jester/which-function-mode-line-off-modes) which-func-format))
+               ;; TODO Error during redisplay:
+               ;; (eval (if (boundp (quote org-pomodoro-mode-line)) org-pomodoro-mode-line org-mode-line-string))
+               ;; signaled (void-variable org-mode-line-string)
+               ;; '(:eval (if (boundp 'org-pomodoro-mode-line) org-pomodoro-mode-line org-mode-line-string))
 
-                     ;; git info
-                     '(:eval (when vc-mode
-                               (concat
-                                (propertize " " 'face '(:family "all-the-icons" :height 1.0))
-                                (s-replace " Git" "" vc-mode))))
-                     ;; '(:eval (replace-regexp-in-string " Git\(@\|:\|-\)" "" vc-mode))
+               (jester/mode-line-fill 'mode-line 20)
 
-                     ;; minor modes
-                     ;; minor-mode-alist
+               ;; line and column
+               (propertize " ❚%2c" 'face 'font-lock-type-face)
 
-                     ;; " "
-                     ;; global-mode-string (like org) goes in mode-line-misc-info
-                     ;; mode-line-misc-info
+               '(:eval (format " %s" buffer-file-coding-system))
 
-                     ;; TODO Error during redisplay:
-                     ;; (eval (if (boundp (quote org-pomodoro-mode-line)) org-pomodoro-mode-line org-mode-line-string))
-                     ;; signaled (void-variable org-mode-line-string)
-                     ;; '(:eval (if (boundp 'org-pomodoro-mode-line) org-pomodoro-mode-line org-mode-line-string))
+               ;; size of file
+               " "
+               (propertize "%I" 'face 'font-lock-constant-face) ;; size
 
-                     (jester/mode-line-fill 'mode-line 20)
+               mode-line-end-spaces
+               ))
 
-                     ;; line and column
-                     ;; "(" ;; '%02' to set to 2 chars at least; prevents flickering
-                     ;; (propertize "%2l" 'face 'font-lock-type-face) ","
-                     (propertize " ❚%2c" 'face 'font-lock-type-face)
-                     ;; ") "
+;; TODO  indicator for recording a macro
+;; TODO  input method
 
-                     '(:eval (format " %s" buffer-file-coding-system))
-
-                     ;; size of file
-                     " "
-                     (propertize "%I" 'face 'font-lock-constant-face) ;; size
-
-                     ;; add the time, with the date and the emacs uptime in the tooltip
-                     ;; '(:eval (propertize (format-time-string "%H:%M")
-                     ;;                     'help-echo
-                     ;;                     (concat (format-time-string "%c; ")
-                     ;;                             (emacs-uptime "Uptime:%hh"))))
-
-                     mode-line-end-spaces
-
-                     ))
-      )))
+(provide 'init-mode-line)

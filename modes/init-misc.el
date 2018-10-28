@@ -1,44 +1,30 @@
 ;;----------------------------------------------------------------------------
 ;; Misc config - yet to be placed in separate files
 ;;----------------------------------------------------------------------------
-(add-auto-mode 'tcl-mode "^Portfile\\'")
-(fset 'yes-or-no-p 'y-or-n-p)
-
+;; Highlight and allow to open http link at point in programming buffers
 (add-hook 'prog-mode-hook 'goto-address-prog-mode)
-(setq goto-address-mail-face 'link)
+(setq delete-by-moving-to-trash t)
+;; Single space between sentences is more widespread than double
+(setq-default sentence-end-double-space nil)
 
-;; TODO: publish this as "newscript" package or similar, providing global minor mode
-(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-(add-hook 'after-save-hook 'jester/set-mode-for-new-scripts)
+(use-package anzu
+  :demand t)
+(use-package evil-anzu
+  :after anzu
+  :demand t)
 
-(defun jester/set-mode-for-new-scripts ()
-  "Invoke `normal-mode' if this file is a script and in `fundamental-mode'."
-  (and
-   (eq major-mode 'fundamental-mode)
-   (>= (buffer-size) 2)
-   (save-restriction
-     (widen)
-     (string= "#!" (buffer-substring (point-min) (+ 2 (point-min)))))
-   (normal-mode)))
+(global-auto-revert-mode 1)
+(setq auto-revert-check-vc-info t)
 
+;; http://emacs.stackexchange.com/a/7745/12854
+(defun browse-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
 
-;; Handle the prompt pattern for the 1password command-line interface
-(after-load 'comint
-  (setq comint-password-prompt-regexp
-        (concat
-         comint-password-prompt-regexp
-         "\\|^Please enter your password for user .*?:\\s *\\'")))
-
-
-
-(when (maybe-require-package 'regex-tool)
-  (setq-default regex-tool-backend 'perl))
-
-(after-load 're-builder
-  ;; Support a slightly more idiomatic quit binding in re-builder
-  (define-key reb-mode-map (kbd "C-c C-k") 'reb-quit))
-
-(add-auto-mode 'conf-mode "^Procfile\\'")
+(jester/with-leader "od" 'browse-file-directory)
 
 
 (provide 'init-misc)

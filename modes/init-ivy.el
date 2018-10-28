@@ -1,81 +1,97 @@
-;;; -*- lexical-binding: t -*-
-(when (maybe-require-package 'ivy)
-  (add-hook 'after-init-hook 'ivy-mode)
-  (after-load 'ivy
-    (setq-default ivy-use-virtual-buffers t
-                  ivy-virtual-abbreviate 'fullpath
-                  ivy-count-format ""
-                  projectile-completion-system 'ivy
-                  ivy-magic-tilde nil
-                  ivy-dynamic-exhibit-delay-ms 150
-                  ivy-initial-inputs-alist
-                  '((man . "^")
-                    (woman . "^")))
+(use-package ivy
+  :demand t
+  :config
+  (setq
+   ivy-use-virtual-buffers t
+   ivy-virtual-abbreviate 'full
+   ivy-initial-inputs-alist nil
+   ivy-use-selectable-prompt t
+   completing-read-function 'ivy-completing-read)
+  (general-define-key
+   [remap switch-to-buffer] 'ivy-switch-buffer)
+  (general-define-key
+   :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
+   "SPC" nil))
 
-    ;; IDO-style directory navigation
-    (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
-    (dolist (k '("C-j" "C-RET"))
-      (define-key ivy-minibuffer-map (kbd k) #'ivy-immediate-done))
+(use-package counsel
+  :demand t
+  :after ivy
+  :config
+  (jester/with-leader
+   "p f" 'jester/open-project-file
+   "p F" (lambda! (jester/open-project-file (thing-at-point 'filename)))
+   ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+   "/" 'counsel-ag
+   "*" (lambda! (counsel-ag (jester/region-or-symbol)))
+   "f r" 'counsel-recentf
+   "t s" 'counsel-load-theme
+   "s j" 'counsel-imenu
+   "s b" 'swiper-all
+   "s B" (lambda! (swiper-all (jester/region-or-symbol)))
+   "i u" 'counsel-unicode-char)
 
-    (define-key ivy-minibuffer-map (kbd "<up>") #'ivy-previous-line-or-history)
+  ;; TODO install wgrep
+  (general-define-key
+   "M-x" 'counsel-M-x
+   "M-y" 'counsel-yank-pop
+   "C-s" 'swiper
+   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
+   "C-h C-f" 'counsel-describe-face)
 
-    (when (maybe-require-package 'diminish)
-      (diminish 'ivy-mode)))
+  (dolist (that-ivy-map
+           '(ivy-mode-map ivy-switch-buffer-map ivy-minibuffer-map
+             counsel-mode-map counsel-describe-map counsel-find-file-map counsel-ag-map
+             swiper-map swiper-all-map))
+    (general-define-key
+     :keymaps that-ivy-map
+     "M-d" #'backward-word
+     "M-b" #'kill-word
+     "C-w" #'backward-kill-word
+     "C-d" #'backward-char
+     "C-b" #'delete-char
+     "<escape>" #'keyboard-escape-quit
+     "C-v" 'yank))
 
-  (defun jester/enable-ivy-flx-matching ()
-    "Make `ivy' matching work more like IDO."
+  (defun jester/open-project-file (&optional file-name)
     (interactive)
-    (require-package 'flx)
-    (setq-default ivy-re-builders-alist
-                  '((t . ivy--regex-fuzzy)))))
+    (cond
+     ((locate-dominating-file default-directory ".git") (counsel-git file-name))
+     (t (counsel-find-file file-name))))
 
-(when (maybe-require-package 'ivy-historian)
-  (add-hook 'after-init-hook (lambda () (ivy-historian-mode t))))
+  (general-define-key
+   [remap switch-to-buffer] 'ivy-switch-buffer
+   [remap bookmark-jump] 'counsel-bookmark
+   [remap describe-bindings] 'counsel-descbinds
+   [remap describe-face] 'counsel-describe-face
+   [remap describe-function] 'counsel-describe-function
+   [remap describe-variable] 'counsel-describe-variable
+   [remap find-file] 'counsel-find-file
+   [remap find-library] 'counsel-find-library
+   [remap imenu] 'counsel-imenu
+   [remap info-lookup-symbol] 'counsel-info-lookup-symbol
+   [remap list-faces-display] 'counsel-faces
+   [remap load-library] 'counsel-load-library
+   [remap load-theme] 'counsel-load-theme
+   [remap pop-to-mark-command] 'counsel-mark-ring))
 
-(when (maybe-require-package 'counsel)
-  (setq-default counsel-mode-override-describe-bindings t)
-  (when (maybe-require-package 'diminish)
-    (after-load 'counsel
-      (diminish 'counsel-mode)))
-  (add-hook 'after-init-hook 'counsel-mode)
+(use-package smex
+  :init
+  (setq smex-history-length 32)
+  :demand t)
 
-  (when (maybe-require-package 'projectile)
-    (let ((search-function
-           (cond
-            ((executable-find "rg") 'counsel-rg)
-            ((executable-find "ag") 'counsel-ag)
-            ((executable-find "pt") 'counsel-pt)
-            ((executable-find "ack") 'counsel-ack))))
-      (when search-function
-        (defun jester/counsel-search-project (initial-input &optional use-current-dir)
-          "Search using `counsel-rg' or similar from the project root for INITIAL-INPUT.
-If there is no project root, or if the prefix argument
-USE-CURRENT-DIR is set, then search from the current directory
-instead."
-          (interactive (list (thing-at-point 'symbol)
-                             current-prefix-arg))
-          (let ((current-prefix-arg)
-                (dir (if use-current-dir
-                         default-directory
-                       (condition-case err
-                           (projectile-project-root)
-                         (error default-directory)))))
-            (funcall search-function initial-input dir)))))
-    (global-set-key (kbd "M-?") 'jester/counsel-search-project)))
+;; (use-package ivy-posframe
+;;   :demand t
+;;   :if window-system
+;;   (setq ivy-display-function #'ivy-posframe-display)
+;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+;;   (setq ivy-display-function #'ivy-posframe-display-at-window-center)
+;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
+;;   (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
+;;   (setq ivy-display-function #'ivy-posframe-display-at-point)
+;;   (setq ivy-posframe-parameters
+;;         '((background-color . "#e6fadb")))
+;;   (ivy-posframe-enable))
 
-
-(when (maybe-require-package 'swiper)
-  (after-load 'ivy
-    (defun jester/swiper-at-point (sym)
-      "Use `swiper' to search for the symbol at point."
-      (interactive (list (thing-at-point 'symbol)))
-      (swiper sym))
-
-    (define-key ivy-mode-map (kbd "M-s /") 'jester/swiper-at-point)))
-
-
-(when (maybe-require-package 'ivy-xref)
-  (setq xref-show-xrefs-function 'ivy-xref-show-xrefs))
 
 
 (provide 'init-ivy)

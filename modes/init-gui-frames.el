@@ -22,8 +22,12 @@
 ;;----------------------------------------------------------------------------
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
+(when (fboundp 'menu-bar-mode)
+  (menu-bar-mode -1))
 (when (fboundp 'set-scroll-bar-mode)
   (set-scroll-bar-mode nil))
+(when (fboundp 'horizontal-scroll-bar-mode)
+  (horizontal-scroll-bar-mode -1))
 
 ;; I generally prefer to hide the menu bar, but doing this on OS X
 ;; simply makes it update unreliably in GUI frames, so we make an
@@ -44,13 +48,9 @@
   (add-to-list 'default-frame-alist no-border)
   (add-to-list 'initial-frame-alist no-border))
 
-(setq frame-title-format "看，灰机！ ✈✈✈✈✈✈✈✈✈")
+(setq frame-title-format "看，灰机！ ✈✈✈✈✈✈✈✈✈"
+      frame-resize-pixelwise t)
 (set-frame-parameter nil 'undecorated t)
-(defun jester/toggle-title-bar ()
-  "Toggle the frame title bar."
-  (interactive)
-  (set-frame-parameter nil 'undecorated
-                       (if (frame-parameter nil 'undecorated) nil t)))
 
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co,
 ;; so we zero it explicitly in those cases.
@@ -58,12 +58,10 @@
           (lambda ()
             (setq line-spacing 0)))
 
-(cond
- ((eq window-system 'x)
-  (set-frame-parameter nil 'fullscreen 'fullboth))
- ((eq window-system 'mac)
-  (set-frame-parameter nil 'fullscreen 'maximized))
- (t (set-frame-parameter nil 'fullscreen 'maximized)))
+(setq default-frame-alist
+      `((fullscreen . ,(cond ((eq window-system 'x) 'fullboth)
+                            ((eq window-system 'mac) 'maximized)
+                            (t 'maximized)))))
 
 
 (provide 'init-gui-frames)

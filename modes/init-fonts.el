@@ -1,5 +1,66 @@
-;;; font, text settings
+;;----------------------------------------------------------------------------
+;; style texts a bit
+;;----------------------------------------------------------------------------
+(add-hook 'text-mode-hook (lambda () (display-line-numbers-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+(setq display-line-numbers-width nil
+      display-line-numbers-type 'relative
+      display-line-numbers-current-absolute t)
 
+(after-init (electric-pair-mode 1)) ;; this is global
+(after-init (electric-indent-mode 1))
+(after-init (global-prettify-symbols-mode 1))
+
+(maybe-require-package 'list-unicode-display)
+
+(global-hl-line-mode 1)
+(add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
+
+(use-package highlight-parentheses
+  :demand t
+  :config
+  (global-highlight-parentheses-mode))
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package hl-todo
+  :demand t
+  :config
+  (global-hl-todo-mode))
+
+;;----------------------------------------------------------------------------
+;; Set fonts.
+;;----------------------------------------------------------------------------
+(defun jester/use-small-font ()
+  "Use 15px font."
+  (interactive)
+  (set-face-attribute 'default nil
+                      :family "Source Code Pro"
+                      :height 150
+                      :weight 'normal
+                      :width 'normal)
+  (set-frame-parameter nil 'fullscreen 'maximized))
+
+(defun jester/use-large-font ()
+  "Use 18px font."
+  (interactive)
+  (set-face-attribute 'default nil
+                      :family "Source Code Pro"
+                      :height 180
+                      :weight 'normal
+                      :width 'normal)
+  (set-frame-parameter nil 'fullscreen 'maximized))
+
+(jester/use-large-font)
+
+(when window-system
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Source Han Sans CN Regular")))
+  (set-fontset-font t nil (font-spec :family "Dejavu Sans Mono") nil 'append))
+
+;;----------------------------------------------------------------------------
+;; adjust visual fill column
+;;----------------------------------------------------------------------------
 (defun jester/maybe-adjust-visual-fill-column ()
   "Readjust visual fill column when the global font size is modified.
 This is helpful for writeroom-mode, in particular."
@@ -9,14 +70,6 @@ This is helpful for writeroom-mode, in particular."
 
 (add-hook 'visual-fill-column-mode-hook
           'jester/maybe-adjust-visual-fill-column)
-
-(require-package 'highlight-parentheses)
-(require-package 'rainbow-delimiters)
-(require-package 'hl-todo)
-(add-hook 'prog-mode-hook 'highlight-parentheses-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'hl-todo-mode)
-
 
 
 (provide 'init-fonts)
