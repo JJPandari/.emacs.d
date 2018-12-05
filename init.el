@@ -4,8 +4,15 @@
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
-(add-to-list 'load-path (expand-file-name "extensions" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "modes" user-emacs-directory))
+;; Load path
+;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce startup time.
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (push (expand-file-name "extensions" user-emacs-directory) load-path)
+  (push (expand-file-name "modes" user-emacs-directory) load-path))
+(advice-add #'package-initialize :after #'update-load-path)
+(update-load-path)
+
 (require 'init-benchmarking) ;; Measure startup time
 
 (defconst *is-a-mac* (eq system-type 'darwin))
@@ -17,7 +24,9 @@
       (init-gc-cons-threshold (* 128 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold)
+              (run-with-idle-timer 30 t 'garbage-collect)
+              (add-hook 'focus-out-hook 'garbage-collect))))
 
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config

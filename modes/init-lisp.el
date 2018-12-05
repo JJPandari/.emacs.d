@@ -302,10 +302,20 @@
   (lispyville-set-key-theme
    '(operators
      c-w
-     ;; prettify
-     text-objects
+     prettify
+     ;; "a" key in text-objects scheme conflicts with `jester/evil-a-attribute', setup manually
+     ;; text-objects
      (additional-movement normal visual motion)
      (slurp/barf-cp normal visual)))
+
+  (general-define-key
+   :keymaps 'evil-inner-text-objects-map
+   "l" 'lispyville-inner-list
+   "f" 'lispyville-inner-function)
+  (general-define-key
+   :keymaps 'evil-outer-text-objects-map
+   "l" 'lispyville-a-list
+   "f" 'lispyville-a-function)
 
   (general-define-key
    :states '(normal operator motion)
