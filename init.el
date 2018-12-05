@@ -62,6 +62,7 @@
 (require 'init-eyebrowse)
 (require 'init-avy)
 
+(require 'init-dumbjump)
 ;; (require 'init-compile)
 ;; (require 'init-org)
 (require 'init-markdown)

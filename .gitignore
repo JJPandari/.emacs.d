@@ -53,3 +53,4 @@ site-lisp/package/
 /.cache
 /.youdao
 /*.keyfreq
+/smex-items

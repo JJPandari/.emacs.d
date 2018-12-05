@@ -26,5 +26,11 @@
 
 (jester/with-leader "od" 'browse-file-directory)
 
+(general-define-key
+ :keymaps 'comint-mode-map
+ "C-d" 'backward-char
+ "C-b" 'comint-delchar-or-maybe-eof
+ "C-r" 'comint-history-isearch-backward)
+
 
 (provide 'init-misc)

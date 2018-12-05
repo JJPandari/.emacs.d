@@ -8,8 +8,6 @@
    ivy-use-selectable-prompt t
    completing-read-function 'ivy-completing-read)
   (general-define-key
-   [remap switch-to-buffer] 'ivy-switch-buffer)
-  (general-define-key
    :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
    "SPC" nil))
 

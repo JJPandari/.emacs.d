@@ -38,8 +38,6 @@
   (flycheck-add-mode 'javascript-eslint 'web-mode)
 
   (add-hook! 'web-mode-hook
-    ;; TODO company-backends
-    ;; (setq company-backends (cdr company-backends)) ;; company-css & company-html super slow on osx
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
     (when (equal (file-name-extension buffer-file-name) "vue")
       (setq imenu-generic-expression ; imenu regexps for vue.js

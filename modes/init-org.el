@@ -387,7 +387,6 @@ typical word processor."
   (general-define-key
    :states '(normal)
    :keymaps org-mode-map
-   "<return>" 'switch-to-buffer
    ;; "g o" 'org-todo
    "H" 'org-shiftleft
    "L" 'org-shiftright))

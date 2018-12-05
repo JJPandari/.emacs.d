@@ -1,5 +1,3 @@
-(setq minibuffer-message-timeout nil)
-
 (general-define-key
  :keymaps '(minibuffer-local-map minibuffer-local-ns-map minibuffer-local-completion-map minibuffer-local-must-match-map minibuffer-local-isearch-map)
  "M-d" #'backward-word

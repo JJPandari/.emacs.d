@@ -20,7 +20,6 @@
   :commands git-timemachine
   :config
   (general-define-key
-   :states '(normal)
    :keymaps 'git-timemachine-mode-map
    "p" 'git-timemachine-show-previous-revision
    "n" 'git-timemachine-show-next-revision

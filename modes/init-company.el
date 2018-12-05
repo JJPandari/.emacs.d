@@ -1,38 +1,32 @@
-;; WAITING: haskell-mode sets tags-table-list globally, breaks tags-completion-at-point-function
-;; TODO Default sort order should place [a-z] before punctuation
-
 (add-to-list 'completion-styles 'initials t)
 
 (use-package company
+  :init
+  (setq company-backends
+        '(company-capf company-files company-css
+         (company-dabbrev-code company-gtags company-etags company-keywords)
+         company-dabbrev))
   :demand t
   :config
   (global-company-mode 1)
   (setq
-   ;; search completion from all buffers, not just same mode buffers.
-   company-dabbrev-code-other-buffers 'all
-   company-minimum-prefix-length 2)
+   company-dabbrev-other-buffers 'all
+   ;; t means search buffers with same major mode
+   company-dabbrev-code-other-buffers t
+   company-minimum-prefix-length 2
+   company-idle-delay 0.3)
 
+  ;; clear default bindings first
+  (setq company-active-map (make-sparse-keymap))
   (general-define-key
    :keymaps 'company-active-map
-   "M-n" nil
-   "M-p" nil
    "C-n" #'company-select-next
    "C-p" #'company-select-previous
-   "C-," #'company-complete-common
-   "C-l" nil
-   "C-w" nil
-   ;; TODO C-m complete common?
-   "RET" nil
-   "<return>" nil
-
+   "<C-m>" 'company-complete-common
    "<tab>" 'expand-snippet-or-complete-selection
-   "C-j" nil
-   "C-k" nil
-   "C-d" nil
-   "C-b" 'company-show-doc-buffer
-   "C-s" nil
-   "C-/" nil
-   )
+   "C-b" 'company-show-doc-buffer)
+  (dotimes (i 10)
+    (define-key company-active-map (read-kbd-macro (format "M-%d" i)) 'company-complete-number))
 
   (general-define-key
    :states '(insert emacs)

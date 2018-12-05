@@ -14,7 +14,9 @@
    "f d" 'dired-jump)
   :bind (([remap dired-jump] . deer)
          :map ranger-mode-map
-         ("s" . 'ranger-sort-criteria)))
+         ("s" . 'ranger-sort-criteria))
+  :config
+  (ranger-override-dired-mode 1))
 
 (use-package all-the-icons
   :after ranger

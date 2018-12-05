@@ -1,4 +1,10 @@
 ;;----------------------------------------------------------------------------
+;; fix C-m, C-i
+;;----------------------------------------------------------------------------
+(define-key input-decode-map [?\C-m] [C-m])
+(define-key input-decode-map [?\C-i] [C-i])
+
+;;----------------------------------------------------------------------------
 ;; Config general.
 ;;----------------------------------------------------------------------------
 (use-package general
@@ -74,6 +80,23 @@ If COUNT is given, move COUNT - 1 lines downward first."
       (when (eolp)
         ;; prevent "c$" and "d$" from deleting blank lines
         (setq evil-this-type 'exclusive))))
+
+  (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
+    (list (point-min) (point-max)))
+  (define-key evil-inner-text-objects-map "g" 'jester/evil-inner-buffer)
+
+  (evil-define-operator jester/evil-join-no-whitespace (beg end)
+    "Join lines without whitespace."
+    :motion evil-line
+    (let ((count (count-lines beg end)))
+      (when (> count 1)
+        (setq count (1- count)))
+      (goto-char beg)
+      (dotimes (var count)
+        (let ((del-beg (progn (evil-move-end-of-line 1) (point)))
+              (del-end (progn (beginning-of-line-text 2) (point))))
+          (delete-region del-beg del-end)))))
+
   )
 
 
@@ -139,25 +162,33 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;; TODO evil-mc
 
 (use-package evil-multiedit
-    :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
-    :init
-    ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
-    (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
-    (define-key evil-normal-state-map "R" 'evil-multiedit-match-all)
-    (define-key evil-visual-state-map "R" 'evil-multiedit-match-all)
-    (define-key evil-normal-state-map (kbd "C-n") 'evil-multiedit-match-symbol-and-next)
-    (define-key evil-visual-state-map (kbd "C-n") 'evil-multiedit-match-symbol-and-next)
-    (define-key evil-normal-state-map (kbd "C-p") 'evil-multiedit-match-symbol-and-prev)
-    (define-key evil-visual-state-map (kbd "C-p") 'evil-multiedit-match-symbol-and-prev)
-    (define-key evil-visual-state-map (kbd "C-M-D") 'evil-multiedit-restore)
-    :config
-    (define-key evil-multiedit-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
-    (define-key evil-multiedit-state-map (kbd "<return>") 'evil-multiedit-toggle-or-restrict-region)
-    ;; (define-key evil-multiedit-state-map (kbd "M-n") 'evil-multiedit-next)
-    ;; (define-key evil-multiedit-state-map (kbd "M-p") 'evil-multiedit-prev)
-    ;; (define-key evil-multiedit-insert-state-map (kbd "M-n") 'evil-multiedit-next)
-    ;; (define-key evil-multiedit-insert-state-map (kbd "M-p") 'evil-multiedit-prev)
-    )
+  :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
+  :init
+  ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
+  (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
+  (general-define-key
+   :states '(normal visual)
+   "R" 'evil-multiedit-match-all
+   "C-n" 'evil-multiedit-match-symbol-and-next
+   "C-p" 'evil-multiedit-match-symbol-and-prev)
+  :config
+  ;; (define-key evil-multiedit-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
+  (define-key evil-multiedit-state-map (kbd "<return>") 'evil-multiedit-toggle-or-restrict-region)
+  (define-key evil-multiedit-state-map (kbd "<S-tab>") 'evil-multiedit-prev)
+  (define-key evil-multiedit-state-map (kbd "<tab>") 'jester/what-to-do-when-iedit)
+  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'jester/what-to-do-when-iedit)
+  (define-key iedit-occurrence-keymap (kbd "<tab>") 'jester/what-to-do-when-iedit)
+  )
+
+(defun jester/what-to-do-when-iedit ()
+  "jump occurence, start company or select candidate in iedit/multiedit mode.
+hack for key precedence problem."
+  (interactive)
+  (if (evil-multiedit-insert-state-p)
+      (if (null company-candidates)
+          (tab-indent-or-complete)
+        (company-complete-selection))
+    (evil-multiedit-next)))
 
 
 (use-package evil-ediff
@@ -196,17 +227,25 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;;----------------------------------------------------------------------------
 (general-define-key
  :states '(normal)
- "Q" "@q")
+ "Q" "@q"
+ "gJ" 'jester/evil-join-no-whitespace)
 
 (general-define-key
  :states '(normal)
- :keymaps '(prog-mode-map messages-buffer-mode-map)
- "RET" 'switch-to-buffer)
+ :keymaps '(text-mode-map
+            prog-mode-map
+            messages-buffer-mode-map
+            comint-mode-map
+            inferior-emacs-lisp-mode-map
+            org-mode-map
+            markdown-mode-map)
+ "<return>" 'switch-to-buffer)
 
 (general-define-key
  :states '(visual)
- "<" "<gv"
- ">" ">gv"
+ ;; TODO not working
+ "<" (lambda! (call-interactively 'evil-shift-left) (evil-visual-restore))
+ ">" (lambda! (call-interactively 'evil-shift-right) (evil-visual-restore))
  ;; run macro in the q register on all selected lines
  "Q" ":norm @q RET")
 
@@ -260,6 +299,7 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;;----------------------------------------------------------------------------
 (general-define-key
  "C-h p" 'describe-package
+ "C-h C-k" 'describe-keymap
  "C-x C-c" (lambda! (save-some-buffers nil t) (kill-emacs)))
 
 

@@ -53,9 +53,8 @@
                " %+"
 
                ;; anzu
-               '(:eval (when (and (featurep 'anzu) anzu--state) " "))
                "%1"
-               (when (featurep 'anzu) anzu--mode-line-format)
+               '(:eval (when (and (featurep 'anzu) anzu--state) (concat " " (anzu--update-mode-line))))
 
                "%1 "
                ;; the buffer name; the file name as a tool tip
@@ -100,8 +99,7 @@
                " "
                (propertize "%I" 'face 'font-lock-constant-face) ;; size
 
-               mode-line-end-spaces
-               ))
+               mode-line-end-spaces))
 
 ;; TODO  indicator for recording a macro
 ;; TODO  input method

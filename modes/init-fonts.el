@@ -17,15 +17,18 @@
 (add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
 
 (use-package highlight-parentheses
+  :init
+  (setq hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4"))
   :demand t
   :config
-  (global-highlight-parentheses-mode))
+  (global-highlight-parentheses-mode 1)
+  (set-face-attribute 'hl-paren-face nil :weight 'bold))
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 (use-package hl-todo
   :demand t
   :config
-  (global-hl-todo-mode))
+  (global-hl-todo-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Set fonts.

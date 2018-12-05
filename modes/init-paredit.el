@@ -74,13 +74,10 @@
                            'css-mode))))
 
 (use-package paredit
-  :commands (paredit-kill paredit-raise-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp)
-  :bind ("M-r" . paredit-raise-sexp)
+  :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp)
+  :bind (("M-r" . paredit-raise-sexp) ("M-u" . paredit-wrap-sexp))
   :config
   (general-define-key :states '(normal operator) "L" 'jester/goto-end-of-sexp)
-  (general-define-key
-   :states '(normal insert emacs)
-   "M-u" 'paredit-wrap-sexp)
   (add-to-list 'paredit-space-for-delimiter-predicates 'jester/paredit-space-for-delimiter-p)
   ;; TODO make kbd "DL" delete whole lines when nothing before and only non-word after the kill end
 

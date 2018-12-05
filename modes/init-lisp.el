@@ -3,8 +3,8 @@
 ;;   (add-hook hook 'turn-on-elisp-slime-nav-mode))
 ;; (add-hook 'emacs-lisp-mode-hook (lambda () (setq mode-name "ELisp")))
 
-;; (setq-default initial-scratch-message
-;;               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+(setq-default initial-scratch-message
+              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
 
 ;; 
@@ -319,7 +319,12 @@
    "C-;" (lambda! (insert ";; ")))
 
   (jester/with-major-leader '(emacs-lisp-mode-map lisp-mode-map)
-   "e" 'eval-last-sexp))
+                            "e" 'eval-last-sexp
+                            "d" 'eval-defun
+                            "i" 'ielm))
+
+(use-package macrostep
+  :commands macrostep-expand)
 
 
 (provide 'init-lisp)

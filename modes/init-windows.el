@@ -144,7 +144,7 @@
    "7" 'winum-select-window-7
    "8" 'winum-select-window-8
    "9" 'winum-select-window-9)
-  (advice-add 'winum-select-window-by-number :after 'jester/maybe-golden-ratio-adjust))
+  (advice-add 'winum-select-window-by-number :after (lambda (&optional arg) (jester/maybe-golden-ratio-adjust))))
 
 (use-package ace-window
   :commands ace-swap-window

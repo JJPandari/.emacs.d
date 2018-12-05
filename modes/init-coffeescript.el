@@ -5,6 +5,7 @@
   (modify-syntax-entry ?* "." coffee-mode-syntax-table)
   (modify-syntax-entry ?+ "." coffee-mode-syntax-table)
   (modify-syntax-entry ?- "." coffee-mode-syntax-table)
+  (modify-syntax-entry ?/ "." coffee-mode-syntax-table)
   (modify-syntax-entry ?_ "w" coffee-mode-syntax-table)
   (jester/with-major-leader 'coffee-mode
                             "d" 'coffee-mark-defun))

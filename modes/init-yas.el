@@ -16,7 +16,7 @@
    "s v" 'yas-visit-snippet-file
    "s n" 'yas-new-snippet)
 
-  (jester/with-major-leader 'snippet-mode
+  (jester/with-major-leader 'snippet-mode-map
    "," 'yas-load-snippet-buffer-and-close
    "l" 'yas-load-snippet-buffer)
 
