@@ -4,6 +4,7 @@
 ;;; This file bootstraps the configuration, which is divided into
 ;;; a number of other files.
 
+;; https://github.com/seagle0128/.emacs.d/issues/37
 ;; Load path
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce startup time.
 (defun update-load-path (&rest _)

@@ -37,29 +37,45 @@
   "Use 15px font."
   (interactive)
   (set-face-attribute 'default nil
-                      :family "Source Code Pro"
+                      ;; :family "Source Code Pro"
+                      :family "Fira Code"
                       :height 150
                       :weight 'normal
                       :width 'normal)
-  (set-frame-parameter nil 'fullscreen 'maximized))
+  (jester/set-fallback-fonts))
 
 (defun jester/use-large-font ()
   "Use 18px font."
   (interactive)
   (set-face-attribute 'default nil
-                      :family "Source Code Pro"
+                      ;; :family "Source Code Pro"
+                      :family "Fira Code"
                       :height 180
                       :weight 'normal
                       :width 'normal)
-  (set-frame-parameter nil 'fullscreen 'maximized))
+  (jester/set-fallback-fonts))
+
+(defun jester/set-fallback-fonts ()
+  "Set fallback fonts for Chinese, some unicode chars..."
+  (interactive)
+  (when window-system
+    (dolist (charset '(kana han cjk-misc bopomofo))
+      (set-fontset-font (frame-parameter nil 'font) charset
+                        (font-spec :family "Source Han Sans CN Regular")))
+    (set-fontset-font t nil (font-spec :family "Fira Code") nil 'append)))
 
 (jester/use-large-font)
+;; try out Fira Code ligatures
+(mac-auto-operator-composition-mode 1)
 
-(when window-system
-  (dolist (charset '(kana han cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Source Han Sans CN Regular")))
-  (set-fontset-font t nil (font-spec :family "Dejavu Sans Mono") nil 'append))
+;;----------------------------------------------------------------------------
+;; show trailing whitespace
+;;----------------------------------------------------------------------------
+(defun jester/show-trailing-whitespace ()
+  (set-face-attribute 'trailing-whitespace nil
+                      :background (face-attribute 'font-lock-comment-face :foreground))
+  (setq show-trailing-whitespace 1))
+(add-hook! 'prog-mode-hook (jester/show-trailing-whitespace))
 
 ;;----------------------------------------------------------------------------
 ;; adjust visual fill column

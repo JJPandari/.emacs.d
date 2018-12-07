@@ -41,7 +41,11 @@
    "g r" 'diff-hl-revert-hunk
    ;; "a" = "actions"
    "g a" 'magit-dispatch-popup)
-  :commands (magit-status))
+  :commands (magit-status)
+  :config
+  (general-define-key
+   :keymaps 'magit-status-mode-map
+   "SPC" nil))
 
 (use-package evil-magit
   :hook (magit-mode . evil-magit-init))

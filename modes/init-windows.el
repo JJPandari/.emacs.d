@@ -152,6 +152,11 @@
   (jester/with-leader
    "w M" 'ace-swap-window))
 
+(defun jester/kill-buffer-and-window ()
+  "Kill current buffer and window."
+  (interactive)
+  (kill-buffer) (delete-window))
+
 (defun jester/alternate-window ()
   "Switch back and forth between current and last window in the
 current frame."

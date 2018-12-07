@@ -1,10 +1,10 @@
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
-;; (setq desktop-dirname "~/.emacs.d")
+(setq desktop-dirname "~/.emacs.d")
 (require 'desktop)
 ;; (desktop-save-mode 1)
-;; (run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname)))
-;; (push '(company-posframe-mode . nil)
-;;       desktop-minor-mode-table)
+(run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname)))
+(push '(company-posframe-mode . nil)
+      desktop-minor-mode-table)
 
 (defadvice desktop-read (around time-restore activate)
     (let ((start-time (current-time)))

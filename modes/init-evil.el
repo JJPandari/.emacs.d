@@ -97,6 +97,11 @@ If COUNT is given, move COUNT - 1 lines downward first."
               (del-end (progn (beginning-of-line-text 2) (point))))
           (delete-region del-beg del-end)))))
 
+  (general-define-key
+   :states '(normal)
+   :keymaps '(evil-command-window-mode-map)
+   "q" (lambda! (jester/kill-buffer-and-window) (select-window (previous-window))))
+
   )
 
 
@@ -192,7 +197,9 @@ hack for key precedence problem."
 
 
 (use-package evil-ediff
-  :commands (ediff ediff-buffers ediff-buffers3))
+  :commands (ediff ediff-buffers ediff-buffers3)
+  :config
+  (evil-ediff-init))
 
 ;;----------------------------------------------------------------------------
 ;; Set initial states for modes.
