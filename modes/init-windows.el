@@ -163,7 +163,17 @@
   (jester/with-leader
    "w M" 'ace-swap-window))
 
-;; TODO shackle
+(use-package shackle
+  :demand t
+  :config
+  (setq shackle-default-rule '(:same t :select t :inhibit-window-quit t)
+        shackle-rules '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t)
+                        (magit-status-mode :fullframe t)
+                        (magit-log-mode :same t :inhibit-window-quit t)
+                        (magit-commit-mode :ignore t)
+                        (magit-diff-mode :select nil :align right :size 0.5)
+                        (git-commit-mode :ignore t)))
+  (shackle-mode 1))
 
 (defun jester/kill-buffer-and-window ()
   "Kill current buffer and window."
