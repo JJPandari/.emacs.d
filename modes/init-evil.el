@@ -1,8 +1,9 @@
 ;;----------------------------------------------------------------------------
 ;; fix C-m, C-i
 ;;----------------------------------------------------------------------------
-(define-key input-decode-map [?\C-m] [C-m])
-(define-key input-decode-map [?\C-i] [C-i])
+(when window-system
+  (define-key input-decode-map [?\C-m] [C-m])
+  (define-key input-decode-map [?\C-i] [C-i]))
 
 ;;----------------------------------------------------------------------------
 ;; Config general.
@@ -15,15 +16,16 @@
   (defconst jester-major-leader "," "Major-leader key in normal state.")
   (defconst jester-major-leader-emacs "M-S-m" "Major-leader key in emacs state.")
 
-  (general-define-key :states '(normal motion visual) jester-leader nil)
-  (general-define-key :states '(insert emacs) jester-leader-emacs nil)
-  (general-define-key :states '(normal motion visual) jester-major-leader nil)
-  (general-define-key :states '(insert emacs) jester-major-leader-emacs nil)
+  (general-override-mode)
 
-  (general-create-definer jester/leader-def :prefix jester-leader :states '(normal motion visual))
-  (general-create-definer jester/leader-emacs-def :prefix jester-leader-emacs :states '(insert emacs))
-  (general-create-definer jester/major-leader-def :prefix jester-major-leader :states '(normal motion visual))
-  (general-create-definer jester/major-leader-emacs-def :prefix jester-major-leader-emacs :states '(insert emacs))
+  (general-create-definer jester/leader-def :keymaps 'override
+    :prefix jester-leader :states '(normal motion visual))
+  (general-create-definer jester/leader-emacs-def :keymaps 'override
+    :prefix jester-leader-emacs :states '(insert emacs))
+  (general-create-definer jester/major-leader-def :keymaps 'override
+    :prefix jester-major-leader :states '(normal motion visual))
+  (general-create-definer jester/major-leader-emacs-def :keymaps 'override
+    :prefix jester-major-leader-emacs :states '(insert emacs))
 
   (defmacro jester/with-leader (&rest args)
     "Define a leader key sequence."
@@ -33,8 +35,6 @@
     "Define a major-leader key sequence."
     `(progn (jester/major-leader-def :keymaps ,keymaps ,@args)
             (jester/major-leader-emacs-def :keymaps ,keymaps ,@args)))
-  ;; (general-create-definer jester/normalish-def :states '(normal motion visual))
-  ;; (general-create-definer jester/insertish-def :states '(insert emacs))
   )
 
 ;;----------------------------------------------------------------------------
@@ -65,7 +65,9 @@
    evil-replace-state-cursor '("chocolate" (hbar . 2))
    evil-visual-state-cursor '("gray" (hbar . 2))
    evil-motion-state-cursor '("plum3" box))
-  
+
+  (evil-set-initial-state 'debugger-mode 'motion)
+
   ;; don't select line feed even in visual state (use `evil-adjust-cursor' unconditionally)
   (evil-define-motion evil-end-of-line (count)
     "Move the cursor to the end of the current line.
@@ -167,7 +169,8 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;; TODO evil-mc
 
 (use-package evil-multiedit
-  :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
+  :demand t
+  ;; :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
   :init
   ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
   (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
@@ -177,28 +180,16 @@ If COUNT is given, move COUNT - 1 lines downward first."
    "C-n" 'evil-multiedit-match-symbol-and-next
    "C-p" 'evil-multiedit-match-symbol-and-prev)
   :config
-  ;; (define-key evil-multiedit-state-map (kbd "RET") 'evil-multiedit-toggle-or-restrict-region)
   (define-key evil-multiedit-state-map (kbd "<return>") 'evil-multiedit-toggle-or-restrict-region)
   (define-key evil-multiedit-state-map (kbd "<S-tab>") 'evil-multiedit-prev)
-  (define-key evil-multiedit-state-map (kbd "<tab>") 'jester/what-to-do-when-iedit)
-  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'jester/what-to-do-when-iedit)
-  (define-key iedit-occurrence-keymap (kbd "<tab>") 'jester/what-to-do-when-iedit)
+  ;; these have to be loaded before company so they don't shadow tab binding in `company-active-map'
+  (define-key evil-multiedit-state-map (kbd "<tab>") 'evil-multiedit-next)
+  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'tab-indent-or-complete)
   )
-
-(defun jester/what-to-do-when-iedit ()
-  "jump occurence, start company or select candidate in iedit/multiedit mode.
-hack for key precedence problem."
-  (interactive)
-  (if (evil-multiedit-insert-state-p)
-      (if (null company-candidates)
-          (tab-indent-or-complete)
-        (company-complete-selection))
-    (evil-multiedit-next)))
 
 
 (use-package evil-ediff
-  :commands (ediff ediff-buffers ediff-buffers3)
-  :config
+  :init
   (evil-ediff-init))
 
 ;;----------------------------------------------------------------------------
@@ -223,7 +214,8 @@ hack for key precedence problem."
  "q q" 'save-buffers-kill-terminal
  "r i" 'ivy-resume
  "x o" 'just-one-space
- "," 'evil-indent)
+ "," 'evil-indent
+ "!" 'shell-command)
 
 ;;----------------------------------------------------------------------------
 ;; With-major-leader keys...
@@ -308,6 +300,12 @@ hack for key precedence problem."
  "C-h p" 'describe-package
  "C-h C-k" 'describe-keymap
  "C-x C-c" (lambda! (save-some-buffers nil t) (kill-emacs)))
+
+(general-define-key
+ :states 'motion
+ :keymaps 'help-mode-map
+ "K" 'help-go-back
+ "J" 'help-go-forward)
 
 
 (provide 'init-evil)

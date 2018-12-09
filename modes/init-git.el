@@ -39,13 +39,10 @@
    "g s" 'magit-status
    "g d" 'magit-diff-buffer-file
    "g r" 'diff-hl-revert-hunk
-   ;; "a" = "actions"
+   ;; "a" ≈ "actions"
    "g a" 'magit-dispatch-popup)
-  :commands (magit-status)
-  :config
-  (general-define-key
-   :keymaps 'magit-status-mode-map
-   "SPC" nil))
+  :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)
+  )
 
 (use-package evil-magit
   :hook (magit-mode . evil-magit-init))

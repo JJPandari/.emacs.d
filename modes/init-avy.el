@@ -1,4 +1,6 @@
-(use-package avy)
+(use-package avy
+  :init
+  (setq avy-all-windows nil))
 
 (use-package link-hint
   :after avy
@@ -8,6 +10,7 @@
    "l o" 'link-hint-open-link)
   (general-define-key
    :states '(motion)
-   "o" 'link-hint-open-link))
+   :keymaps 'help-mode-map
+   "f" 'link-hint-open-link))
 
 (provide 'init-avy)

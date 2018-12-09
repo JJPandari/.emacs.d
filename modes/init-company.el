@@ -1,12 +1,12 @@
 (add-to-list 'completion-styles 'initials t)
 
 (use-package company
+  :demand t
   :init
   (setq company-backends
         '(company-capf company-files company-css
          (company-dabbrev-code company-gtags company-etags company-keywords)
          company-dabbrev))
-  :demand t
   :config
   (global-company-mode 1)
   (setq

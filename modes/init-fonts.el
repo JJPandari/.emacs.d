@@ -18,7 +18,8 @@
 
 (use-package highlight-parentheses
   :init
-  (setq hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4"))
+  ;; the theme's setting will take precedence if simply `setq'
+  (customize-set-variable 'hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4"))
   :demand t
   :config
   (global-highlight-parentheses-mode 1)
@@ -37,8 +38,8 @@
   "Use 15px font."
   (interactive)
   (set-face-attribute 'default nil
-                      ;; :family "Source Code Pro"
-                      :family "Fira Code"
+                      :family "Source Code Pro"
+                      ;; :family "Fira Code"
                       :height 150
                       :weight 'normal
                       :width 'normal)
@@ -48,8 +49,8 @@
   "Use 18px font."
   (interactive)
   (set-face-attribute 'default nil
-                      ;; :family "Source Code Pro"
-                      :family "Fira Code"
+                      :family "Source Code Pro"
+                      ;; :family "Fira Code"
                       :height 180
                       :weight 'normal
                       :width 'normal)

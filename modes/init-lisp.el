@@ -335,6 +335,7 @@
 
 (use-package macrostep
   :commands macrostep-expand)
+;; TODO override evil
 
 
 (provide 'init-lisp)

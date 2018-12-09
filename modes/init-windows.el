@@ -99,7 +99,7 @@
 ;; important for golden-ratio to better work
 (setq window-combination-resize t)
 
-
+
 (use-package golden-ratio
   :demand t
   :config
@@ -121,6 +121,15 @@
  "w m" 'jester/toggle-maximize-window
  "<tab>" 'jester/alternate-window)
 
+;; don't resize in ediff
+(after-load "golden-ratio" (progn
+  (add-to-list 'golden-ratio-exclude-modes 'ediff-mode)
+  (add-to-list 'golden-ratio-inhibit-functions 'jester/ediff-comparison-buffer-p)))
+(defun jester/ediff-comparison-buffer-p ()
+  (and (boundp 'ediff-this-buffer-ediff-sessions)
+       ediff-this-buffer-ediff-sessions))
+
+
 (use-package winner
   :demand t
   :config
@@ -129,6 +138,7 @@
    "w u" 'winner-undo
    "w r" 'winner-redo))
 
+
 (use-package winum
   :demand t
   :config
@@ -146,11 +156,14 @@
    "9" 'winum-select-window-9)
   (advice-add 'winum-select-window-by-number :after (lambda (&optional arg) (jester/maybe-golden-ratio-adjust))))
 
+
 (use-package ace-window
   :commands ace-swap-window
   :init
   (jester/with-leader
    "w M" 'ace-swap-window))
+
+;; TODO shackle
 
 (defun jester/kill-buffer-and-window ()
   "Kill current buffer and window."
