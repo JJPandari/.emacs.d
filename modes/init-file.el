@@ -17,7 +17,10 @@
 ;;----------------------------------------------------------------------------
 (defun jester/save-all-buffers ()
   "Save all buffers."
-  (evil-write-all nil))
+  ;; https://github.com/manateelazycat/lazycat-emacs/commit/da13a688ef89f8ab2c577a3e9d2a7bcf0ef9b71d
+  (with-temp-message
+      (with-current-buffer " *Minibuf-0*" (buffer-string))
+    (save-some-buffers t #'(lambda () (and (buffer-file-name) (buffer-modified-p))))))
 
 ;;----------------------------------------------------------------------------
 ;; Delete the current file
