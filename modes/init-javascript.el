@@ -14,7 +14,7 @@
    :keymaps 'js2-mode-map
    "g d" 'js2-jump-to-definition)
 
-  (add-hook! js2-mode-hook (setq mode-name "JS2")))
+  (add-hook! 'js2-mode-hook (setq mode-name "JS2")))
 
 (use-package js2-refactor
   :hook (js2-mode . js2-refactor-mode))

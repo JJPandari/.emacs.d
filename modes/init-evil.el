@@ -60,11 +60,11 @@
    evil-emacs-state-tag    (propertize "E" 'face '((:background "SkyBlue2" :foreground "black")))
    evil-operator-state-tag (propertize "O" 'face '((:background "#ffec8b" :foreground "#93a1a1")))
    evil-normal-state-cursor '("DarkGoldenrod2" box)
+   evil-motion-state-cursor '("plum3" box)
+   evil-visual-state-cursor '("gray" (hbar . 2))
    evil-insert-state-cursor '("chartreuse3" (bar . 2))
    evil-emacs-state-cursor '("SkyBlue2" box)
-   evil-replace-state-cursor '("chocolate" (hbar . 2))
-   evil-visual-state-cursor '("gray" (hbar . 2))
-   evil-motion-state-cursor '("plum3" box))
+   evil-replace-state-cursor '("chocolate" (hbar . 2)))
 
   (evil-set-initial-state 'debugger-mode 'motion)
 
@@ -143,7 +143,9 @@ If COUNT is given, move COUNT - 1 lines downward first."
    "M" 'evilmi-jump-items)
   (general-define-key
    :keymaps '(evil-inner-text-objects-map evil-outer-text-objects-map)
-   "m" 'evilmi-inner-text-object))
+   "m" 'evilmi-inner-text-object)
+  :config
+  (global-evil-matchit-mode 1))
 
 
 (use-package evil-snipe
@@ -166,7 +168,6 @@ If COUNT is given, move COUNT - 1 lines downward first."
   ;; (evil-define-key 'visual evil-snipe-local-mode-map "X" #'evil-snipe-X)
   (define-key evil-normal-state-map (kbd "DEL") 'evil-snipe-repeat-reverse))
 
-;; TODO evil-mc
 
 (use-package evil-multiedit
   :demand t
@@ -253,6 +254,7 @@ If COUNT is given, move COUNT - 1 lines downward first."
  "*" (lambda! (evil-search-word-forward 1 t))
  "#" (lambda! (evil-search-word-backward 1 t))
  "C-q" (lambda! (evil-ex-nohighlight)
+                (jester/clear-all-highlight)
                 (when (fboundp 'symbol-overlay-remove-all) (symbol-overlay-remove-all))))
 
 (general-define-key

@@ -32,6 +32,47 @@
   (global-hl-todo-mode 1))
 
 ;;----------------------------------------------------------------------------
+;; highlight region
+;;----------------------------------------------------------------------------
+(general-define-key
+ :states '(normal visual motion)
+ :keymaps '(prog-mode-map markdown-mode-map)
+ "<tab>" 'jester/toggle-highlight-at-point)
+(jester/with-leader
+ "h i" 'hi-lock-find-patterns
+ "h l" 'highlight-lines-matching-regexp
+ "h p" 'highlight-phrase
+ "h r" 'highlight-regexp
+ "h s" 'highlight-symbol-at-point
+ "h u" 'unhighlight-regexp
+ "h b" 'hi-lock-write-interactive-patterns)
+
+(defun jester/toggle-highlight-at-point ()
+  "Toggle highlight at point (region or symbol)."
+  (interactive)
+  (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns))
+        (hi-regexp-at-pt (jester/regexp-at-point))
+        (hi-lock-auto-select-face t))
+    (if (member hi-regexp-at-pt hi-regexp-list)
+        (unhighlight-regexp hi-regexp-at-pt)
+      (highlight-phrase hi-regexp-at-pt (hi-lock-read-face-name)))
+    (deactivate-mark)))
+
+(defun jester/clear-all-highlight ()
+  "clear all highlight."
+  (interactive)
+  (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns)))
+    (mapcar 'unhighlight-regexp hi-regexp-list)))
+
+(defun jester/regexp-at-point ()
+  "if region active, return the region,
+otherwise return regexp like \"\\\\_<sym\\\\_>\" for the symbol at point."
+  (if (region-active-p)
+       (buffer-substring-no-properties
+        (region-beginning) (region-end))
+     (format "\\_<%s\\_>" (thing-at-point 'symbol t))))
+
+;;----------------------------------------------------------------------------
 ;; Set fonts.
 ;;----------------------------------------------------------------------------
 (defun jester/use-small-font ()
@@ -92,4 +133,4 @@ This is helpful for writeroom-mode, in particular."
           'jester/maybe-adjust-visual-fill-column)
 
 
-(provide 'init-fonts)
+(provide 'init-face)

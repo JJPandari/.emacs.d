@@ -24,7 +24,7 @@
       (browse-url-of-file (expand-file-name default-directory))
     (error "No `default-directory' to open")))
 
-(jester/with-leader "od" 'browse-file-directory)
+(jester/with-leader "o d" 'browse-file-directory)
 
 (general-define-key
  :keymaps 'comint-mode-map

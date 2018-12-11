@@ -64,7 +64,7 @@
 (require 'init-windows)
 (require 'init-mode-line)
 (require 'init-sessions)
-(require 'init-fonts)
+(require 'init-face)
 
 (require 'init-vc)
 (require 'init-git)
