@@ -42,6 +42,11 @@
    ;; "a" ≈ "actions"
    "g a" 'magit-dispatch-popup)
   :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)
+  :config
+  (jester/with-major-leader
+   'magit-log-mode-map
+   "," 'magit-log-select-pick
+   "a" 'magit-log-select-quit)
   )
 
 (use-package evil-magit

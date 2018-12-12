@@ -163,17 +163,17 @@
   (jester/with-leader
    "w M" 'ace-swap-window))
 
-(use-package shackle
-  :demand t
-  :config
-  (setq shackle-default-rule '(:same t :select t :inhibit-window-quit t)
-        shackle-rules '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t)
-                        (magit-status-mode :frame t)
-                        (magit-log-mode :same t :inhibit-window-quit t)
-                        (magit-commit-mode :ignore t)
-                        (magit-diff-mode :select nil :align right :size 0.5)
-                        (git-commit-mode :ignore t)))
-  (shackle-mode 1))
+;; (use-package shackle
+;;   :demand t
+;;   :config
+;;   (setq shackle-default-rule '(:same t :select t :inhibit-window-quit t)
+;;         shackle-rules '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t)
+;;                         (magit-status-mode :frame t)
+;;                         (magit-log-mode :same t :inhibit-window-quit t)
+;;                         (magit-commit-mode :ignore t)
+;;                         (magit-diff-mode :select nil :align right :size 0.5)
+;;                         (git-commit-mode :ignore t)))
+;;   (shackle-mode 1))
 
 (defun jester/magit-display-buffer-fullframe-status-v1 (buffer-or-name alist plist)
   "For shackle's `:custom' in rules for magit buffers."

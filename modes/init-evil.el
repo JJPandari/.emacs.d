@@ -16,15 +16,16 @@
   (defconst jester-major-leader "," "Major-leader key in normal state.")
   (defconst jester-major-leader-emacs "M-S-m" "Major-leader key in emacs state.")
 
+  ;; https://github.com/noctuid/evil-guide#preventing-certain-keys-from-being-overridden
   (general-override-mode)
 
   (general-create-definer jester/leader-def :keymaps 'override
     :prefix jester-leader :states '(normal motion visual))
   (general-create-definer jester/leader-emacs-def :keymaps 'override
     :prefix jester-leader-emacs :states '(insert emacs))
-  (general-create-definer jester/major-leader-def :keymaps 'override
+  (general-create-definer jester/major-leader-def
     :prefix jester-major-leader :states '(normal motion visual))
-  (general-create-definer jester/major-leader-emacs-def :keymaps 'override
+  (general-create-definer jester/major-leader-emacs-def
     :prefix jester-major-leader-emacs :states '(insert emacs))
 
   (defmacro jester/with-leader (&rest args)

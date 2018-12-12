@@ -24,7 +24,8 @@
    "C-p" #'company-select-previous
    "<C-m>" 'company-complete-common
    "<tab>" 'expand-snippet-or-complete-selection
-   "C-b" 'company-show-doc-buffer)
+   "C-b" 'company-show-doc-buffer
+   "C-g" 'company-abort)
   (dotimes (i 10)
     (define-key company-active-map (read-kbd-macro (format "M-%d" i)) 'company-complete-number))
 

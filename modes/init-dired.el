@@ -18,10 +18,6 @@
   :config
   (ranger-override-dired-mode 1))
 
-(use-package all-the-icons
-  :after ranger
-  :commands all-the-icons-insert)
-
 ;; TODO icon showing?
 (use-package all-the-icons-dired
   :after (all-the-icons ranger)

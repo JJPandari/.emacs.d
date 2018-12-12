@@ -50,6 +50,7 @@
 
 
 
+;; https://emacs-china.org/t/paredit-smartparens/6727/11
 (defun jester/paredit-space-for-delimiter-p (endp delm)
   (or (member 'font-lock-keyword-face (text-properties-at (1- (point))))
       (not (derived-mode-p 'basic-mode

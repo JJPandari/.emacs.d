@@ -42,9 +42,16 @@
 
 (defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode))
 
+(defvar jester/number-unicode-char-list
+  '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
+
 (setq-default mode-line-format
               ;; (setq mode-line-format ;; this is for debug
               (list
+
+               "%1"
+               '(:eval (when (and (featurep 'eyebrowse) eyebrowse-mode)
+                         (format "%s" (nth (eyebrowse--get 'current-slot) jester/number-unicode-char-list))))
 
                " %1"
                ;; evil state
@@ -62,19 +69,19 @@
                                    'help-echo (buffer-file-name)))
 
                ;; the current major mode for the buffer.
-               '(:eval (propertize "%m" 'face 'font-lock-string-face
-                                   'help-echo buffer-file-coding-system))
+               '(:eval (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0))
 
                '(:eval (when (and (featurep 'flycheck) flycheck-mode) " "))
                "%1"
                jester/flycheck-mode-line
 
-               " %1"
-               '(:eval (when (featurep 'which-func) (unless (member major-mode jester/which-function-mode-line-off-modes) which-func-format)))
+               '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes))) " "))
+               "%1"
+               '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes))) which-func-format))
 
                ;; git info
                '(:eval (when vc-mode
-                         (s-replace "Git" (propertize "" 'face '(:family "all-the-icons" :height 1.0)) vc-mode)))
+                         (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))
 
                ;; minor modes
                ;; minor-mode-alist
@@ -90,7 +97,7 @@
 
                (jester/mode-line-fill 'mode-line 20)
 
-               ;; line and column
+               ;; column
                (propertize " ❚%2c" 'face 'font-lock-type-face)
 
                '(:eval (format " %s" buffer-file-coding-system))
