@@ -8,8 +8,8 @@
    ivy-use-selectable-prompt t
    completing-read-function 'ivy-completing-read)
   (general-define-key
-   :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
-   "SPC" nil))
+   :keymaps 'ivy-switch-buffer-map
+   "M-k" 'ivy-switch-buffer-kill))
 
 (use-package counsel
   :demand t
@@ -47,8 +47,9 @@
      "C-w" #'backward-kill-word
      "C-d" #'backward-char
      "C-b" #'delete-char
-     "<escape>" #'keyboard-escape-quit
-     "C-v" 'yank))
+     "C-v" 'yank
+     "C-S-k" 'jester/kill-back-to-indentation
+     "<escape>" #'keyboard-escape-quit))
 
   (defun jester/open-project-file (&optional file-name)
     (interactive)

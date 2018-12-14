@@ -17,16 +17,20 @@
 ;; browse current file history
 ;;----------------------------------------------------------------------------
 (use-package git-timemachine
+  :init
+  (jester/with-leader
+   "g t" 'git-timemachine)
   :commands git-timemachine
   :config
+  (add-hook! 'git-timemachine-mode-hook (evil-motion-state))
   (general-define-key
+   :states 'motion
    :keymaps 'git-timemachine-mode-map
-   "p" 'git-timemachine-show-previous-revision
-   "n" 'git-timemachine-show-next-revision
+   "K" 'git-timemachine-show-previous-revision
+   "J" 'git-timemachine-show-next-revision
    "q" 'git-timemachine-quit
    "s" 'git-timemachine-show-revision-fuzzy
    "r" 'git-timemachine-kill-abbreviated-revision))
-
 
 ;;----------------------------------------------------------------------------
 ;; The mighty magit

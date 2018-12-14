@@ -2,9 +2,20 @@
 (setq desktop-dirname "~/.emacs.d")
 (require 'desktop)
 ;; (desktop-save-mode 1)
-(run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname)))
 (push '(company-posframe-mode . nil)
       desktop-minor-mode-table)
+(defvar jester-auto-save-desktop-timer nil)
+(defun jester/toggle-auto-save-desktop ()
+  "Toggle auto save desktop."
+  (interactive)
+  (if jester-auto-save-desktop-timer
+      (progn (cancel-timer jester-auto-save-desktop-timer)
+             (setq jester-auto-save-desktop-timer nil)
+             (message "auto save desktop is off."))
+    (setq jester-auto-save-desktop-timer
+          (run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname))))
+    (message "auto save desktop is on.")))
+(jester/toggle-auto-save-desktop)
 
 (defadvice desktop-read (around time-restore activate)
     (let ((start-time (current-time)))

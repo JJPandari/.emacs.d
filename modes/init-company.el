@@ -13,6 +13,8 @@
    company-dabbrev-other-buffers 'all
    ;; t means search buffers with same major mode
    company-dabbrev-code-other-buffers t
+   company-dabbrev-code-ignore-case nil
+   company-dabbrev-ignore-case nil
    company-minimum-prefix-length 2
    company-idle-delay 0.3)
 

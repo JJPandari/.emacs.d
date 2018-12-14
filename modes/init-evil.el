@@ -13,8 +13,8 @@
   :config
   (defconst jester-leader "SPC" "Leader key in normal state.")
   (defconst jester-leader-emacs "M-m" "Leader key in emacs state.")
-  (defconst jester-major-leader "," "Major-leader key in normal state.")
-  (defconst jester-major-leader-emacs "M-S-m" "Major-leader key in emacs state.")
+  (defconst jester-mode-leader "," "Mode specific leader key in normal state.")
+  (defconst jester-mode-leader-emacs "M-S-m" "Major-leader key in emacs state.")
 
   ;; https://github.com/noctuid/evil-guide#preventing-certain-keys-from-being-overridden
   (general-override-mode)
@@ -24,9 +24,13 @@
   (general-create-definer jester/leader-emacs-def :keymaps 'override
     :prefix jester-leader-emacs :states '(insert emacs))
   (general-create-definer jester/major-leader-def
-    :prefix jester-major-leader :states '(normal motion visual))
+    :prefix jester-mode-leader :states '(normal motion visual))
   (general-create-definer jester/major-leader-emacs-def
-    :prefix jester-major-leader-emacs :states '(insert emacs))
+    :prefix jester-mode-leader-emacs :states '(insert emacs))
+  (general-create-definer jester/minor-leader-def :definer 'minor-mode
+    :prefix jester-mode-leader :states '(normal motion visual))
+  (general-create-definer jester/minor-leader-emacs-def :definer 'minor-mode
+    :prefix jester-mode-leader-emacs :states '(insert emacs))
 
   (defmacro jester/with-leader (&rest args)
     "Define a leader key sequence."
@@ -36,6 +40,10 @@
     "Define a major-leader key sequence."
     `(progn (jester/major-leader-def :keymaps ,keymaps ,@args)
             (jester/major-leader-emacs-def :keymaps ,keymaps ,@args)))
+  (defmacro jester/with-minor-leader (mode &rest args)
+    "Define a leader key sequence using major leader key, but for a minor mode."
+    `(progn (jester/minor-leader-def :keymaps ,mode ,@args)
+            (jester/minor-leader-emacs-def :keymaps ,mode ,@args)))
   )
 
 ;;----------------------------------------------------------------------------
@@ -248,14 +256,28 @@ If COUNT is given, move COUNT - 1 lines downward first."
  "<" (lambda! (call-interactively 'evil-shift-left) (evil-visual-restore))
  ">" (lambda! (call-interactively 'evil-shift-right) (evil-visual-restore))
  ;; run macro in the q register on all selected lines
- "Q" ":norm @q RET")
+ "Q" ":norm @q RET"
+
+ ;; fix keys bound by motion state
+ "d" 'evil-delete)
+
+(general-define-key
+ :states 'motion
+ "u" 'evil-scroll-up
+ "d" 'evil-scroll-down)
+
+(general-define-key
+ :states 'motion
+ :keymaps '(help-mode-map Man-mode-map)
+ "K" 'help-go-back
+ "J" 'help-go-forward)
 
 (general-define-key
  :states '(normal motion)
  "*" (lambda! (evil-search-word-forward 1 t))
  "#" (lambda! (evil-search-word-backward 1 t))
  "C-q" (lambda! (evil-ex-nohighlight)
-                (jester/clear-all-highlight)
+                (when (fboundp 'jester/clear-all-highlight) (jester/clear-all-highlight))
                 (when (fboundp 'symbol-overlay-remove-all) (symbol-overlay-remove-all))))
 
 (general-define-key
@@ -303,12 +325,6 @@ If COUNT is given, move COUNT - 1 lines downward first."
  "C-h p" 'describe-package
  "C-h C-k" 'describe-keymap
  "C-x C-c" (lambda! (save-some-buffers nil t) (kill-emacs)))
-
-(general-define-key
- :states 'motion
- :keymaps 'help-mode-map
- "K" 'help-go-back
- "J" 'help-go-forward)
 
 
 (provide 'init-evil)

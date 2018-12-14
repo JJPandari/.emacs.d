@@ -35,45 +35,81 @@
   :demand t)
 
 ;;----------------------------------------------------------------------------
-;; highlight region
+;; highlight region with hi-lock
 ;;----------------------------------------------------------------------------
-(general-define-key
- :states '(normal visual motion)
- :keymaps '(prog-mode-map markdown-mode-map)
- "<tab>" 'jester/toggle-highlight-at-point)
-(jester/with-leader
- "h i" 'hi-lock-find-patterns
- "h l" 'highlight-lines-matching-regexp
- "h p" 'highlight-phrase
- "h r" 'highlight-regexp
- "h s" 'highlight-symbol-at-point
- "h u" 'unhighlight-regexp
- "h b" 'hi-lock-write-interactive-patterns)
+;; (general-define-key
+;;  :states '(normal visual motion)
+;;  :keymaps '(prog-mode-map markdown-mode-map)
+;;  "<tab>" 'jester/toggle-highlight-at-point)
+;; (jester/with-leader
+;;  "h i" 'hi-lock-find-patterns
+;;  "h l" 'highlight-lines-matching-regexp
+;;  "h p" 'highlight-phrase
+;;  "h r" 'highlight-regexp
+;;  "h s" 'highlight-symbol-at-point
+;;  "h u" 'unhighlight-regexp
+;;  "h b" 'hi-lock-write-interactive-patterns)
 
-(defun jester/toggle-highlight-at-point ()
-  "Toggle highlight at point (region or symbol)."
-  (interactive)
-  (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns))
-        (hi-regexp-at-pt (jester/regexp-at-point))
-        (hi-lock-auto-select-face t))
-    (if (member hi-regexp-at-pt hi-regexp-list)
-        (unhighlight-regexp hi-regexp-at-pt)
-      (highlight-phrase hi-regexp-at-pt (hi-lock-read-face-name)))
-    (deactivate-mark)))
+;; (defun jester/toggle-highlight-at-point ()
+;;   "Toggle highlight at point (region or symbol)."
+;;   (interactive)
+;;   (require 'hi-lock)
+;;   (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns))
+;;         (hi-regexp-at-pt (jester/regexp-at-point))
+;;         (hi-lock-auto-select-face t))
+;;     (if (member hi-regexp-at-pt hi-regexp-list)
+;;         (unhighlight-regexp hi-regexp-at-pt)
+;;       (highlight-phrase hi-regexp-at-pt (hi-lock-read-face-name)))
+;;     (deactivate-mark)))
 
-(defun jester/clear-all-highlight ()
-  "clear all highlight."
-  (interactive)
-  (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns)))
-    (mapcar 'unhighlight-regexp hi-regexp-list)))
+;; (defun jester/clear-all-highlight ()
+;;   "clear all highlight."
+;;   (interactive)
+;;   (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns)))
+;;     (mapcar 'unhighlight-regexp hi-regexp-list)))
 
-(defun jester/regexp-at-point ()
-  "if region active, return the region,
-otherwise return regexp like \"\\\\_<sym\\\\_>\" for the symbol at point."
-  (if (region-active-p)
-       (buffer-substring-no-properties
-        (region-beginning) (region-end))
-     (format "\\_<%s\\_>" (thing-at-point 'symbol t))))
+;; (defun jester/regexp-at-point ()
+;;   "if region active, return the region,
+;; otherwise return regexp like \"\\\\_<sym\\\\_>\" for the symbol at point."
+;;   (if (region-active-p)
+;;        (buffer-substring-no-properties
+;;         (region-beginning) (region-end))
+;;      (format "\\_<%s\\_>" (thing-at-point 'symbol t))))
+
+;;----------------------------------------------------------------------------
+;; highlight region with symbol-overlay
+;;----------------------------------------------------------------------------
+(use-package symbol-overlay
+  :hook ((prog-mode . symbol-overlay-mode)
+         (css-mode . symbol-overlay-mode)
+         (yaml-mode . symbol-overlay-mode)
+         (conf-mode . symbol-overlay-mode)
+         (markdown-mode . symbol-overlay-mode))
+  :init
+  ;; don't put temporary highlight
+  (setq symbol-overlay-idle-time 0)
+  :config
+  (general-define-key
+   :states '(normal visual motion)
+   :keymaps '(prog-mode-map markdown-mode-map)
+   "<tab>" 'jester/symbol-overlay-put
+   ;; "<C-i>" 'symbol-overlay-put
+   "M-n" 'symbol-overlay-jump-next
+   "M-p" 'symbol-overlay-jump-prev)
+  ;; don't bind any key
+  (setq symbol-overlay-map (make-sparse-keymap))
+
+  ;; TODO off when region active. maybe PR?
+  (defun jester/symbol-overlay-put ()
+    "Highlight region or symbol at point with symbol-overlay."
+    (interactive)
+    (if (region-active-p)
+        (progn
+          (symbol-overlay-put-all
+           (buffer-substring-no-properties (region-beginning) (region-end))
+           symbol-overlay-scope)
+          (deactivate-mark))
+      (symbol-overlay-put))))
 
 ;;----------------------------------------------------------------------------
 ;; Set fonts.

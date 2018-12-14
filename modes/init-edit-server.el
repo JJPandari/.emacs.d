@@ -1,4 +1,4 @@
-(jester/with-major-leader 'with-editor-mode-map
+(jester/with-minor-leader 'with-editor-mode
                           "," 'with-editor-finish
                           "a" 'with-editor-cancel)
 
@@ -12,7 +12,7 @@
       '(("emacs-china\\.org" . markdown-mode)
         ("github\\.com" . markdown-mode)
         ("stackoverflow\\.com" . markdown-mode)))
-  (jester/with-major-leader 'edit-server-edit-mode-map
+  (jester/with-minor-leader 'edit-server-edit-mode
                             "," 'edit-server-done
                             "a" 'edit-server-abort))
 

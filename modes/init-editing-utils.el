@@ -49,27 +49,6 @@
   (global-undo-tree-mode))
 
 
-;; (use-package symbol-overlay
-;;   :hook ((prog-mode . symbol-overlay-mode)
-;;          (css-mode . symbol-overlay-mode)
-;;          (yaml-mode . symbol-overlay-mode)
-;;          (conf-mode . symbol-overlay-mode)
-;;          (markdown-mode . symbol-overlay-mode))
-;;   :init
-;;   ;; don't put temporary highlight
-;;   (setq symbol-overlay-idle-time 0)
-;;   :config
-;;   (general-define-key
-;;    :states '(normal motion)
-;;    :keymaps '(prog-mode-map markdown-mode-map)
-;;    "<tab>" 'symbol-overlay-put
-;;    ;; "<C-i>" 'symbol-overlay-put
-;;    "M-n" 'symbol-overlay-jump-next
-;;    "M-p" 'symbol-overlay-jump-prev)
-;;   ;; don't bind any key
-;;   (setq symbol-overlay-map (make-sparse-keymap)))
-
-
 (use-package expand-region
   :commands er/expand-region
   :init
@@ -98,7 +77,7 @@
 
 (general-define-key
  :states '(insert emacs)
- "C-S-w" 'jester/kill-back-to-indentation)
+ "C-S-k" 'jester/kill-back-to-indentation)
 
 ;;----------------------------------------------------------------------------
 ;; insert or remove char at eol.
