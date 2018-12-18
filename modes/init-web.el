@@ -54,16 +54,7 @@
   (general-define-key
    :states '(insert emacs)
    :keymaps '(web-mode-map js2-mode-map)
-   "C-l" 'emmet-expand-yas)
-  (general-define-key
-   :keymaps 'emmet-mode-keymap
-   "TAB" nil
-   "<tab>" nil
-   "C-j" #'evil-scroll-line-down)
-  (general-define-key
-   :states '(insert emacs)
-   :keymaps 'emmet-mode-keymap
-   "<tab>" 'tab-indent-or-complete))
+   "C-l" 'emmet-expand-yas))
 
 ;;----------------------------------------------------------------------------
 ;; include line feeds when tag occupy whole lines

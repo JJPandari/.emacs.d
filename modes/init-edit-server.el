@@ -1,5 +1,4 @@
 (jester/with-minor-leader 'with-editor-mode
-                          "," 'with-editor-finish
                           "a" 'with-editor-cancel)
 
 (use-package edit-server
@@ -13,7 +12,6 @@
         ("github\\.com" . markdown-mode)
         ("stackoverflow\\.com" . markdown-mode)))
   (jester/with-minor-leader 'edit-server-edit-mode
-                            "," 'edit-server-done
                             "a" 'edit-server-abort))
 
 

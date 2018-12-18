@@ -49,7 +49,6 @@
   :config
   (jester/with-major-leader
    'magit-log-mode-map
-   "," 'magit-log-select-pick
    "a" 'magit-log-select-quit)
   )
 

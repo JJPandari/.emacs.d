@@ -15,6 +15,7 @@
    company-dabbrev-code-other-buffers t
    company-dabbrev-code-ignore-case nil
    company-dabbrev-ignore-case nil
+   company-dabbrev-downcase nil
    company-minimum-prefix-length 2
    company-idle-delay 0.3)
 
@@ -36,10 +37,9 @@
    "<tab>" 'tab-indent-or-complete
    ))
 
-(use-package company-posframe
-  :hook (company-mode . company-posframe-mode)
-  :config
-  )
+(when window-system
+  (use-package company-posframe
+    :hook (company-mode . company-posframe-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Make tab do both yas expand and company.
@@ -104,10 +104,6 @@
   (if (null company-candidates)
       (yas-abort-snippet)
     (company-abort)))
-
-
-
-
 
 
 (provide 'init-company)

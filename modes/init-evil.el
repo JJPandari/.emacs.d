@@ -19,6 +19,9 @@
   ;; https://github.com/noctuid/evil-guide#preventing-certain-keys-from-being-overridden
   (general-override-mode)
 
+  (general-define-key :states '(normal motion visual) jester-mode-leader nil)
+  (general-define-key :states '(insert emacs) jester-mode-leader-emacs nil)
+
   (general-create-definer jester/leader-def :keymaps 'override
     :prefix jester-leader :states '(normal motion visual))
   (general-create-definer jester/leader-emacs-def :keymaps 'override
@@ -230,6 +233,9 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;;----------------------------------------------------------------------------
 ;; With-major-leader keys...
 ;;----------------------------------------------------------------------------
+;; https://github.com/noctuid/general.el#simulating-keypresses
+(eval `(jester/major-leader-def ,jester-mode-leader (general-key "C-c C-c")))
+(eval `(jester/major-leader-def ,jester-mode-leader-emacs (general-key "C-c C-c")))
 
 ;;----------------------------------------------------------------------------
 ;; Other evil keys...
@@ -286,7 +292,6 @@ If COUNT is given, move COUNT - 1 lines downward first."
  "C-j" 'evil-scroll-line-down
  "C-k" 'evil-scroll-line-up
  "'" 'evil-goto-mark
- "C-h C-k" 'describe-keymap
  "C-h C-f" 'describe-face
  "C-h p" 'describe-package
  "C-h c" 'describe-char)

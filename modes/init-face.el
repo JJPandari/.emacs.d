@@ -131,7 +131,7 @@
   (set-face-attribute 'default nil
                       :family "Source Code Pro"
                       ;; :family "Fira Code"
-                      :height 180
+                      :height 160
                       :weight 'normal
                       :width 'normal)
   (jester/set-fallback-fonts))
