@@ -10,11 +10,6 @@
  "b s" 'jester/switch-to-scratch-buffer
  "<return>" 'jester/alternate-buffer)
 
-(general-define-key
- :keymaps 'ibuffer-mode-map
- "j" 'ibuffer-forward-line
- "k" 'ibuffer-backward-line)
-
 ;;----------------------------------------------------------------------------
 ;; switch *scratch* buffer
 ;;----------------------------------------------------------------------------
@@ -68,8 +63,7 @@ current window."
 ;; kill this buffer.
 ;;----------------------------------------------------------------------------
 (defun jester/kill-this-buffer (&optional arg)
-  "Kill the current buffer.
-If the universal prefix argument is used then kill also the window."
+  "Kill the current buffer."
   (interactive)
   (if (window-minibuffer-p)
       (abort-recursive-edit)

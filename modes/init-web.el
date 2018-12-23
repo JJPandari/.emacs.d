@@ -3,7 +3,8 @@
   :config
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
-   "t" 'jester/evil-a-tag-dwim
+   ;; "t" 'jester/evil-a-tag-dwim
+   "t" 'evil-a-tag
    "a" 'jester/evil-a-attribute)
   (general-define-key
    :keymaps 'evil-inner-text-objects-map

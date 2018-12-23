@@ -56,6 +56,7 @@
   :demand t
   :custom
   (evil-want-Y-yank-to-eol t "Y yanks to eol, not whole line")
+  (evil-want-visual-char-semi-exclusive t "don't include line feed in visual select")
   :init
   :config
   (evil-mode 1)
@@ -78,22 +79,10 @@
    evil-emacs-state-cursor '("SkyBlue2" box)
    evil-replace-state-cursor '("chocolate" (hbar . 2)))
 
-  (evil-set-initial-state 'debugger-mode 'motion)
+  ;; TODO not working
+  (evil-set-command-property 'evil-shift-left :keep-visual t)
 
-  ;; don't select line feed even in visual state (use `evil-adjust-cursor' unconditionally)
-  (evil-define-motion evil-end-of-line (count)
-    "Move the cursor to the end of the current line.
-If COUNT is given, move COUNT - 1 lines downward first."
-    :type inclusive
-    (move-end-of-line count)
-    (when evil-track-eol
-      (setq temporary-goal-column most-positive-fixnum
-            this-command 'next-line))
-    (evil-adjust-cursor)
-    (when (evil-visual-state-p)
-      (when (eolp)
-        ;; prevent "c$" and "d$" from deleting blank lines
-        (setq evil-this-type 'exclusive))))
+  (evil-set-initial-state 'debugger-mode 'motion)
 
   (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
     (list (point-min) (point-max)))
@@ -328,8 +317,7 @@ If COUNT is given, move COUNT - 1 lines downward first."
 ;;----------------------------------------------------------------------------
 (general-define-key
  "C-h p" 'describe-package
- "C-h C-k" 'describe-keymap
- "C-x C-c" (lambda! (save-some-buffers nil t) (kill-emacs)))
+ "C-h C-k" 'describe-keymap)
 
 
 (provide 'init-evil)

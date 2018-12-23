@@ -7,6 +7,8 @@
  "f R" 'jester/rename-buffer-file
  "f y" 'jester/show-and-copy-buffer-filename)
 
+(setq auto-save-default nil)
+
 (defvar jester-auto-save-idle 1 "Time in seconds before auto-saving all buffers.")
 (run-with-idle-timer jester-auto-save-idle t #'jester/save-all-buffers)
 ;; (cancel-function-timers 'jester/save-all-buffers) ;; for debugging

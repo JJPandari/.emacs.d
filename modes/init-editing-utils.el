@@ -192,7 +192,7 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
   a \"let\" assignment."
   (interactive)
   (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".*=.*$"))))
-        (something-left-p (not (looking-back "^\s+"))))
+        (something-left-p (not (looking-back "^\s*"))))
     (save-excursion
       (if need-signs
           (progn (insert " = ") (move-end-of-line 1)
@@ -210,10 +210,14 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
  "C-j" 'jester/make-javascript-assignment)
 
 (defun jester/make-simple-assignment ()
-  ""
+  "Make a assignment statement,
+using things left of point as left value, things right as right value.
+
+If nothing is at left, move point to the left value's position,
+otherwise move to before semicolon."
   (interactive)
   (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".*=.*$"))))
-        (something-left-p (not (looking-back "^\s+"))))
+        (something-left-p (not (looking-back "^\s*"))))
     (save-excursion
       (when need-signs
           (progn (insert " = "))))

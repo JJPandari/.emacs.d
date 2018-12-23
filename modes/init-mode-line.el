@@ -53,9 +53,9 @@
                '(:eval (when (and (featurep 'eyebrowse) eyebrowse-mode)
                          (format "%s" (nth (eyebrowse--get 'current-slot) jester/number-unicode-char-list))))
 
-               " %1"
-               ;; evil state
-               '(:eval evil-mode-line-tag)
+               ;; " %1"
+               ;; ;; evil state
+               ;; '(:eval evil-mode-line-tag)
 
                " %+"
 

@@ -37,9 +37,9 @@
    "<tab>" 'tab-indent-or-complete
    ))
 
-(when window-system
-  (use-package company-posframe
-    :hook (company-mode . company-posframe-mode)))
+(use-package company-posframe
+  :if window-system
+  :hook (company-mode . company-posframe-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Make tab do both yas expand and company.
