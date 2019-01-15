@@ -74,7 +74,7 @@
 
 (require 'init-dumbjump)
 ;; (require 'init-compile)
-;; (require 'init-org)
+(require 'init-org)
 (require 'init-markdown)
 (require 'init-csv)
 (require 'init-web)

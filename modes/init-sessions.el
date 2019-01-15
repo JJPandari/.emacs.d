@@ -76,7 +76,8 @@
         evil-markers-alist))
 
 (setq desktop-locals-to-save
-      '(evil-markers-alist))
+      '(evil-markers-alist
+        symbol-overlay-keywords-alist))
 
 (add-to-list 'desktop-modes-not-to-save 'dired-mode)
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)

@@ -66,7 +66,7 @@
 (use-package string-inflection)
 
 ;;----------------------------------------------------------------------------
-;; Handy key bindings
+;; kill back to indentation
 ;;----------------------------------------------------------------------------
 (defun jester/kill-back-to-indentation ()
   "Kill from point back to the first non-whitespace character on the line."
@@ -191,7 +191,7 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
   a \"const\" assignment,
   a \"let\" assignment."
   (interactive)
-  (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".*=.*$"))))
+  (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".* = .*$"))))
         (something-left-p (not (looking-back "^\s*"))))
     (save-excursion
       (if need-signs
@@ -216,7 +216,7 @@ using things left of point as left value, things right as right value.
 If nothing is at left, move point to the left value's position,
 otherwise move to before semicolon."
   (interactive)
-  (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".*=.*$"))))
+  (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".* = .*$"))))
         (something-left-p (not (looking-back "^\s*"))))
     (save-excursion
       (when need-signs
@@ -261,6 +261,29 @@ Threat is as function body when from endline before )"
  :states '(insert emacs)
  :keymaps 'prog-mode-map
  "<C-return>" 'jester/insert-curly-and-go-inside)
+
+;;----------------------------------------------------------------------------
+;; move to bracket
+;;----------------------------------------------------------------------------
+;; (evil-define-motion jester/backward-bracket (count)
+;;   "Move backward to a (, [ or {."
+;;   ;; TODO not really exclusive
+;;   :type exclusive
+;;   (setq count (or count 1))
+;;   (search-backward-regexp "[([{]" nil t count))
+
+;; (evil-define-motion jester/forward-bracket (count)
+;;   "Move forward to a ), ] or }."
+;;   :type exclusive
+;;   (setq count (or count 1))
+;;   (forward-char)
+;;   (search-forward-regexp "[]})]" nil t count)
+;;   (backward-char))
+
+;; (general-define-key
+;;  :states '(normal visual motion operator)
+;;  "(" 'jester/backward-bracket
+;;  ")" 'jester/forward-bracket)
 
 
 (provide 'init-editing-utils)

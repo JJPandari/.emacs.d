@@ -70,6 +70,7 @@
 ;;----------------------------------------------------------------------------
 ;; run major mode hooks
 ;;----------------------------------------------------------------------------
+;; TODO include parent modes
 (defun jester/run-major-mode-hooks ()
   "Run hooks for the current major mode."
   (interactive)

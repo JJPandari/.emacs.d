@@ -68,6 +68,7 @@
                '(:eval (propertize "%b " 'face 'font-lock-keyword-face
                                    'help-echo (buffer-file-name)))
 
+               "%1"
                ;; the current major mode for the buffer.
                '(:eval (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0))
 
@@ -79,6 +80,7 @@
                "%1"
                '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes))) which-func-format))
 
+               "%1"
                ;; git info
                '(:eval (when vc-mode
                          (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))

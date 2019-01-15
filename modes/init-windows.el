@@ -163,22 +163,29 @@
   (jester/with-leader
    "w M" 'ace-swap-window))
 
-;; (use-package shackle
-;;   :demand t
-;;   :config
-;;   (setq shackle-default-rule '(:same t :select t :inhibit-window-quit t)
-;;         shackle-rules '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t)
-;;                         (magit-status-mode :frame t)
-;;                         (magit-log-mode :same t :inhibit-window-quit t)
-;;                         (magit-commit-mode :ignore t)
-;;                         (magit-diff-mode :select nil :align right :size 0.5)
-;;                         (git-commit-mode :ignore t)))
-;;   (shackle-mode 1))
+(use-package shackle
+  :demand t
+  :config
+  (setq shackle-default-rule nil
+        shackle-rules '(("*Help*" :same t :select t :inhibit-window-quit t)
+                        ("^\\*evil-.+\\*$" :regexp t :same t :select t :inhibit-window-quit t)
+                        (flycheck-error-list-mode :other t :select t :inhibit-window-quit t)))
+  (shackle-mode 1))
 
-(defun jester/magit-display-buffer-fullframe-status-v1 (buffer-or-name alist plist)
-  "For shackle's `:custom' in rules for magit buffers."
-  (magit-display-buffer-fullframe-status-v1 (get-buffer buffer-or-name)))
+;; https://emacs-china.org/t/display-buffer-alist/8162/4?u=jjpandari
+;; https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/
+;; (setq
+;;  display-buffer-alist
+;;  '(("^\\*[Hh]elp"
+;;     (display-buffer-reuse-window
+;;      display-buffer-same-window)
+;;     (reusable-frames . visible)
+;;     (window-parameters
+;;      (select . t)
+;;      (quit . nil)
+;;      ))))
 
+
 (defun jester/kill-buffer-and-window ()
   "Kill current buffer and window."
   (interactive)
@@ -196,8 +203,10 @@ current frame."
     (jester/maybe-golden-ratio-adjust)))
 
 (defun jester/maybe-golden-ratio-adjust ()
-  "Do `golden-ratio-adjust' if it's bound."
-  (when (fboundp 'golden-ratio-adjust) (golden-ratio-adjust 1)))
+  "Do golden ratio adjust if it's loaded and enabled."
+  (when (and (boundp 'golden-ratio-mode)
+             (symbol-value golden-ratio-mode))
+    (golden-ratio)))
 
 ;; from https://gist.github.com/3402786
 (defun jester/toggle-maximize-window ()
@@ -215,18 +224,14 @@ current frame."
   (interactive)
   (split-window-right)
   (windmove-right)
-  (when (and (boundp 'golden-ratio-mode)
-             (symbol-value golden-ratio-mode))
-    (golden-ratio)))
+  (jester/maybe-golden-ratio-adjust))
 
 (defun split-window-below-and-focus ()
   "Split the window vertically and focus the new window."
   (interactive)
   (split-window-below)
   (windmove-down)
-  (when (and (boundp 'golden-ratio-mode)
-             (symbol-value golden-ratio-mode))
-    (golden-ratio)))
+  (jester/maybe-golden-ratio-adjust))
 
 
 (provide 'init-windows)

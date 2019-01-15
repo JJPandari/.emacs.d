@@ -23,6 +23,8 @@
   (setq company-active-map (make-sparse-keymap))
   (general-define-key
    :keymaps 'company-active-map
+   "<down>" #'company-select-next
+   "<up>" #'company-select-previous
    "C-n" #'company-select-next
    "C-p" #'company-select-previous
    "<C-m>" 'company-complete-common

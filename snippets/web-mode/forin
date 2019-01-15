@@ -3,6 +3,6 @@
 # name: forin
 # key: forin
 # --
-for($1 in $2) {
-    $3
+for(${1:const ${2:key}} in ${3:obj}) {
+    $0
 }

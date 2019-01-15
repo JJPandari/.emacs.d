@@ -49,6 +49,7 @@
      "C-b" #'delete-char
      "C-v" 'yank
      "C-S-k" 'jester/kill-back-to-indentation
+     "H-x" 'kill-region
      "<escape>" #'keyboard-escape-quit))
 
   (defun jester/open-project-file (&optional file-name)
@@ -80,15 +81,19 @@
 
 ;; (use-package ivy-posframe
 ;;   :demand t
+;;   :after ivy
 ;;   :if window-system
+;;   :config
 ;;   (setq ivy-display-function #'ivy-posframe-display)
-;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-;;   (setq ivy-display-function #'ivy-posframe-display-at-window-center)
-;;   (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
-;;   (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
-;;   (setq ivy-display-function #'ivy-posframe-display-at-point)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
+;;   (setq ivy-posframe-hide-minibuffer t)
 ;;   (setq ivy-posframe-parameters
-;;         '((background-color . "#e6fadb")))
+;;         `((background-color . ,(face-attribute 'default :background))
+;;           (foreground-color . ,(face-attribute 'default :foreground))))
 ;;   (ivy-posframe-enable))
 
 

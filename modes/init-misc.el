@@ -32,5 +32,13 @@
  "C-b" 'comint-delchar-or-maybe-eof
  "C-r" 'comint-history-isearch-backward)
 
+(general-define-key
+ :states '(normal)
+ :keymaps 'reb-mode-map
+ "q" 'reb-quit)
+
+;; never ring the bell
+(setq ring-bell-function 'ignore)
+
 
 (provide 'init-misc)

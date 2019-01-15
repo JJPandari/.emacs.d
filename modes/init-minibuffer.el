@@ -8,6 +8,7 @@
  "C-b" #'delete-char
  "C-v" #'yank
  "C-S-k" 'jester/kill-back-to-indentation
+ "H-x" 'kill-region
  "<escape>" 'keyboard-escape-quit)
 
 (general-define-key

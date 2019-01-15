@@ -145,6 +145,7 @@
   (general-define-key
    :keymaps '(evil-inner-text-objects-map evil-outer-text-objects-map)
    "m" 'evilmi-inner-text-object)
+
   :config
   (global-evil-matchit-mode 1))
 
@@ -214,7 +215,7 @@
  "n r" 'narrow-to-region
  "n w" 'widen
  "q q" 'save-buffers-kill-terminal
- "r i" 'ivy-resume
+ "i r" 'ivy-resume
  "x o" 'just-one-space
  "," 'evil-indent
  "!" 'shell-command)
@@ -287,10 +288,8 @@
 
 (general-define-key
  :states '(normal visual motion operator)
- "(" 'backward-up-list
- ")" 'up-list
- "[" 'backward-sentence
- "]" (lambda! (forward-sentence) (forward-char))
+ "[" 'backward-paragraph
+ "]" 'forward-paragraph
  "C-a" 'evil-first-non-blank
  "C-e" 'evil-end-of-line)
 
@@ -310,14 +309,14 @@
  "M-d" 'backward-word
  "M-b" 'kill-word
  "M-v" 'evil-scroll-down
- "M-c" 'evil-scroll-up)
+ "M-c" 'evil-scroll-up
+ "H-x" 'kill-region)
 
 ;;----------------------------------------------------------------------------
 ;; Not-so-evil keys...
 ;;----------------------------------------------------------------------------
 (general-define-key
- "C-h p" 'describe-package
- "C-h C-k" 'describe-keymap)
+ "C-h p" 'describe-package)
 
 
 (provide 'init-evil)
