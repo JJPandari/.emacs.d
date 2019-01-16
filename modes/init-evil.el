@@ -82,8 +82,6 @@
   ;; TODO not working
   (evil-set-command-property 'evil-shift-left :keep-visual t)
 
-  (evil-set-initial-state 'debugger-mode 'motion)
-
   (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
     (list (point-min) (point-max)))
   (define-key evil-inner-text-objects-map "g" 'jester/evil-inner-buffer)
@@ -198,6 +196,12 @@
 ;;----------------------------------------------------------------------------
 ;; Set initial states for modes.
 ;;----------------------------------------------------------------------------
+(evil-set-initial-state 'debugger-mode 'motion)
+
+;; TODO not work
+(add-hook! 'snippet-mode-hook (when (string-equal (buffer-name) "+new-snippet+")
+                                (evil-insert-state)))
+
 ;; when first line is empty, we probably wanna start typing right away.
 (add-hook! 'with-editor-mode-hook (when (looking-at "$") (evil-insert-state)))
 

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: element-ui checkbox
+# key: ech
+# --
+<el-checkbox v-model="$1"${2: size="${0:mini}"}></el-checkbox>

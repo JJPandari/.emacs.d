@@ -166,10 +166,23 @@
 (use-package shackle
   :demand t
   :config
+  (defvar jester-shackle-same-window-rule-cars
+    '("*Help*"
+      ("^\\*evil-.+\\*$" :regexp t)
+      ;; TODO not work
+      (nil :custom (lambda (buffer alist plist)
+                     (with-current-buffer buffer edit-server-edit-mode))))
+    "cars for shackle rule, representing conditions using same-window rule")
+
+  (defvar jester-shackle-same-window-rule
+    '(:same t :select t :inhibit-window-quit t)
+    "shackle same window rule")
+
   (setq shackle-default-rule nil
-        shackle-rules '(("*Help*" :same t :select t :inhibit-window-quit t)
-                        ("^\\*evil-.+\\*$" :regexp t :same t :select t :inhibit-window-quit t)
-                        (flycheck-error-list-mode :other t :select t :inhibit-window-quit t)))
+        shackle-rules (append
+                       (mapcar (lambda (condition) (append (doom-enlist condition) jester-shackle-same-window-rule))
+                               jester-shackle-same-window-rule-cars)
+                       '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t))))
   (shackle-mode 1))
 
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4?u=jjpandari

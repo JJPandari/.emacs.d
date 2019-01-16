@@ -2,6 +2,8 @@
 
 (use-package company
   :demand t
+  ;; make sure bindings in company-active-map won't be overriden
+  :after evil-multiedit
   :init
   (setq company-backends
         '(company-capf company-files company-css

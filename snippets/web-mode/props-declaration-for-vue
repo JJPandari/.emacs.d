@@ -1,0 +1,10 @@
+# key: props
+# name: props declaration for vue
+# --
+props: {
+  $1: {
+    type: $2,
+    ${3:required: $4,
+}    ${5:default: $6,
+}  },
+},

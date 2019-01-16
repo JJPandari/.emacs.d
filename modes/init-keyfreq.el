@@ -92,6 +92,8 @@
                                     ivy-done
                                     ivy-next-line
                                     ivy-previous-line
+                                    ranger-prev-file
+                                    ranger-next-file
                                     undo-tree-undo
                                     undo-tree-redo)))
 

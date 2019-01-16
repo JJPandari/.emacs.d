@@ -177,6 +177,33 @@
  "H-S-t" 'jester/expand-to-ternary-condensed)
 
 ;;----------------------------------------------------------------------------
+;; Make a "foo: bar," key-value pair
+;;----------------------------------------------------------------------------
+(defun jester/make-key-value-pair ()
+  "Make a key-value pair, by inserting \": ,\" at point.
+Effectively using symbol before point as the key."
+  (interactive)
+  (insert ": ,") (backward-char))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps 'prog-mode-map
+ "<C-i>" 'jester/make-key-value-pair)
+
+;;----------------------------------------------------------------------------
+;; Make a "foo: bar;" key-value pair
+;;----------------------------------------------------------------------------
+(defun jester/make-css-pair ()
+  "Make a key-value pair for css etc., by inserting \": ;\" at point."
+  (interactive)
+  (insert ": ;") (backward-char))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps 'prog-mode-map
+ "M-;" 'jester/make-css-pair)
+
+;;----------------------------------------------------------------------------
 ;; Insert " = " for me, please.
 ;;----------------------------------------------------------------------------
 (defun jester/make-javascript-assignment ()
@@ -239,8 +266,8 @@ otherwise move to before semicolon."
 (general-define-key
  :states '(insert emacs)
  :keymaps '(web-mode-map js2-mode-map)
- "<C-i>" 'jester/insert-this.
- "<C-i>" 'jester/insert-this.)
+ "C-t" 'jester/insert-this.
+ "C-t" 'jester/insert-this.)
 ;; TODO
 ;; foo             "1 xx"  ->      foo {
 ;; bar: 12                           bar: 12
@@ -254,7 +281,8 @@ otherwise move to before semicolon."
   "Insert {}.
 Threat is as function body when from endline before )"
   (interactive)
-  (insert " {\n\n}") (indent-according-to-mode)
+  (unless (looking-back " ") (insert " "))
+  (insert "{\n\n}") (indent-according-to-mode)
   (forward-line -1) (indent-according-to-mode))
 
 (general-define-key
