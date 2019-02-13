@@ -8,4 +8,4 @@
          (move-beginning-of-line 1)
          (looking-at "^[ \t]*$"))))
   (yas-expand-snippet
-   (if in-js-p "console.log($1);" "class=\"$1\"")))
+   (if in-js-p "console.log($0);" "class=\"$0\"")))

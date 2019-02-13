@@ -49,7 +49,6 @@
 ;; (add-hook 'css-mode-hook 'paredit-everywhere-mode)
 
 
-
 ;; https://emacs-china.org/t/paredit-smartparens/6727/11
 (defun jester/paredit-space-for-delimiter-p (endp delm)
   (or (member 'font-lock-keyword-face (text-properties-at (1- (point))))
@@ -75,10 +74,11 @@
                            'css-mode))))
 
 (use-package paredit
-  :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp jester/goto-end-of-sexp)
-  :bind (("M-r" . paredit-raise-sexp) ("M-u" . paredit-wrap-sexp))
   :init
   (general-define-key :states '(normal operator) "L" 'jester/goto-end-of-sexp)
+  :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp jester/goto-end-of-sexp)
+  :bind (("M-r" . paredit-raise-sexp) ("M-u" . paredit-wrap-sexp))
+  :hook (prog-mode . paredit-mode)
   :config
   (add-to-list 'paredit-space-for-delimiter-predicates 'jester/paredit-space-for-delimiter-p)
   ;; TODO make kbd "DL" delete whole lines when nothing before and only non-word after the kill end
@@ -96,5 +96,9 @@
     "Go to the end of current expression."
     (interactive)
     (jester/goto-kill-end 'paredit-kill t)))
+
+
+;; (add-to-list 'load-path "<path-to-awesome-pair>") ; add awesome-pair to your load-path
+;; (require 'awesome-pair)
 
 (provide 'init-paredit)

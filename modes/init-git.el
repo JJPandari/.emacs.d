@@ -64,4 +64,7 @@
 ;;   :config
 ;;   (magithub-feature-autoinject t))
 
+;; (use-package forge
+;;   :after magit)
+
 (provide 'init-git)

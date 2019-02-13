@@ -17,6 +17,7 @@
 (require 'init-benchmarking) ;; Measure startup time
 
 (defconst *is-a-mac* (eq system-type 'darwin))
+(defconst jester-submodules-dir (expand-file-name "extensions" user-emacs-directory))
 
 ;;----------------------------------------------------------------------------
 ;; Adjust garbage collection thresholds during startup, and thereafter
@@ -47,6 +48,7 @@
 
 (require 'init-osx-keys)
 (require 'init-which-key)
+(require 'init-hydra)
 (require 'init-evil)
 
 (require 'init-editing-utils)
@@ -72,6 +74,7 @@
 (require 'init-eyebrowse)
 (require 'init-avy)
 
+(require 'init-lsp)
 (require 'init-dumbjump)
 ;; (require 'init-compile)
 (require 'init-org)
@@ -102,8 +105,9 @@
 ;; (require 'init-clojure-cider)
 ;; (require 'init-common-lisp)
 
-;; TODO pyim
-(require 'init-youdao)
+(require 'init-shell)
+
+(require 'init-chinese)
 (require 'init-keyfreq)
 (require 'init-edit-server)
 (require 'init-misc)

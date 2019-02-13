@@ -1,0 +1,6 @@
+[submodule "aweshell"]
+	path = extensions/aweshell
+	url = git@github.com:manateelazycat/aweshell.git
+[submodule "awesome-pair"]
+	path = extensions/awesome-pair
+	url = git@github.com:manateelazycat/awesome-pair.git

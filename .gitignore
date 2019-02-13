@@ -54,3 +54,5 @@ site-lisp/package/
 /.youdao
 /*.keyfreq
 /smex-items
+/pyim
+/forge-database.sqlite

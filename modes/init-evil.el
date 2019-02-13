@@ -247,7 +247,9 @@
             comint-mode-map
             inferior-emacs-lisp-mode-map
             org-mode-map
-            markdown-mode-map)
+            markdown-mode-map
+            gitconfig-mode-map
+            diff-mode-map)
  "<return>" 'switch-to-buffer)
 
 (general-define-key
@@ -277,7 +279,7 @@
  "*" (lambda! (evil-search-word-forward 1 t))
  "#" (lambda! (evil-search-word-backward 1 t))
  "C-q" (lambda! (evil-ex-nohighlight)
-                (when (fboundp 'jester/clear-all-highlight) (jester/clear-all-highlight))
+                (when (fboundp 'jester/clear-all-hi-lock) (jester/clear-all-hi-lock))
                 (when (fboundp 'symbol-overlay-remove-all) (symbol-overlay-remove-all))))
 
 (general-define-key

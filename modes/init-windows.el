@@ -169,6 +169,9 @@
   (defvar jester-shackle-same-window-rule-cars
     '("*Help*"
       ("^\\*evil-.+\\*$" :regexp t)
+      'man-mode
+      'woman-mode
+      'snippet-mode
       ;; TODO not work
       (nil :custom (lambda (buffer alist plist)
                      (with-current-buffer buffer edit-server-edit-mode))))

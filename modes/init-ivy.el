@@ -15,6 +15,8 @@
   :demand t
   :after ivy
   :config
+  ;; not needed, ag always respects ~/.agignore (right?)
+  ;; (setq counsel-ag-base-command "ag --nocolor --nogroup -p ~/.agignore %s")
   (jester/with-leader
    "p f" 'jester/open-project-file
    "p F" (lambda! (jester/open-project-file (thing-at-point 'filename)))

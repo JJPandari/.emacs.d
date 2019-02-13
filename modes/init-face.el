@@ -62,7 +62,7 @@
 ;;       (highlight-phrase hi-regexp-at-pt (hi-lock-read-face-name)))
 ;;     (deactivate-mark)))
 
-;; (defun jester/clear-all-highlight ()
+;; (defun jester/clear-all-hi-lock ()
 ;;   "clear all highlight."
 ;;   (interactive)
 ;;   (let ((hi-regexp-list (mapcar #'car hi-lock-interactive-patterns)))

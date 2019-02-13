@@ -41,6 +41,11 @@
    "<tab>" 'tab-indent-or-complete
    ))
 
+
+;; (use-package company-quickhelp
+;;   :hook (company-mode . company-quickhelp-mode))
+
+
 (use-package company-posframe
   :if window-system
   :hook (company-mode . company-posframe-mode))
