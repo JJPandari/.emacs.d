@@ -91,7 +91,7 @@
   :config
   (general-define-key
    :states '(normal visual motion)
-   :keymaps '(prog-mode-map markdown-mode-map)
+   :keymaps '(prog-mode-map)
    "<tab>" 'jester/symbol-overlay-put
    ;; "<C-i>" 'symbol-overlay-put
    "M-n" 'symbol-overlay-jump-next

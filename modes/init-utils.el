@@ -63,8 +63,11 @@
 (defun jester/region-or-symbol ()
   "Get active region or symbol at point."
   (if (region-active-p)
-      (buffer-substring-no-properties
-       (region-beginning) (region-end))
+      (let ((beg (region-beginning))
+            (end (region-end)))
+        (deactivate-mark)
+        (buffer-substring-no-properties
+         beg end))
     (thing-at-point 'symbol t)))
 
 ;;----------------------------------------------------------------------------

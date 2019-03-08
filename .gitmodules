@@ -4,3 +4,6 @@
 [submodule "awesome-pair"]
 	path = extensions/awesome-pair
 	url = git@github.com:manateelazycat/awesome-pair.git
+[submodule "targets"]
+	path = extensions/targets
+	url = git@github.com:noctuid/targets.el.git

@@ -12,6 +12,8 @@
 (use-package evil-anzu
   :after anzu
   :demand t)
+;; use this in place of anzu when Emacs 27 is here
+;; (setq isearch-lazy-count t)
 
 (global-auto-revert-mode 1)
 (setq auto-revert-check-vc-info t)
@@ -39,6 +41,9 @@
 
 ;; never ring the bell
 (setq ring-bell-function 'ignore)
+
+;; make CJK smoother on Windows
+(setq inhibit-compacting-font-caches t)
 
 
 (provide 'init-misc)

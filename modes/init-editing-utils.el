@@ -53,7 +53,6 @@
   :commands er/expand-region
   :init
   (general-define-key
-   :states '(insert emacs)
    "<C-backspace>" 'er/expand-region))
 
 
@@ -265,8 +264,7 @@ otherwise move to before semicolon."
 
 (general-define-key
  :states '(insert emacs)
- :keymaps '(web-mode-map js2-mode-map)
- "C-t" 'jester/insert-this.
+ :keymaps '(web-mode-map js2-mode-map coffee-mode-map)
  "C-t" 'jester/insert-this.)
 ;; TODO
 ;; foo             "1 xx"  ->      foo {

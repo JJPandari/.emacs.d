@@ -19,7 +19,7 @@
    company-dabbrev-ignore-case nil
    company-dabbrev-downcase nil
    company-minimum-prefix-length 2
-   company-idle-delay 0.3)
+   company-idle-delay 0.1)
 
   ;; clear default bindings first
   (setq company-active-map (make-sparse-keymap))

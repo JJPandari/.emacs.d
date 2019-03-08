@@ -290,7 +290,9 @@ typical word processor."
    :keymaps 'org-mode-map
    ;; "g o" 'org-todo
    "H" 'org-shiftleft
-   "L" 'org-shiftright))
+   "L" 'org-shiftright)
+  (jester/with-major-leader 'org-mode-map
+   "t t" 'org-todo))
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
@@ -300,7 +302,12 @@ typical word processor."
         org-agenda-files '("~/org")))
 
 (use-package evil-org
-  :hook (org-mode . evil-org-mode))
+  :hook (org-mode . evil-org-mode)
+  :config
+  (general-define-key
+   :states '(insert)
+   :keymaps 'evil-org-mode-map
+   "C-d" 'backward-char))
 
 
 (provide 'init-org)

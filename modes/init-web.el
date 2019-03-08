@@ -10,7 +10,8 @@
    :keymaps 'evil-inner-text-objects-map
    "a" 'jester/evil-inner-attribute)
   (jester/with-major-leader 'web-mode-map
-                            "r" 'web-mode-element-rename)
+                            "r" 'web-mode-element-rename
+                            "f" 'web-mode-fold-or-unfold)
 
   (setq
    web-mode-style-padding 0
@@ -30,6 +31,7 @@
   (modify-syntax-entry ?_ "w" web-mode-syntax-table)
   (modify-syntax-entry ?- "w" web-mode-syntax-table)
   (modify-syntax-entry ?# "_" web-mode-syntax-table)
+  (modify-syntax-entry ?+ "." web-mode-syntax-table)
 
   (define-key web-mode-map (kbd "TAB") nil)
   (define-key web-mode-map (kbd "<tab>") nil)

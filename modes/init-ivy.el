@@ -26,6 +26,7 @@
    "f r" 'counsel-recentf
    "t s" 'counsel-load-theme
    "s j" 'counsel-imenu
+   "." 'counsel-imenu
    "s b" 'swiper-all
    "s B" (lambda! (swiper-all (jester/region-or-symbol)))
    "i u" 'counsel-unicode-char)
@@ -35,7 +36,7 @@
    "M-x" 'counsel-M-x
    "M-y" 'counsel-yank-pop
    "C-s" 'swiper
-   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
+   "C-S-s" (lambda! (swiper (regexp-quote (jester/region-or-symbol))))
    "C-h C-f" 'counsel-describe-face)
 
   (dolist (that-ivy-map

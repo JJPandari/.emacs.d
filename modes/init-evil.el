@@ -141,8 +141,11 @@
    :states '(normal visual motion operator)
    "M" 'evilmi-jump-items)
   (general-define-key
-   :keymaps '(evil-inner-text-objects-map evil-outer-text-objects-map)
+   :keymaps '(evil-inner-text-objects-map)
    "m" 'evilmi-inner-text-object)
+  (general-define-key
+   :keymaps '(evil-outer-text-objects-map)
+   "m" 'evilmi-outer-text-object)
 
   :config
   (global-evil-matchit-mode 1))
@@ -192,6 +195,42 @@
 (use-package evil-ediff
   :init
   (evil-ediff-init))
+
+
+(push (expand-file-name "targets" jester-submodules-dir) load-path)
+(require 'targets)
+;; not needed if `targets-setup'?
+;; (general-define-key
+;;  :keymaps 'evil-visual-state-map
+;;  "I" nil
+;;  "A" nil)
+
+;; setup has to come before custom bindings
+(targets-setup t
+ :next-key "N"
+ :last-key "L"
+ :remote-key "M")
+
+(targets-define-composite-to pair-delimiter
+  (("(" ")" pair)
+   ("[" "]" pair)
+   ("{" "}" pair)
+   ("<" ">" pair))
+  :bind t
+  :next-key "N"
+  :last-key "L"
+  :remote-key "M"
+  :keys "o")
+
+(targets-define-composite-to quote
+  (("\"" "\"" quote)
+   ("'" "'" quote)
+   ("`" "`" quote))
+  :bind t
+  :next-key "N"
+  :last-key "L"
+  :remote-key "M"
+  :keys "'")
 
 ;;----------------------------------------------------------------------------
 ;; Set initial states for modes.
