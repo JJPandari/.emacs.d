@@ -123,24 +123,35 @@
 ;;----------------------------------------------------------------------------
 ;; Set fonts.
 ;;----------------------------------------------------------------------------
+(defvar jester-small-font-size
+  (pcase window-system
+    ('mac 150)
+    ('w32 140))
+  "small font size depending on system.")
+(defvar jester-large-font-size
+  (pcase window-system
+    ('mac 160)
+    ('w32 150))
+  "large font size depending on system.")
+
 (defun jester/use-small-font ()
-  "Use 15px font."
+  "Use (relatively) small font."
   (interactive)
   (set-face-attribute 'default nil
                       :family "Source Code Pro"
                       ;; :family "Fira Code"
-                      :height 150
+                      :height jester-small-font-size
                       :weight 'normal
                       :width 'normal)
   (jester/set-fallback-fonts))
 
 (defun jester/use-large-font ()
-  "Use 18px font."
+  "Use (relatively) large font."
   (interactive)
   (set-face-attribute 'default nil
                       :family "Source Code Pro"
                       ;; :family "Fira Code"
-                      :height 160
+                      :height jester-large-font-size
                       :weight 'normal
                       :width 'normal)
   (jester/set-fallback-fonts))
@@ -156,7 +167,7 @@
 
 (jester/use-large-font)
 ;; try out Fira Code ligatures
-(mac-auto-operator-composition-mode 1)
+(when *is-a-mac* (mac-auto-operator-composition-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; show trailing whitespace

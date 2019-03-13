@@ -56,3 +56,5 @@ site-lisp/package/
 /smex-items
 /pyim
 /forge-database.sqlite
+/server
+/transient

@@ -42,7 +42,7 @@
 
   (add-hook! 'web-mode-hook
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
-    (when (equal (file-name-extension buffer-file-name) "vue")
+    (when (and buffer-file-name (equal (file-name-extension buffer-file-name) "vue"))
       (setq imenu-generic-expression ; imenu regexps for vue.js
             '(("method" "^    \\([^ ]+\\)(.*) {" 1)
               ("data" "^    \\([^ ]+\\): {" 1)
