@@ -27,7 +27,7 @@
         pyim-page-tooltip (if window-system 'posframe 'popup)
         pyim-page-length 5)
   :bind
-  (("M-l" . pyim-convert-code-at-point)
+  (("M-l" . pyim-convert-string-at-point)
    ;; ("C-;" . pyim-delete-word-from-personal-buffer)
    ))
 

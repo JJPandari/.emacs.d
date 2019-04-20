@@ -295,6 +295,7 @@ typical word processor."
    "t t" 'org-todo))
 
 (use-package org-bullets
+  :if *is-a-mac*
   :hook (org-mode . org-bullets-mode)
   :config
   (setq org-bullets-bullet-list '("🐳" "🐬" "🐠" "🐟" "🐤")

@@ -51,6 +51,9 @@
 (setq frame-title-format "看，灰机！ ✈✈✈✈✈✈✈✈✈"
       frame-resize-pixelwise t)
 (set-frame-parameter nil 'undecorated t)
+;; (set-frame-parameter nil 'fullscreen (cond ((eq window-system 'x) 'fullboth)
+;;                                            ((eq window-system 'mac) 'maximized)
+;;                                            (t 'maximized)))
 
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co,
 ;; so we zero it explicitly in those cases.
@@ -59,9 +62,14 @@
             (setq line-spacing 0)))
 
 (setq default-frame-alist
-      `((fullscreen . ,(cond ((eq window-system 'x) 'fullboth)
-                            ((eq window-system 'mac) 'maximized)
-                            (t 'maximized)))))
+      `((fullscreen . ,(cond
+                        ;; ((eq window-system 'x) 'fullboth)
+                        ((eq window-system 'x) 'maximized) ;; wsl favours maximized
+                        ((eq window-system 'mac) 'maximized)
+                        (t 'maximized)))
+        ;; left & top are required on wsl to correctly position
+        (left . (+ 0))
+        (top . (+ 0))))
 
 
 (provide 'init-gui-frames)

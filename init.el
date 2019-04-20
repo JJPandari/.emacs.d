@@ -95,6 +95,7 @@
 ;; (require 'init-docker)
 ;; ;; (maybe-require-package 'nginx-mode)
 (require 'init-lua)
+(require 'init-ahk)
 (require 'init-dotenv)
 
 (require 'init-paredit)
