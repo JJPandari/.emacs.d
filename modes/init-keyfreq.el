@@ -7,6 +7,7 @@
                                     backward-char
                                     next-line
                                     previous-line
+                                    newline
                                     evil-a-WORD
                                     evil-append
                                     evil-backward-char
@@ -92,6 +93,7 @@
                                     ivy-done
                                     ivy-next-line
                                     ivy-previous-line
+                                    ivy-backward-delete-char
                                     ranger-prev-file
                                     ranger-next-file
                                     undo-tree-undo

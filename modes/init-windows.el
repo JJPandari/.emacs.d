@@ -71,6 +71,9 @@
   :config
   (defvar jester-shackle-same-window-rule-cars
     '("*Help*"
+      "*Youdao Dictionary*"
+      "JsDocTagDescription"
+      "*skewer-error*"
       ("^\\*evil-.+\\*$" :regexp t)
       'man-mode
       'woman-mode

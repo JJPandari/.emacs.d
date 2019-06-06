@@ -45,5 +45,11 @@
 ;; make CJK smoother on Windows
 (setq inhibit-compacting-font-caches t)
 
+(add-auto-mode 'shell-script-mode "rc\\'")
+
+;; https://emacs-china.org/t/superkey/9387
+;; make super key work on Windows
+;; (when (eq system-type 'windows-nt) (w32-register-hot-key [s-]))
+
 
 (provide 'init-misc)

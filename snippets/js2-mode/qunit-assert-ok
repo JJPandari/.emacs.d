@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: qunit assert.ok
+# key: ao
+# --
+assert.ok($0, '$1');

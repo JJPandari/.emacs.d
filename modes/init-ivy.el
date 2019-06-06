@@ -77,11 +77,16 @@
    [remap load-theme] 'counsel-load-theme
    [remap pop-to-mark-command] 'counsel-mark-ring))
 
+(use-package wgrep
+  :commands ivy-wgrep-change-to-wgrep-mode)
+
+
 (use-package smex
   :init
   (setq smex-history-length 32)
   :demand t)
 
+
 ;; (use-package ivy-posframe
 ;;   :demand t
 ;;   :after ivy
@@ -99,6 +104,56 @@
 ;;           (foreground-color . ,(face-attribute 'default :foreground))))
 ;;   (ivy-posframe-enable))
 
+;;----------------------------------------------------------------------------
+;; Pre-fill search keywords
+;; https://with-emacs.com/posts/execute-commands-like-marty-mcfly/
+;; https://github.com/seagle0128/.emacs.d/blob/d224fae72f672df40b7de0118d1741ddf9b79cf2/lisp/init-ivy.el#L149
+;;----------------------------------------------------------------------------
+(defvar mcfly-commands
+  '(query-replace-regexp
+    flush-lines
+    keep-lines
+    ivy-read
+    swiper
+    swiper-all
+    swiper-isearch
+    counsel-grep-or-swiper
+    counsel-grep
+    counsel-ack
+    counsel-ag
+    counsel-rg
+    counsel-pt))
+
+(defun mcfly-back-to-present ()
+  (remove-hook 'pre-command-hook 'mcfly-back-to-present t)
+  (cond ((and (memq last-command mcfly-commands)
+              (equal (this-command-keys-vector) (kbd "M-p")))
+         ;; repeat one time to get straight to the first history item
+         (setq unread-command-events
+               (append unread-command-events
+                       (listify-key-sequence (kbd "M-p")))))
+        ((memq this-command '(self-insert-command
+                              ivy-yank-word
+                              yank))
+         (delete-region (point)
+                        (point-max)))))
+
+(defun mcfly-time-travel ()
+  (when (memq this-command mcfly-commands)
+    (let* ((kbd (kbd "M-n"))
+           (cmd (key-binding kbd))
+           (future (and cmd
+                        (with-temp-buffer
+                          (when (ignore-errors
+                                  (call-interactively cmd) t)
+                            (buffer-string))))))
+      (when future
+        (save-excursion
+          (insert (propertize future 'face 'shadow)))
+        (add-hook 'pre-command-hook 'mcfly-back-to-present nil t)))))
+
+;; not enabling it cuz it messes with C-s C-s
+;; (add-hook 'minibuffer-setup-hook #'mcfly-time-travel)
 
 
 (provide 'init-ivy)

@@ -27,9 +27,10 @@
   (general-define-key :states '(normal operator) "L" 'jester/goto-end-of-sexp)
   :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp jester/goto-end-of-sexp)
   :bind (("M-r" . paredit-raise-sexp) ("M-u" . paredit-wrap-sexp))
-  :hook (prog-mode . paredit-mode)
+  ;; :hook (prog-mode . paredit-mode)
   :config
   (add-to-list 'paredit-space-for-delimiter-predicates 'jester/paredit-space-for-delimiter-p)
+  ;; TODO use awe pair for kill, just bind use general
   ;; TODO make kbd "DL" delete whole lines when nothing before and only non-word after the kill end
 
   (defun jester/goto-kill-end (kill-fun forward?)

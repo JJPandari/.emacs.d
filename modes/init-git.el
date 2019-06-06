@@ -16,6 +16,7 @@
 ;;----------------------------------------------------------------------------
 ;; browse current file history
 ;;----------------------------------------------------------------------------
+;; TODO use hydra
 (use-package git-timemachine
   :init
   (jester/with-leader

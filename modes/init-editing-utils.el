@@ -205,6 +205,12 @@ Effectively using symbol before point as the key."
 ;;----------------------------------------------------------------------------
 ;; Insert " = " for me, please.
 ;;----------------------------------------------------------------------------
+(defvar jester-javascript-assignment-declarer
+  'var
+  "What word to use when making a javascript assignment.
+When set to `let', use \"let\" and \"const\".
+When set to `var', use \"var\".")
+
 (defun jester/make-javascript-assignment ()
   "Make a javascript assignment statement,
 using things left of point as left value, things right as right value.
@@ -225,9 +231,17 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
                  (unless (looking-back ";") (insert ";")))
         (beginning-of-line-text)
         (cond
-         ((looking-at "const ") (kill-word 1) (insert "let"))
-         ((looking-at "let ") (kill-word 1) (delete-char 1))
-         (t (insert "const ")))))
+         ((eq jester-javascript-assignment-declarer 'let)
+          (cond
+           ((looking-at "const ") (kill-word 1) (insert "let"))
+           ((looking-at "let ") (kill-word 1) (delete-char 1))
+           (t (insert "const "))))
+         ((eq jester-javascript-assignment-declarer 'var)
+          (cond
+           ((looking-at "var ") (kill-word 1) (delete-char 1))
+           (t (insert "var "))))
+         (t (user-error "Plz set `jester-javascript-assignment-declarer' to `let' or `var'")))
+        ))
     (when (and need-signs something-left-p) (move-end-of-line 1) (left-char))))
 
 (general-define-key
@@ -279,13 +293,13 @@ otherwise move to before semicolon."
   "Insert {}.
 Threat is as function body when from endline before )"
   (interactive)
-  (unless (looking-back " ") (insert " "))
+  (unless (looking-back "[ ({\\[]") (insert " "))
   (insert "{\n\n}") (indent-according-to-mode)
   (forward-line -1) (indent-according-to-mode))
 
 (general-define-key
  :states '(insert emacs)
- :keymaps 'prog-mode-map
+ :keymaps '(prog-mode-map conf-mode-map)
  "<C-return>" 'jester/insert-curly-and-go-inside)
 
 ;;----------------------------------------------------------------------------
@@ -311,6 +325,10 @@ Threat is as function body when from endline before )"
  :states '(normal visual motion operator)
  "(" 'jester/backward-bracket
  ")" 'jester/forward-bracket)
+
+(jester/with-leader
+ "(" 'backward-up-list
+ ")" 'up-list)
 
 
 (provide 'init-editing-utils)

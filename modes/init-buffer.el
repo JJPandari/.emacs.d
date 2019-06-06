@@ -8,6 +8,7 @@
  "b h" (lambda! (switch-to-buffer (help-buffer)))
  "b m" (lambda! (switch-to-buffer (messages-buffer)))
  "b s" 'jester/switch-to-scratch-buffer
+ "b y" 'jester/copy-buffer-name
  "<return>" 'jester/alternate-buffer)
 
 ;;----------------------------------------------------------------------------
@@ -68,5 +69,13 @@ current window."
   (if (window-minibuffer-p)
       (abort-recursive-edit)
     (kill-buffer)))
+
+;;----------------------------------------------------------------------------
+;; copy the buffer name.
+;;----------------------------------------------------------------------------
+(defun jester/copy-buffer-name ()
+  "Copy the buffer name, show it in minibuffer."
+  (interactive)
+  (message (kill-new (buffer-name))))
 
 (provide 'init-buffer)

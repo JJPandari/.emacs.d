@@ -1,5 +1,5 @@
 (use-package web-mode
-  :mode ("\\.vue\\'" "\\.blade.php\\'" "\\.html\\'")
+  :mode ("\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'")
   :config
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
@@ -38,8 +38,6 @@
   (evil-define-key 'insert web-mode-map (kbd "TAB") #'tab-indent-or-complete)
   (evil-define-key 'insert web-mode-map (kbd "<tab>") #'tab-indent-or-complete)
 
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-
   (add-hook! 'web-mode-hook
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
     (when (and buffer-file-name (equal (file-name-extension buffer-file-name) "vue"))
@@ -47,7 +45,9 @@
             '(("method" "^    \\([^ ]+\\)(.*) {" 1)
               ("data" "^    \\([^ ]+\\): {" 1)
               ("prop" "^  \\([^ ]+\\): {" 1)
-              ("hook" "^  \\([^ ]+\\)() {" 1)))) t)
+              ("hook" "^  \\([^ ]+\\)() {" 1)))
+      ;; only use eslint as checker in vue files
+      (flycheck-add-mode 'javascript-eslint 'web-mode)) t)
 
   )
 

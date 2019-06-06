@@ -12,15 +12,33 @@
   (general-define-key
    :states '(normal)
    :keymaps 'js2-mode-map
-   "g d" 'js2-jump-to-definition))
+   "g d" 'js2-jump-to-definition)
+
+  (general-define-key
+   :states '(insert emacs)
+   :keymaps 'js2-mode-map
+   "RET" 'js2-line-break))
 
 (add-hook! 'js2-mode-hook
   (setq mode-name (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0)))
 
 (use-package js2-refactor
-  :hook (js2-mode . js2-refactor-mode))
+  :hook (js2-mode . js2-refactor-mode)
+  :config
+  (jester/with-major-leader 'js2-mode-map
+                            "r" (lambda! (counsel-M-x "^js2r- "))))
+
+(use-package js-doc
+  :after js2-mode)
 
 ;; (maybe-require-package 'typescript-mode)
+
+(use-package skewer-mode
+  :hook js2-mode
+  :config
+  (jester/with-major-leader 'js2-mode-map
+                            "e" 'skewer-eval-last-expression)
+  (evil-set-initial-state 'skewer-error-mode 'motion))
 
 ;; https://emacs-china.org/t/javascript/7860?u=jjpandari
 (defun jester/js2r-toggle-object-property-access-style ()
@@ -43,6 +61,8 @@
              (save-excursion
                (goto-char end) (insert "\']")
                (goto-char start) (delete-char -1) (insert "[\'")))))))))
+
+(require 'init-ui5)
 
 
 (provide 'init-javascript)

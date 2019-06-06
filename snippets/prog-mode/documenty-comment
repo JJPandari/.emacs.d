@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: documenty comment
+# key: dc
+# --
+/**
+ * $0
+ */

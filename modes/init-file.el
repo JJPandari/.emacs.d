@@ -44,18 +44,19 @@
 ;;----------------------------------------------------------------------------
 ;; Rename the current file
 ;;----------------------------------------------------------------------------
-(defun jester/rename-buffer-file (new-name)
+(defun jester/rename-buffer-file ()
   "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
+  (interactive)
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
     (unless filename
       (error "Buffer '%s' is not visiting a file!" name))
-    (progn
-      (when (file-exists-p filename)
-        (rename-file filename new-name 1))
-      (set-visited-file-name new-name)
-      (rename-buffer new-name))))
+    (let ((new-name (read-from-minibuffer "rename file to: " (file-name-nondirectory filename))))
+      (progn
+        (when (file-exists-p filename)
+          (rename-file filename new-name 1))
+        (set-visited-file-name new-name)
+        (rename-buffer new-name)))))
 
 ;;----------------------------------------------------------------------------
 ;; Browse current HTML file

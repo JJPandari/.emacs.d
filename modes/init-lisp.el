@@ -52,6 +52,10 @@
   "Enable features useful in any Lisp mode."
   (run-hooks 'jester/lispy-modes-hook))
 
+(defun jester/elisp-setup ()
+  "Enable features useful elisp modes."
+  (run-hooks 'jester/elispy-modes-hook))
+
 (defconst jester/elispy-modes
   '(emacs-lisp-mode ielm-mode)
   "Major modes relating to elisp.")
@@ -67,7 +71,7 @@
   (add-hook hook 'jester/lisp-setup))
 
 (dolist (hook (mapcar #'derived-mode-hook-name jester/elispy-modes))
-  (add-hook hook 'jester/emacs-lisp-setup))
+  (add-hook hook 'jester/elisp-setup))
 
 
 (use-package cl-lib-highlight

@@ -14,7 +14,7 @@
   (defconst jester-leader "SPC" "Leader key in normal state.")
   (defconst jester-leader-emacs "M-m" "Leader key in emacs state.")
   (defconst jester-mode-leader "," "Mode specific leader key in normal state.")
-  (defconst jester-mode-leader-emacs "M-S-m" "Major-leader key in emacs state.")
+  (defconst jester-mode-leader-emacs "M-M" "Major-leader key in emacs state.")
 
   ;; https://github.com/noctuid/evil-guide#preventing-certain-keys-from-being-overridden
   (general-override-mode)
@@ -276,7 +276,9 @@
 (general-define-key
  :states '(normal)
  "Q" "@q"
- "gJ" 'jester/evil-join-no-whitespace)
+ "gJ" 'jester/evil-join-no-whitespace
+ "C-o" 'goto-last-change
+ "C-i" 'goto-last-change-reverse)
 
 (general-define-key
  :states '(normal)

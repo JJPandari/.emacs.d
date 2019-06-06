@@ -86,6 +86,7 @@
 (require 'init-coffeescript)
 (require 'init-css)
 (require 'init-http)
+(require 'init-java)
 ;; (require 'init-python)
 ;; ;; (require 'init-haskell)
 ;; (require 'init-ruby)

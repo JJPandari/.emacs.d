@@ -92,6 +92,20 @@ with traditional regex based imenu."
     (append custom-imenu mode-imenu)))
 
 ;;----------------------------------------------------------------------------
+;; Get the list of matches when matching a regexp against a string.
+;;----------------------------------------------------------------------------
+;; https://emacs.stackexchange.com/a/7150/12854
+(defun jester/regexp-matches-in-string (regexp string nth-group)
+  "Get a list of all `REGEXP' matches in `STRING', taking `NTH-GROUP' every time we match."
+  (save-match-data
+    (let ((pos 0)
+          matches)
+      (while (string-match regexp string pos)
+        (push (match-string nth-group string) matches)
+        (setq pos (match-end 0)))
+      (nreverse matches))))
+
+;;----------------------------------------------------------------------------
 ;; Select the emacs frame (used in shell scripts).
 ;;----------------------------------------------------------------------------
 (defun open-emacs-window ()

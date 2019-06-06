@@ -19,5 +19,8 @@
    "l 7" #'eyebrowse-switch-to-window-config-7
    "l 8" #'eyebrowse-switch-to-window-config-8
    "l 9" #'eyebrowse-switch-to-window-config-9))
+;; TODO merge this file into init-windows
+;; TODO SPC l m => "main"
+;; TODO SPC l s => "scratch"
 
 (provide 'init-eyebrowse)

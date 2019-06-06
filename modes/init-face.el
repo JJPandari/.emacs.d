@@ -12,6 +12,7 @@
 ;;----------------------------------------------------------------------------
 (add-hook 'text-mode-hook (lambda () (display-line-numbers-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+(add-hook 'conf-mode-hook (lambda () (display-line-numbers-mode 1)))
 (setq display-line-numbers-width nil
       display-line-numbers-type 'relative
       display-line-numbers-current-absolute t)

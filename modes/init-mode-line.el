@@ -40,7 +40,7 @@
            (`interrupted ".")
            (`suspicious '(propertize "?" 'face 'warning))))))
 
-(defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode))
+(defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode css-mode))
 
 (defvar jester/number-unicode-char-list
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
