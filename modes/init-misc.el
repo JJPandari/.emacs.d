@@ -28,12 +28,16 @@
 
 (jester/with-leader "o d" 'browse-file-directory)
 
+;; comint
 (general-define-key
+ :states '(insert emacs)
  :keymaps 'comint-mode-map
  "C-d" 'backward-char
  "C-b" 'comint-delchar-or-maybe-eof
- "C-r" 'comint-history-isearch-backward)
+ "C-r" 'comint-history-isearch-backward
+ "C-l" 'comint-clear-buffer)
 
+;; re-builder
 (general-define-key
  :states '(normal)
  :keymaps 'reb-mode-map

@@ -23,32 +23,24 @@
                            'css-mode))))
 
 (use-package paredit
-  :init
-  (general-define-key :states '(normal operator) "L" 'jester/goto-end-of-sexp)
-  :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp jester/goto-end-of-sexp)
+  :commands (paredit-kill paredit-raise-sexp paredit-wrap-sexp paredit-forward-slurp-sexp paredit-forward-barf-sexp)
   :bind (("M-r" . paredit-raise-sexp) ("M-u" . paredit-wrap-sexp))
   ;; :hook (prog-mode . paredit-mode)
   :config
-  (add-to-list 'paredit-space-for-delimiter-predicates 'jester/paredit-space-for-delimiter-p)
-  ;; TODO use awe pair for kill, just bind use general
-  ;; TODO make kbd "DL" delete whole lines when nothing before and only non-word after the kill end
-
-  (defun jester/goto-kill-end (kill-fun forward?)
-    "When supplied with a kill function `kill-fun', go to the point the kill function should kill to."
-    (let* ((old-max (point-max))
-           (new-max (progn (funcall kill-fun) (point-max)))
-           (kill-end (progn
-                       (undo-tree-undo)
-                       (funcall (if forward? '+ '-) (point) (abs (- new-max old-max))))))
-      (goto-char kill-end)))
-
-  (defun jester/goto-end-of-sexp ()
-    "Go to the end of current expression."
-    (interactive)
-    (jester/goto-kill-end 'paredit-kill t)))
+  (add-to-list 'paredit-space-for-delimiter-predicates 'jester/paredit-space-for-delimiter-p))
 
 
-;; (add-to-list 'load-path "<path-to-awesome-pair>") ; add awesome-pair to your load-path
-;; (require 'awesome-pair)
+;; TODO make kbd "DL" delete whole lines when nothing before and only non-word after the kill end
+(push (expand-file-name "awesome-pair" jester-submodules-dir) load-path)
+(use-package awesome-pair
+  :ensure nil
+  :commands (awesome-pair-kill)
+  :init
+  (general-define-key
+   :states '(normal)
+   "d" (general-key-dispatch 'evil-delete
+         "L" 'awesome-pair-kill)
+   "c" (general-key-dispatch 'evil-change
+         "L" (lambda () (interactive) (awesome-pair-kill) (evil-insert-state)))))
 
 (provide 'init-paredit)

@@ -66,6 +66,7 @@
   (jester/with-leader
    "w M" 'ace-swap-window))
 
+
 (use-package shackle
   :demand t
   :config
@@ -106,6 +107,45 @@
 ;;      (select . t)
 ;;      (quit . nil)
 ;;      ))))
+
+
+(use-package eyebrowse
+  :demand t
+  :config
+  (eyebrowse-mode 1)
+  (jester/with-leader
+   "l l" #'eyebrowse-switch-to-window-config
+   "l TAB" #'eyebrowse-last-window-config
+   "l k" #'eyebrowse-close-window-config
+   "l r" #'eyebrowse-rename-window-config
+   "l 0" #'eyebrowse-switch-to-window-config-0
+   "l 1" #'eyebrowse-switch-to-window-config-1
+   "l 2" #'eyebrowse-switch-to-window-config-2
+   "l 3" #'eyebrowse-switch-to-window-config-3
+   "l 4" #'eyebrowse-switch-to-window-config-4
+   "l 5" #'eyebrowse-switch-to-window-config-5
+   "l 6" #'eyebrowse-switch-to-window-config-6
+   "l 7" #'eyebrowse-switch-to-window-config-7
+   "l 8" #'eyebrowse-switch-to-window-config-8
+   "l 9" #'eyebrowse-switch-to-window-config-9)
+
+  (defun jester/make-eyebrowse-switcher (alias slot key)
+    "Make an eyebrowse switch function for `NUM', which has the name/alias of `ALIAS',
+bound to `KEY' in the leader sub-keymap."
+    (let ((fun-name (intern (format "jester/eyebrowse-switch-to-%s" alias))))
+      (eval `(jester/with-leader ,(format "l %s" key) fun-name))
+      (eval `(defun ,fun-name ()
+               ,(format "Use %s as name/alias for slot %s, and switch to it." alias slot)
+               (interactive)
+               ;; have to switch (implicitly create) first,
+               ;; otherwise rename may operate on a non-existent config, causing error
+               (eyebrowse-switch-to-window-config ,slot)
+               (eyebrowse-rename-window-config ,slot ,alias)))))
+
+  (jester/make-eyebrowse-switcher "alternative" 2 "a")
+  (jester/make-eyebrowse-switcher "main" 3 "m")
+  (jester/make-eyebrowse-switcher "scratch" 6 "s")
+  (jester/make-eyebrowse-switcher "config" 9 "c"))
 
 
 (defun jester/kill-buffer-and-window ()

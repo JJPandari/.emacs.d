@@ -67,12 +67,10 @@
 (require 'init-mode-line)
 (require 'init-sessions)
 (require 'init-face)
+(require 'init-avy)
 
 (require 'init-vc)
 (require 'init-git)
-
-(require 'init-eyebrowse)
-(require 'init-avy)
 
 (require 'init-lsp)
 (require 'init-dumbjump)
