@@ -1,6 +1,7 @@
 (require-package 'solarized-theme)
 (require-package 'color-theme-sanityinc-tomorrow)
 (require-package 'doom-themes)
+(require-package 'zenburn-theme)
 
 ;; If you don't customize it, this is the theme you get.
 (setq-default custom-enabled-themes '(solarized-light))

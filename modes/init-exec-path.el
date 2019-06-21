@@ -12,7 +12,8 @@
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize))
   :config
-  (dolist (var '("GOPATH" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "SSH_AUTH_SOCK"))
-    (add-to-list 'exec-path-from-shell-variables var)))
+  (dolist (var '("SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "SSH_AUTH_SOCK"
+                 "GOPATH" "MVN_HOME" "JAVA_HOME"))
+    (push var exec-path-from-shell-variables)))
 
 (provide 'init-exec-path)

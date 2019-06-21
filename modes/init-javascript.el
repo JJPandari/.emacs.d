@@ -9,6 +9,9 @@
         js2-mode-show-strict-warnings nil
         js2-bounce-indent-p nil)
 
+  ;; "_" as word so company completes kabeb-case
+  (modify-syntax-entry ?_ "w" js2-mode-syntax-table)
+
   (general-define-key
    :states '(normal)
    :keymaps 'js2-mode-map
@@ -22,24 +25,30 @@
 (add-hook! 'js2-mode-hook
   (setq mode-name (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0)))
 
+
 (use-package js2-refactor
   :hook (js2-mode . js2-refactor-mode)
   :config
   (jester/with-major-leader 'js2-mode-map
                             "r" (lambda! (counsel-M-x "^js2r- "))))
 
+
 (use-package js-doc
   :after js2-mode)
 
 ;; (maybe-require-package 'typescript-mode)
 
+
 (use-package skewer-mode
+  :init
+  (setq httpd-port 9871)
   :hook js2-mode
   :config
   (jester/with-major-leader 'js2-mode-map
                             "e" 'skewer-eval-last-expression)
   (evil-set-initial-state 'skewer-error-mode 'motion))
 
+
 ;; https://emacs-china.org/t/javascript/7860?u=jjpandari
 (defun jester/js2r-toggle-object-property-access-style ()
   "Convert the string at point into a template string."

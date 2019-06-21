@@ -73,8 +73,9 @@
 (require 'init-git)
 
 (require 'init-lsp)
-(require 'init-dumbjump)
+(require 'init-jump)
 ;; (require 'init-compile)
+(require 'init-text)
 (require 'init-org)
 (require 'init-markdown)
 (require 'init-csv)

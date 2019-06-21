@@ -44,6 +44,7 @@
    "g s" 'magit-status
    "g d" 'magit-diff-buffer-file
    "g r" 'diff-hl-revert-hunk
+   "g l" 'magit-log
    ;; "a" ≈ "actions"
    "g a" 'magit-dispatch-popup)
   :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)

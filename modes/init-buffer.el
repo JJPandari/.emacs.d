@@ -21,11 +21,7 @@ if prefix argument ARG is given, switch to it in an other, possibly new window."
   (let ((exists (get-buffer "*scratch*")))
     (if arg
         (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
-      (switch-to-buffer (get-buffer-create "*scratch*")))
-    (when (and (not exists)
-               (not (eq major-mode dotspacemacs-scratch-mode))
-               (fboundp dotspacemacs-scratch-mode))
-      (funcall dotspacemacs-scratch-mode))))
+      (switch-to-buffer (get-buffer-create "*scratch*")))))
 
 ;;----------------------------------------------------------------------------
 ;; switch to last buffer

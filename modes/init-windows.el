@@ -72,9 +72,11 @@
   :config
   (defvar jester-shackle-same-window-rule-cars
     '("*Help*"
+      "*Warnings*"
       "*Youdao Dictionary*"
       "JsDocTagDescription"
       "*skewer-error*"
+      ("^\\*.*build.*\\*$" :regexp t)
       ("^\\*evil-.+\\*$" :regexp t)
       'man-mode
       'woman-mode
@@ -130,7 +132,7 @@
    "l 9" #'eyebrowse-switch-to-window-config-9)
 
   (defun jester/make-eyebrowse-switcher (alias slot key)
-    "Make an eyebrowse switch function for `NUM', which has the name/alias of `ALIAS',
+    "Make an eyebrowse switch function for `SLOT', which has the name/alias of `ALIAS',
 bound to `KEY' in the leader sub-keymap."
     (let ((fun-name (intern (format "jester/eyebrowse-switch-to-%s" alias))))
       (eval `(jester/with-leader ,(format "l %s" key) fun-name))

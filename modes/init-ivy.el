@@ -9,7 +9,12 @@
    completing-read-function 'ivy-completing-read)
   (general-define-key
    :keymaps 'ivy-switch-buffer-map
-   "M-k" 'ivy-switch-buffer-kill))
+   "M-k" 'ivy-switch-buffer-kill)
+  ;; TODO
+  (jester/with-major-leader 'ivy-occur-mode-map
+                            "w" 'ivy-wgrep-change-to-wgrep-mode
+                            "," 'wgrep-finish-edit
+                            "a" 'wgrep-exit))
 
 (use-package counsel
   :demand t
@@ -31,7 +36,6 @@
    "s B" (lambda! (swiper-all (jester/region-or-symbol)))
    "i u" 'counsel-unicode-char)
 
-  ;; TODO install wgrep
   (general-define-key
    "M-x" 'counsel-M-x
    "M-y" 'counsel-yank-pop
@@ -41,8 +45,8 @@
 
   (dolist (that-ivy-map
            '(ivy-mode-map ivy-switch-buffer-map ivy-minibuffer-map
-             counsel-mode-map counsel-describe-map counsel-find-file-map counsel-ag-map
-             swiper-map swiper-all-map))
+                          counsel-mode-map counsel-describe-map counsel-find-file-map counsel-ag-map
+                          swiper-map swiper-all-map))
     (general-define-key
      :keymaps that-ivy-map
      "M-d" #'backward-word

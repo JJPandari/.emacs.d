@@ -23,9 +23,15 @@
       kill-ring-max 200
       recentf-max-saved-items 1000)
 
+(after-init (electric-pair-mode 1)) ;; this is global
+
+(use-package aggressive-indent
+  :hook (after-init . aggressive-indent-global-mode))
+;; TODO 'aggressive-indent-dont-indent-if: in web-mode indent others but not html
+
 (require 'recentf)
 (add-to-list 'recentf-exclude (list "/tmp/" "/ssh:" "COMMIT_EDITMSG\\'"
-                                   (recentf-expand-file-name package-user-dir)))
+                                    (recentf-expand-file-name package-user-dir)))
 
 (after-init (transient-mark-mode 1))
 

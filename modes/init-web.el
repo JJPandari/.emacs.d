@@ -1,5 +1,5 @@
 (use-package web-mode
-  :mode ("\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'")
+  :mode ("\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'")
   :config
   (general-define-key
    :keymaps 'evil-outer-text-objects-map

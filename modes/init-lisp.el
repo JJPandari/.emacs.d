@@ -98,7 +98,7 @@
   (add-hook 'jester/theme-mode-hook 'rainbow-mode)
   (add-hook 'help-mode-hook 'rainbow-mode))
 
-(when (maybe-require-package 'aggressive-indent)
+(after-load 'aggressive-indent
   ;; Can be prohibitively slow with very long forms
   (add-to-list 'jester/theme-mode-hook (lambda () (aggressive-indent-mode -1)) t))
 
@@ -140,11 +140,12 @@
  "C-;" (lambda! (insert ";; ")))
 
 (use-package lispyville
+  :bind (("M-r" . lispy-raise) ("H-r" . lispy-raise-some))
+  :init
+  (add-hook! (emacs-lisp-mode lisp-mode) (flycheck-mode -1))
   ;; load it everywhere
   ;; :hook (prog-mode . lispyville-mode)
   :hook ((emacs-lisp-mode lisp-mode) . lispyville-mode)
-  :init
-  (add-hook! (emacs-lisp-mode lisp-mode) (flycheck-mode -1))
   :config
   (lispyville-set-key-theme
    '(operators
@@ -170,9 +171,7 @@
   (jester/with-leader
    ","
    (general-predicate-dispatch 'evil-indent
-     (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify))
-
-  )
+     (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify)))
 
 (use-package macrostep
   :commands macrostep-expand)

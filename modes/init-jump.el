@@ -13,4 +13,4 @@
   :commands (dumb-jump-go))
 
 
-(provide 'init-dumbjump)
+(provide 'init-jump)

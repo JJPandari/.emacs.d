@@ -106,12 +106,6 @@
   )
 
 
-(use-package evil-visualstar
-  :demand t
-  :config
-  (global-evil-visualstar-mode t))
-
-
 (use-package evil-exchange
   :demand t
   :config
@@ -197,6 +191,15 @@
   (evil-ediff-init))
 
 
+(use-package evil-numbers
+  :commands (evil-numbers/inc-at-pt evil-numbers/dec-at-pt)
+  :init
+  (general-define-key
+   :states '(normal)
+   "+" 'evil-numbers/inc-at-pt
+   "-" 'evil-numbers/dec-at-pt))
+
+
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
 (require 'targets)
 ;; not needed if `targets-setup'?
@@ -236,6 +239,9 @@
 ;; Set initial states for modes.
 ;;----------------------------------------------------------------------------
 (evil-set-initial-state 'debugger-mode 'motion)
+;; special mode is for viewing info, e.g. "q" is bound to quit,
+;; but it's normal state there so we lose the bindings. Use motion state.
+(evil-set-initial-state 'special-mode 'motion)
 
 ;; TODO not work
 (add-hook! 'snippet-mode-hook (when (string-equal (buffer-name) "+new-snippet+")
@@ -276,25 +282,30 @@
 (general-define-key
  :states '(normal)
  "Q" "@q"
- "gJ" 'jester/evil-join-no-whitespace
- "C-o" 'goto-last-change
- "C-i" 'goto-last-change-reverse)
+ "gJ" 'jester/evil-join-no-whitespace)
 
 (general-define-key
  :states '(normal)
  :keymaps '(text-mode-map
+            conf-mode-map
             prog-mode-map
+
             messages-buffer-mode-map
+
             comint-mode-map
             inferior-emacs-lisp-mode-map
+
             org-mode-map
             markdown-mode-map
+
             gitconfig-mode-map
             diff-mode-map)
  "<return>" 'switch-to-buffer)
 
 (general-define-key
  :states '(visual)
+ "*" 'jester/evil-visual-search-forward
+ "#" 'jester/evil-visual-search-backward
  ;; TODO not working
  "<" (lambda! (call-interactively 'evil-shift-left) (evil-visual-restore))
  ">" (lambda! (call-interactively 'evil-shift-right) (evil-visual-restore))
@@ -317,10 +328,9 @@
 
 (general-define-key
  :states '(normal motion)
- "*" (lambda! (evil-search-word-forward 1 t))
- "#" (lambda! (evil-search-word-backward 1 t))
+ "*" 'jester/evil-normal-search-forward
+ "#" 'jester/evil-normal-search-backward
  "C-q" (lambda! (evil-ex-nohighlight)
-                (when (fboundp 'jester/clear-all-hi-lock) (jester/clear-all-hi-lock))
                 (when (fboundp 'symbol-overlay-remove-all) (symbol-overlay-remove-all))))
 
 (general-define-key
@@ -364,6 +374,46 @@
 ;;----------------------------------------------------------------------------
 (general-define-key
  "C-h p" 'describe-package)
+
+;;----------------------------------------------------------------------------
+;; Some functions.
+;;----------------------------------------------------------------------------
+(evil-define-command jester/evil-normal-search-forward (&optional count)
+  "Search symbol under point forward."
+  :repeat nil
+  (interactive "p")
+  (evil-search-word-forward (or count 1) t))
+
+(evil-define-command jester/evil-normal-search-backward (&optional count)
+  "Search symbol under point backward."
+  :repeat nil
+  (interactive "p")
+  (evil-search-word-backward (or count 1) t))
+
+(evil-define-command jester/evil-visual-search-forward ()
+  "Search the region forward."
+  :repeat nil
+  (interactive)
+  (jester/evil-visual-search t))
+
+(evil-define-command jester/evil-visual-search-backward ()
+  "Search the region backward."
+  :repeat nil
+  (interactive)
+  ;; move point to the start of region to jump past the current occurence
+  (when (eql (point) (region-end))
+    (exchange-point-and-mark))
+  (jester/evil-visual-search nil))
+
+(defun jester/evil-visual-search (forward)
+  "Search the region."
+  (let ((string (buffer-substring-no-properties (region-beginning) (region-end))))
+    (deactivate-mark)
+    (evil-push-search-history string forward)
+    ;; pushed to `regexp-search-ring'
+    (isearch-update-ring string evil-regexp-search)
+    (setq isearch-forward forward)
+    (evil-search string forward)))
 
 
 (provide 'init-evil)
