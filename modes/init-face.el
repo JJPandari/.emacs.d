@@ -41,13 +41,15 @@
          (css-mode . symbol-overlay-mode)
          (yaml-mode . symbol-overlay-mode)
          (conf-mode . symbol-overlay-mode)
-         (markdown-mode . symbol-overlay-mode))
+         (markdown-mode . symbol-overlay-mode)
+         (help-mode . symbol-overlay-mode))
   :init
   ;; don't put temporary highlight
   (setq symbol-overlay-idle-time 0)
   :config
   (general-define-key
    :states '(normal visual motion)
+   ;; TODO bind in other enabled modes
    :keymaps '(prog-mode-map)
    "<tab>" 'jester/symbol-overlay-put
    ;; "<C-i>" 'symbol-overlay-put

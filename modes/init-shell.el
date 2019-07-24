@@ -11,6 +11,12 @@
  :keymaps 'shell-mode-map
  "C-d" 'evil-scroll-down)
 
+(add-hook! 'eshell-mode-hook
+  (general-define-key
+   :states '(normal motion)
+   :keymaps 'eshell-mode-map
+   "<return>" 'switch-to-buffer))
+
 (defface jester-shell-face '((t :family "Fira Code" :height 140))
   "Face for shell buffers. Use a different font and smaller font size.")
 
@@ -21,6 +27,12 @@
 
 (add-hook 'comint-mode-hook 'jester/set-shell-buffer-face)
 (add-hook 'eshell-mode-hook 'jester/set-shell-buffer-face)
+
+(defun jester/shell-for-node.js ()
+  "For buffer file, look up directories and find package.json, open a shell there."
+  (interactive)
+  (let ((default-directory (locate-dominating-file (buffer-file-name) "package.json")))
+    (eshell)))
 
 
 (push (expand-file-name "aweshell" jester-submodules-dir) load-path)

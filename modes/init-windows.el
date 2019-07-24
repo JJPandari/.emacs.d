@@ -78,7 +78,7 @@
       "*skewer-error*"
       ("^\\*.*build.*\\*$" :regexp t)
       ("^\\*evil-.+\\*$" :regexp t)
-      'man-mode
+      'Man-mode
       'woman-mode
       'snippet-mode
       ;; TODO not work

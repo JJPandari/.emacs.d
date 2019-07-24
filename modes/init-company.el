@@ -7,8 +7,8 @@
   :init
   (setq company-backends
         '(company-capf company-files company-css
-         (company-dabbrev-code company-gtags company-etags company-keywords)
-         company-dabbrev))
+                       (company-dabbrev-code company-gtags company-etags company-keywords)
+                       company-dabbrev))
   :config
   (global-company-mode 1)
   (setq
@@ -32,7 +32,8 @@
    "<C-m>" 'company-complete-common
    "<tab>" 'expand-snippet-or-complete-selection
    "C-b" 'company-show-doc-buffer
-   "C-g" 'company-abort)
+   "C-g" 'company-abort
+   "<escape>" (lambda! (company-abort) (evil-normal-state)))
   (dotimes (i 10)
     (define-key company-active-map (read-kbd-macro (format "M-%d" i)) 'company-complete-number))
 
@@ -40,6 +41,12 @@
    :states '(insert emacs)
    "<tab>" 'tab-indent-or-complete
    ))
+
+
+(use-package company-tabnine
+  :demand t
+  :config
+  (push 'company-tabnine company-backends))
 
 
 ;; (use-package company-quickhelp

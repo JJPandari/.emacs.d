@@ -22,8 +22,8 @@
    :keymaps 'js2-mode-map
    "RET" 'js2-line-break))
 
-(add-hook! 'js2-mode-hook
-  (setq mode-name (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0)))
+;; (setq mode-name (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0))
+(add-hook! 'js2-mode-hook (setq mode-name "JS2"))
 
 
 (use-package js2-refactor
@@ -70,6 +70,14 @@
              (save-excursion
                (goto-char end) (insert "\']")
                (goto-char start) (delete-char -1) (insert "[\'")))))))))
+
+(defvar jester-monkey-scripts-port "9981"
+  "port number where monkey scripts are hosted on local http server.")
+
+(defun jester/copy-monkey-script-url ()
+  "Copy current buffer file's http address."
+  (interactive)
+  (message (kill-new (format "http://localhost:%s/%s" jester-monkey-scripts-port (buffer-name)))))
 
 (require 'init-ui5)
 

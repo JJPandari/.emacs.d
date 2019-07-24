@@ -129,20 +129,38 @@
       (aggressive-indent-indent-defun))))
 
 
+;; show docstring after param list when point is on a function
+(advice-add
+ 'elisp-get-fnsym-args-string :around
+ (lambda (oldfun sym &rest args)
+   "If SYM is a function, append its docstring."
+   (concat
+    (apply oldfun sym args)
+    (let* ((doc (and (fboundp sym) (documentation sym 'raw)))
+           (oneline (and doc (substring doc 0 (string-match "\n" doc)))))
+      (and oneline
+           (stringp oneline)
+           (not (string= "" oneline))
+           (concat "  |  " (propertize oneline 'face 'italic))))))
+ '((name . "docstring")))
+
+
 (jester/with-major-leader '(emacs-lisp-mode-map lisp-mode-map)
-                            "e" 'eval-last-sexp
-                            "f" 'eval-defun
-                            "i" 'ielm)
+                          "e" 'eval-last-sexp
+                          "f" 'eval-defun
+                          "i" 'ielm)
 
 (general-define-key
  :states '(emacs insert)
  :keymaps '(emacs-lisp-mode-map lisp-mode-map)
  "C-;" (lambda! (insert ";; ")))
 
+
 (use-package lispyville
   :bind (("M-r" . lispy-raise) ("H-r" . lispy-raise-some))
   :init
   (add-hook! (emacs-lisp-mode lisp-mode) (flycheck-mode -1))
+  (add-hook! 'emacs-lisp-mode-hook (setq mode-name "ELisp"))
   ;; load it everywhere
   ;; :hook (prog-mode . lispyville-mode)
   :hook ((emacs-lisp-mode lisp-mode) . lispyville-mode)

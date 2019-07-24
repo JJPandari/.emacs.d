@@ -46,7 +46,7 @@
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
 
 (setq-default mode-line-format
-              ;; (setq mode-line-format ;; this is for debug
+              ;; setq mode-line-format ;; this is for debug
               (list
 
                "%1"
@@ -70,7 +70,7 @@
 
                "%1"
                ;; the current major mode for the buffer.
-               '(:eval (all-the-icons-icon-for-mode major-mode :height 0.8 :v-adjust 0))
+               '(:eval mode-name)
 
                '(:eval (when (and (featurep 'flycheck) flycheck-mode) " "))
                "%1"

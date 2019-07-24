@@ -9,7 +9,8 @@
  "b m" (lambda! (switch-to-buffer (messages-buffer)))
  "b s" 'jester/switch-to-scratch-buffer
  "b y" 'jester/copy-buffer-name
- "<return>" 'jester/alternate-buffer)
+ "<return>" 'jester/alternate-buffer
+ "m s" 'jester/switch-mode)
 
 ;;----------------------------------------------------------------------------
 ;; switch *scratch* buffer
@@ -73,5 +74,14 @@ current window."
   "Copy the buffer name, show it in minibuffer."
   (interactive)
   (message (kill-new (buffer-name))))
+
+;;----------------------------------------------------------------------------
+;; switch major mode
+;;----------------------------------------------------------------------------
+(defun jester/switch-mode ()
+  "Toggle some mode."
+  (interactive)
+  (minibuffer-with-setup-hook #'beginning-of-line
+    (counsel-M-x " -mode$")))
 
 (provide 'init-buffer)

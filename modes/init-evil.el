@@ -120,11 +120,31 @@
 
 
 (use-package evil-surround
-  ;; TODO evil-surround-pairs-alist
   ;; need to setup for pending states
   :demand t
   :config
   (global-evil-surround-mode 1)
+
+  ;; when surrounding FOO,
+  ;; original: "(" outputs "( FOO )", ")" outputs "(FOO)"
+  ;; I want:   "(" outputs "(FOO)",   ")" outputs "( FOO )"
+  (let ((left-right-alist '((?\( . ?\))
+                            (?\[ . ?\])
+                            (?\{ . ?\}))))
+    (mapcar (lambda (pair)
+              (let* ((left (car pair))
+                     (right (cdr pair))
+                     (left-cons (assq left evil-surround-pairs-alist))
+                     (right-cons (assq right evil-surround-pairs-alist))
+                     (left-value (cdr left-cons))
+                     (right-value (cdr right-cons)))
+                (setcdr left-cons right-value)
+                (setcdr right-cons left-value)))
+            left-right-alist))
+
+  (general-define-key
+   :states '(visual)
+   "s" 'evil-surround-region)
   (evil-define-key 'visual evil-snipe-local-mode-map (kbd "s") #'evil-surround-region))
 
 
