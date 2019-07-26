@@ -44,6 +44,9 @@
   (add-hook 'after-save-hook #'check-parens nil t))
 
 (add-hook! 'jester/lispy-modes-hook 'jester/enable-check-parens-on-save)
+(after-load 'aggressive-indent
+  (add-hook! 'jester/lispy-modes-hook
+    (setq-local aggressive-indent-region-function 'lisp-indent-region)))
 
 ;;----------------------------------------------------------------------------
 ;; setup the lispy hooks
@@ -163,7 +166,7 @@
   (add-hook! 'emacs-lisp-mode-hook (setq mode-name "ELisp"))
   ;; load it everywhere
   ;; :hook (prog-mode . lispyville-mode)
-  :hook ((emacs-lisp-mode lisp-mode) . lispyville-mode)
+  :hook ((emacs-lisp-mode ielm-mode lisp-mode inferior-lisp-mode lisp-interaction-mode) . lispyville-mode)
   :config
   (lispyville-set-key-theme
    '(operators
@@ -192,8 +195,14 @@
      (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify)))
 
 (use-package macrostep
-  :commands macrostep-expand)
-;; TODO keys: override evil
+  :commands macrostep-expand
+  :config
+  (defhydra jester/hydra-macrostep (nil nil :foreign-keys run)
+    "macrostep"
+    ("e" macrostep-expand "expand")
+    ("c" macrostep-collapse "collapse")
+    ("q" macrostep-collapse-all "quit" :exit t))
+  (add-hook! 'macrostep-mode-hook (jester/hydra-macrostep/body)))
 
 
 (provide 'init-lisp)

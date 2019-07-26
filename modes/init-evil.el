@@ -79,9 +79,6 @@
    evil-emacs-state-cursor '("SkyBlue2" box)
    evil-replace-state-cursor '("chocolate" (hbar . 2)))
 
-  ;; TODO not working
-  (evil-set-command-property 'evil-shift-left :keep-visual t)
-
   (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
     (list (point-min) (point-max)))
   (define-key evil-inner-text-objects-map "g" 'jester/evil-inner-buffer)
@@ -263,9 +260,12 @@
 ;; but it's normal state there so we lose the bindings. Use motion state.
 (evil-set-initial-state 'special-mode 'motion)
 
-;; TODO not work
-(add-hook! 'snippet-mode-hook (when (string-equal (buffer-name) "+new-snippet+")
-                                (evil-insert-state)))
+(advice-add
+ 'yas-new-snippet :after
+ (lambda (_)
+   "When creating a new snippet, start with insert state."
+   (evil-insert-state))
+ '((name . "insert-state")))
 
 ;; when first line is empty, we probably wanna start typing right away.
 (add-hook! 'with-editor-mode-hook (when (looking-at "$") (evil-insert-state)))
@@ -326,11 +326,10 @@
  :states '(visual)
  "*" 'jester/evil-visual-search-forward
  "#" 'jester/evil-visual-search-backward
- ;; TODO not working
- "<" (lambda! (call-interactively 'evil-shift-left) (evil-visual-restore))
- ">" (lambda! (call-interactively 'evil-shift-right) (evil-visual-restore))
+ "<" (lambda! (call-interactively 'evil-shift-left) (execute-kbd-macro "gv"))
+ ">" (lambda! (call-interactively 'evil-shift-right) (execute-kbd-macro "gv"))
  ;; run macro in the q register on all selected lines
- "Q" ":norm @q RET"
+ "Q" ":norm @q <return>"
 
  ;; fix keys bound by motion state
  "d" 'evil-delete)

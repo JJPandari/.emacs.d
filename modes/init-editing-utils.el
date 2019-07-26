@@ -23,8 +23,7 @@
       kill-ring-max 200
       recentf-max-saved-items 1000)
 
-(after-init (electric-pair-mode 1)) ;; this is global
-
+(electric-indent-mode -1) ;; this is global
 (use-package aggressive-indent
   :hook (after-init . aggressive-indent-global-mode))
 ;; TODO 'aggressive-indent-dont-indent-if: in web-mode indent others but not html

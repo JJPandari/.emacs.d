@@ -10,11 +10,10 @@
   (general-define-key
    :keymaps 'ivy-switch-buffer-map
    "M-k" 'ivy-switch-buffer-kill)
-  ;; TODO
-  (jester/with-major-leader 'ivy-occur-mode-map
-                            "w" 'ivy-wgrep-change-to-wgrep-mode
-                            "," 'wgrep-finish-edit
-                            "a" 'wgrep-exit))
+  (jester/with-major-leader '(ivy-occur-mode-map ivy-occur-grep-mode-map wgrep-mode-map)
+                            "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
+                            "," (lambda! (wgrep-finish-edit) (evil-motion-state))
+                            "a" (lambda! (wgrep-abort-changes) (evil-motion-state))))
 
 (use-package counsel
   :demand t
@@ -91,22 +90,22 @@
   :demand t)
 
 
-;; (use-package ivy-posframe
-;;   :demand t
-;;   :after ivy
-;;   :if window-system
-;;   :config
-;;   (setq ivy-display-function #'ivy-posframe-display)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
-;;   (setq ivy-posframe-hide-minibuffer t)
-;;   (setq ivy-posframe-parameters
-;;         `((background-color . ,(face-attribute 'default :background))
-;;           (foreground-color . ,(face-attribute 'default :foreground))))
-;;   (ivy-posframe-enable))
+(use-package ivy-posframe
+  :demand t
+  :after ivy
+  :if window-system
+  :config
+  (setq ivy-display-function #'ivy-posframe-display)
+  ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+  ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
+  ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
+  ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
+  ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
+  (setq ivy-posframe-hide-minibuffer t)
+  (setq ivy-posframe-parameters
+        `((background-color . ,(face-attribute 'default :background))
+          (foreground-color . ,(face-attribute 'default :foreground))))
+  (ivy-posframe-enable))
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords

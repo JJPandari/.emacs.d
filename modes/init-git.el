@@ -16,7 +16,6 @@
 ;;----------------------------------------------------------------------------
 ;; browse current file history
 ;;----------------------------------------------------------------------------
-;; TODO use hydra
 (use-package git-timemachine
   :init
   (jester/with-leader
@@ -31,7 +30,16 @@
    "J" 'git-timemachine-show-next-revision
    "q" 'git-timemachine-quit
    "s" 'git-timemachine-show-revision-fuzzy
-   "r" 'git-timemachine-kill-abbreviated-revision))
+   "r" 'git-timemachine-kill-abbreviated-revision)
+
+  (defhydra jester/git-timemachine-hydra (nil nil :foreign-keys run)
+    "git timemachine"
+    ("K" git-timemachine-show-previous-revision "earlier")
+    ("J" git-timemachine-show-next-revision "later")
+    ("q" git-timemachine-quit "quit" :exit t)
+    ("s" git-timemachine-show-revision-fuzzy "arbitrary jump")
+    ("r" git-timemachine-kill-abbreviated-revision "copy rev"))
+  (add-hook! 'git-timemachine-mode-hook (jester/git-timemachine-hydra/body)))
 
 ;;----------------------------------------------------------------------------
 ;; The mighty magit

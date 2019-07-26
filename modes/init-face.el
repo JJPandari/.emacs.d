@@ -77,13 +77,15 @@
   (pcase window-system
     ('mac 150)
     ('w32 140)
-    ('x 140))
+    ('x 140)
+    ('nil 140))
   "small font size depending on system.")
 (defvar jester-large-font-size
   (pcase window-system
     ('mac 160)
     ('w32 150)
-    ('x 150))
+    ('x 150)
+    ('nil 140))
   "large font size depending on system.")
 
 (defun jester/use-small-font ()

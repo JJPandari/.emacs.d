@@ -71,15 +71,6 @@
     (thing-at-point 'symbol t)))
 
 ;;----------------------------------------------------------------------------
-;; run major mode hooks
-;;----------------------------------------------------------------------------
-;; TODO include parent modes
-(defun jester/run-major-mode-hooks ()
-  "Run hooks for the current major mode."
-  (interactive)
-  (run-hooks (intern (format "%s-hook" major-mode))))
-
-;;----------------------------------------------------------------------------
 ;; Merge imenus.
 ;;----------------------------------------------------------------------------
 ;; https://stackoverflow.com/a/21656063/4788022
@@ -109,8 +100,16 @@ with traditional regex based imenu."
 ;; Select the emacs frame (used in shell scripts).
 ;;----------------------------------------------------------------------------
 (defun open-emacs-window ()
-    "Switch to emacs frame."
-    (select-frame-set-input-focus (selected-frame)))
+  "Switch to emacs frame."
+  (select-frame-set-input-focus (selected-frame)))
+
+;;----------------------------------------------------------------------------
+;; remove all advices.
+;;----------------------------------------------------------------------------
+(defun advice-remove-all (sym)
+  "Remove all advices from symbol SYM."
+  (interactive "aFunction symbol: ")
+  (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
 
 ;;----------------------------------------------------------------------------
 ;; add hook shorthand
