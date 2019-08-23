@@ -19,15 +19,19 @@
   :demand t
   :after ivy
   :config
-  ;; not needed, ag always respects ~/.agignore (right?)
-  ;; (setq counsel-ag-base-command "ag --nocolor --nogroup -p ~/.agignore %s")
+  ;; --no-sort is much faster
+  (setq counsel-fzf-cmd "fzf --no-sort -f \"%s\""
+        ;; limit file size and line length to be faster. long lines doesn't matter when search but is laggy to display
+        counsel-rg-base-command "rg -S --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s .")
+
   (jester/with-leader
    "p f" 'jester/open-project-file
    "p F" (lambda! (jester/open-project-file (thing-at-point 'filename)))
    ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
-   "/" 'counsel-ag
-   "*" (lambda! (counsel-ag (jester/region-or-symbol)))
+   "/" 'counsel-rg
+   "*" (lambda! (counsel-rg (jester/region-or-symbol)))
    "f r" 'counsel-recentf
+   "f z" 'jester/fzf-somewhere
    "t s" 'counsel-load-theme
    "s j" 'counsel-imenu
    "." 'counsel-imenu
@@ -39,8 +43,7 @@
    "M-x" 'counsel-M-x
    "M-y" 'counsel-yank-pop
    "C-s" 'swiper
-   "C-S-s" (lambda! (swiper (regexp-quote (jester/region-or-symbol))))
-   "C-h C-f" 'counsel-describe-face)
+   "C-S-s" (lambda! (swiper (jester/region-or-symbol))))
 
   (dolist (that-ivy-map
            '(ivy-mode-map ivy-switch-buffer-map ivy-minibuffer-map
@@ -58,11 +61,24 @@
      "H-x" 'kill-region
      "<escape>" #'keyboard-escape-quit))
 
-  (defun jester/open-project-file (&optional file-name)
+  (defun jester/fzf-somewhere (&optional start-dir)
+    "Do `counsel-fzf' in directory START-DIR.
+If called interactively, let the user select start directory first."
+    (interactive)
+    (unless start-dir
+      (ivy-read "dir to start fzf: " #'read-file-name-internal
+                :matcher #'counsel--find-file-matcher
+                :action (lambda (selection) (setq start-dir selection))
+                :history 'file-name-history
+                :keymap counsel-find-file-map))
+    (let ((default-directory start-dir))
+      (counsel-fzf)))
+
+  (defun jester/open-project-file ()
     (interactive)
     (cond
-     ((locate-dominating-file default-directory ".git") (counsel-git file-name))
-     (t (counsel-find-file file-name))))
+     ((locate-dominating-file default-directory ".git") (counsel-git))
+     (t (jester/fzf-somewhere))))
 
   (general-define-key
    [remap switch-to-buffer] 'ivy-switch-buffer
@@ -90,22 +106,22 @@
   :demand t)
 
 
-(use-package ivy-posframe
-  :demand t
-  :after ivy
-  :if window-system
-  :config
-  (setq ivy-display-function #'ivy-posframe-display)
-  ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-  ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
-  ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
-  ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
-  ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
-  (setq ivy-posframe-hide-minibuffer t)
-  (setq ivy-posframe-parameters
-        `((background-color . ,(face-attribute 'default :background))
-          (foreground-color . ,(face-attribute 'default :foreground))))
-  (ivy-posframe-enable))
+;; (use-package ivy-posframe
+;;   :demand t
+;;   :after ivy
+;;   :if window-system
+;;   :config
+;;   (setq ivy-display-function #'ivy-posframe-display)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
+;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
+;;   (setq ivy-posframe-hide-minibuffer t)
+;;   (setq ivy-posframe-parameters
+;;         `((background-color . ,(face-attribute 'default :background))
+;;           (foreground-color . ,(face-attribute 'default :foreground))))
+;;   (ivy-posframe-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords

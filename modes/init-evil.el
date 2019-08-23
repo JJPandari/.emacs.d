@@ -72,11 +72,13 @@
    evil-insert-state-tag   (propertize "I" 'face '((:background "chartreuse3") :foreground "white"))
    evil-emacs-state-tag    (propertize "E" 'face '((:background "SkyBlue2" :foreground "black")))
    evil-operator-state-tag (propertize "O" 'face '((:background "#ffec8b" :foreground "#93a1a1")))
+   evil-replace-state-tag (propertize "R" 'face '((:background "chocolate" :foreground "white")))
    evil-normal-state-cursor '("DarkGoldenrod2" box)
    evil-motion-state-cursor '("plum3" box)
    evil-visual-state-cursor '("gray" (hbar . 2))
    evil-insert-state-cursor '("chartreuse3" (bar . 2))
    evil-emacs-state-cursor '("SkyBlue2" box)
+   evil-operator-state-cursor '("chocolate" box)
    evil-replace-state-cursor '("chocolate" (hbar . 2)))
 
   (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
@@ -169,17 +171,24 @@
   (setq evil-snipe-repeat-keys nil
         evil-snipe-enable-highlight nil)
 
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "s") #'evil-substitute)
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "S") #'evil-change-whole-line)
+  ;; remove default bindings
+  (general-define-key
+   :states '(normal operator)
+   :keymaps 'evil-snipe-local-mode-map
+   "s" nil
+   "S" nil
+   "z" nil
+   "Z" nil
+   "x" nil
+   "X" nil)
 
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "g s") #'evil-snipe-s)
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "g S") #'evil-snipe-S)
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "g t") #'evil-snipe-x)
-  (evil-define-key 'normal evil-snipe-local-mode-map (kbd "g T") #'evil-snipe-X)
-  ;; (evil-define-key 'visual evil-snipe-local-mode-map "z" #'evil-snipe-s)
-  ;; (evil-define-key 'visual evil-snipe-local-mode-map "Z" #'evil-snipe-S)
-  ;; (evil-define-key 'visual evil-snipe-local-mode-map "x" #'evil-snipe-x)
-  ;; (evil-define-key 'visual evil-snipe-local-mode-map "X" #'evil-snipe-X)
+  (general-define-key
+   :states '(normal visual operator)
+   :keymaps 'evil-snipe-local-mode-map
+   "g s" 'evil-snipe-s
+   "g S" 'evil-snipe-S
+   "g t" 'evil-snipe-x
+   "g T" 'evil-snipe-X)
   (define-key evil-normal-state-map (kbd "DEL") 'evil-snipe-repeat-reverse))
 
 
@@ -215,6 +224,14 @@
    :states '(normal)
    "+" 'evil-numbers/inc-at-pt
    "-" 'evil-numbers/dec-at-pt))
+
+
+(use-package evil-goggles
+  :after evil
+  :custom (evil-goggles-duration 0.1)
+  :hook (evil-mode . evil-goggles-mode)
+  :config
+  (evil-goggles-use-diff-faces))
 
 
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
@@ -268,7 +285,7 @@
  '((name . "insert-state")))
 
 ;; when first line is empty, we probably wanna start typing right away.
-(add-hook! 'with-editor-mode-hook (when (looking-at "$") (evil-insert-state)))
+(add-hook! 'with-editor-mode-hook (when (eolp) (evil-insert-state)))
 
 ;;----------------------------------------------------------------------------
 ;; With-leader keys...
@@ -358,14 +375,12 @@
  "C-j" 'evil-scroll-line-down
  "C-k" 'evil-scroll-line-up
  "'" 'evil-goto-mark
- "C-h C-f" 'describe-face
+ "C-h C-f" 'list-faces-display
  "C-h p" 'describe-package
  "C-h c" 'describe-char)
 
 (general-define-key
  :states '(normal visual motion operator)
- "[" 'backward-paragraph
- "]" 'forward-paragraph
  "C-a" 'evil-first-non-blank
  "C-e" 'evil-end-of-line)
 

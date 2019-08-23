@@ -62,13 +62,13 @@
 ;;----------------------------------------------------------------------------
 (defun jester/region-or-symbol ()
   "Get active region or symbol at point."
-  (if (region-active-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (deactivate-mark)
-        (buffer-substring-no-properties
-         beg end))
-    (thing-at-point 'symbol t)))
+  (regexp-quote (if (region-active-p)
+                    (let ((beg (region-beginning))
+                          (end (region-end)))
+                      (deactivate-mark)
+                      (buffer-substring-no-properties
+                       beg end))
+                  (thing-at-point 'symbol t))))
 
 ;;----------------------------------------------------------------------------
 ;; Merge imenus.
@@ -110,6 +110,24 @@ with traditional regex based imenu."
   "Remove all advices from symbol SYM."
   (interactive "aFunction symbol: ")
   (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
+
+;;----------------------------------------------------------------------------
+;; convert mode list to keymap list
+;;----------------------------------------------------------------------------
+(defun jester/mode-list-to-mode-map-list (modes)
+  "Return a list of keymaps corresponding to the list `MODES'."
+  (mapcar
+   (lambda (mode) (intern (format "%s-map" mode)))
+   modes))
+
+;;----------------------------------------------------------------------------
+;; eval and always display in same window
+;;----------------------------------------------------------------------------
+(defmacro jester/eval-with-display-in-same-window (&rest forms)
+  "Eval `FORMS', with the behavior of `display-buffer' fixed to display in same window."
+  (declare (indent defun))
+  `(cl-flet ((display-buffer (buffer action) (display-buffer buffer '(display-buffer-same-window . nil))))
+     ,@forms))
 
 ;;----------------------------------------------------------------------------
 ;; add hook shorthand

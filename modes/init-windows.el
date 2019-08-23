@@ -82,8 +82,9 @@
       'woman-mode
       'snippet-mode
       ;; TODO not work
-      ('markdown-mode :custom (lambda (buffer)
-                                (with-current-buffer buffer edit-server-edit-mode))))
+      ;; ('markdown-mode :custom (lambda (buffer)
+      ;;                           (with-current-buffer buffer edit-server-edit-mode)))
+      )
     "cars for shackle rule, representing conditions using same-window rule")
 
   (defvar jester-shackle-same-window-rule

@@ -46,7 +46,13 @@
 (use-package company-tabnine
   :demand t
   :config
-  (push 'company-tabnine company-backends))
+  (setq jester-company-backends-with-tabnine (cons 'company-tabnine company-backends))
+  (defun jester/use-tabnine-for-major-mode (major-mode)
+    "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
+    (add-hook (intern (format "%s-hook" major-mode))
+              (lambda () (setq-local company-backends jester-company-backends-with-tabnine))))
+  (dolist (mode '(js2-mode css-mode less-css-mode scss-mode))
+    (jester/use-tabnine-for-major-mode mode)))
 
 
 ;; (use-package company-quickhelp

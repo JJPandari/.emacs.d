@@ -1,3 +1,4 @@
+;; parens are taken care by paredit etc., others shall be electric.
 (after-init (electric-pair-mode 1)) ;; this is global
 
 (push (expand-file-name "awesome-pair" jester-submodules-dir) load-path)
@@ -19,7 +20,7 @@
     "Kill semantic unit after point, if only whitespace is left afterwards, delete this line."
     (interactive)
     (awesome-pair-kill)
-    (when (and (looking-back "^ *") (looking-at " *$"))
+    (when (and (looking-back "^\s*") (looking-at "\s*$"))
       (delete-region (point) (line-end-position 0))))
 
   (general-define-key

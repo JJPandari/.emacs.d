@@ -111,6 +111,5 @@
                mode-line-end-spaces))
 
 ;; TODO  indicator for recording a macro
-;; TODO  input method
 
 (provide 'init-mode-line)

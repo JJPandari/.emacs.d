@@ -1,5 +1,5 @@
-(setq-default initial-scratch-message
-              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
+(setq initial-scratch-message
+      (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
 (general-define-key [remap eval-expression] 'pp-eval-expression)
 
@@ -43,9 +43,9 @@
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
 
-(add-hook! 'jester/lispy-modes-hook 'jester/enable-check-parens-on-save)
+(add-hook 'jester-lispy-modes-hook 'jester/enable-check-parens-on-save)
 (after-load 'aggressive-indent
-  (add-hook! 'jester/lispy-modes-hook
+  (add-hook! 'jester-lispy-modes-hook
     (setq-local aggressive-indent-region-function 'lisp-indent-region)))
 
 ;;----------------------------------------------------------------------------
@@ -53,27 +53,35 @@
 ;;----------------------------------------------------------------------------
 (defun jester/lisp-setup ()
   "Enable features useful in any Lisp mode."
-  (run-hooks 'jester/lispy-modes-hook))
+  (run-hooks 'jester-lispy-modes-hook))
 
 (defun jester/elisp-setup ()
   "Enable features useful elisp modes."
-  (run-hooks 'jester/elispy-modes-hook))
+  (run-hooks 'jester-elispy-modes-hook))
 
-(defconst jester/elispy-modes
+(defconst jester-elispy-modes
   '(emacs-lisp-mode ielm-mode)
   "Major modes relating to elisp.")
 
-(defconst jester/lispy-modes
-  (append jester/elispy-modes
+(defconst jester-lispy-modes
+  (append jester-elispy-modes
           '(lisp-mode inferior-lisp-mode lisp-interaction-mode))
-  "All lispy major modes.")
+  "Major modes relating to lisp.")
+
+(defconst jester-elispy-maps
+  (jester/mode-list-to-mode-map-list jester-elispy-modes)
+  "Keymaps relating to elisp.")
+
+(defconst jester-lispy-maps
+  (jester/mode-list-to-mode-map-list jester-lispy-modes)
+  "Keymaps relating to lisp.")
 
 (require 'derived)
 
-(dolist (hook (mapcar #'derived-mode-hook-name jester/lispy-modes))
+(dolist (hook (mapcar #'derived-mode-hook-name jester-lispy-modes))
   (add-hook hook 'jester/lisp-setup))
 
-(dolist (hook (mapcar #'derived-mode-hook-name jester/elispy-modes))
+(dolist (hook (mapcar #'derived-mode-hook-name jester-elispy-modes))
   (add-hook hook 'jester/elisp-setup))
 
 
@@ -132,6 +140,7 @@
       (aggressive-indent-indent-defun))))
 
 
+;; https://emacs-china.org/t/minibuffer-point-elisp/10048/6?u=jjpandari
 ;; show docstring after param list when point is on a function
 (advice-add
  'elisp-get-fnsym-args-string :around
@@ -155,8 +164,15 @@
 
 (general-define-key
  :states '(emacs insert)
- :keymaps '(emacs-lisp-mode-map lisp-mode-map)
+ :keymaps jester-lispy-maps
  "C-;" (lambda! (insert ";; ")))
+
+
+(push (expand-file-name "elispfl" jester-submodules-dir) load-path)
+(use-package elispfl
+  :ensure nil
+  :demand t
+  :config (elispfl-mode 1))
 
 
 (use-package lispyville
@@ -192,8 +208,15 @@
   (jester/with-leader
    ","
    (general-predicate-dispatch 'evil-indent
-     (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify)))
+     (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify))
 
+  ;; some other lispy{,ville} keys
+  (general-define-key
+   :states '(emacs insert normal visual)
+   :keymaps jester-lispy-maps
+   "M-u" 'lispyville-wrap-round))
+
+
 (use-package macrostep
   :commands macrostep-expand
   :config

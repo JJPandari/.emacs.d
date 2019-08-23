@@ -49,10 +49,8 @@
   :config
   (general-define-key
    :states '(normal visual motion)
-   ;; TODO bind in other enabled modes
-   :keymaps '(prog-mode-map)
+   :keymaps '(prog-mode-map css-mode yaml-mode conf-mode markdown-mode help-mode)
    "<tab>" 'jester/symbol-overlay-put
-   ;; "<C-i>" 'symbol-overlay-put
    "M-n" 'symbol-overlay-jump-next
    "M-p" 'symbol-overlay-jump-prev)
   ;; don't bind any key
@@ -65,7 +63,7 @@
     (if (region-active-p)
         (progn
           (symbol-overlay-put-all
-           (buffer-substring-no-properties (region-beginning) (region-end))
+           (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))
            symbol-overlay-scope)
           (deactivate-mark))
       (symbol-overlay-put))))

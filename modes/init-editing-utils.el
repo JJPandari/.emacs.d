@@ -1,3 +1,6 @@
+;; TODO auto `else' when use space after if{
+;; }
+;; TODO pad-operator
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
@@ -24,9 +27,10 @@
       recentf-max-saved-items 1000)
 
 (electric-indent-mode -1) ;; this is global
+;; TODO undo: group to previous ops for evil
 (use-package aggressive-indent
+  :custom (aggressive-indent-region-function 'evil-indent "also convert tab/space when indent")
   :hook (after-init . aggressive-indent-global-mode))
-;; TODO 'aggressive-indent-dont-indent-if: in web-mode indent others but not html
 
 (require 'recentf)
 (add-to-list 'recentf-exclude (list "/tmp/" "/ssh:" "COMMIT_EDITMSG\\'"
@@ -68,6 +72,16 @@
 
 
 (use-package string-inflection)
+
+
+(use-package subword
+  :ensure nil
+  :init
+  (general-define-key
+   :states '(operator)
+   "x" 'subword-forward
+   "z" 'subword-backward)
+  :commands (subword-forward subword-backward))
 
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation
@@ -142,9 +156,9 @@
   (indent-for-tab-command))
 
 (general-define-key
- :states '(normal)
+ :states '(normal visual)
  "z k" 'jester/move-line-up
- "z j" #'jester/move-line-down)
+ "z j" 'jester/move-line-down)
 
 ;;----------------------------------------------------------------------------
 ;; like web-mode-on-post-command
@@ -285,10 +299,6 @@ otherwise move to before semicolon."
  :states '(insert emacs)
  :keymaps '(web-mode-map js2-mode-map coffee-mode-map)
  "C-t" 'jester/insert-this.)
-;; TODO
-;; foo             "1 xx"  ->      foo {
-;; bar: 12                           bar: 12
-;;                                 }
 
 ;;----------------------------------------------------------------------------
 ;; insert a curly block
@@ -312,7 +322,6 @@ Threat is as function body when from endline before )"
 ;;----------------------------------------------------------------------------
 (evil-define-motion jester/backward-bracket (count)
   "Move backward to a (, [ or {."
-  ;; TODO not really exclusive
   ;; TODO enable lispyville everywhere
   :type exclusive
   (setq count (or count 1))
@@ -334,6 +343,86 @@ Threat is as function body when from endline before )"
 (jester/with-leader
  "(" 'backward-up-list
  ")" 'up-list)
+
+;;----------------------------------------------------------------------------
+;; move to paragraph begin/end
+;;----------------------------------------------------------------------------
+(evil-define-motion jester/forward-paragraph (count)
+  "Move to paragraph end, line-wise."
+  :type line
+  (interactive "p")
+  (forward-paragraph count)
+  (previous-line))
+
+(evil-define-motion jester/backward-paragraph (count)
+  "Move to paragraph start, line-wise."
+  :type line
+  (interactive "p")
+  (backward-paragraph count)
+  (next-line))
+
+(general-define-key
+ :states '(normal visual motion operator)
+ "[" 'jester/backward-paragraph
+ "]" 'jester/forward-paragraph)
+
+;;----------------------------------------------------------------------------
+;; narrow
+;;----------------------------------------------------------------------------
+;; https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
+(defun line-number-at-position (pos)
+  "Returns the line number for position `POS'."
+  (save-restriction
+    (widen)
+    (save-excursion
+      (goto-char pos)
+      (+ 1 (current-line)))))
+
+(defun narrow-to-region-indirect-buffer-maybe (start end use-indirect-buffer)
+  "Indirect buffer could multiple widen on same file."
+  (if (region-active-p) (deactivate-mark))
+  (if use-indirect-buffer
+      (with-current-buffer
+          (jester/eval-with-display-in-same-window
+            (clone-indirect-buffer
+             (generate-new-buffer-name
+              (format "%s-indirect-:%s-:%s"
+                      (buffer-name) (line-number-at-position start) (line-number-at-position end)))
+             'display))
+        (narrow-to-region start end)
+        (goto-char (point-min)))
+    (narrow-to-region start end)))
+
+;; https://gist.github.com/mwfogleman/95cc60c87a9323876c6c
+(defun narrow-or-widen-dwim (&optional use-indirect-buffer)
+  "If the buffer is narrowed, it widens.
+ Otherwise, it narrows to region, or Org subtree.
+If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen content."
+  (interactive "P")
+  (cond ((buffer-narrowed-p) (widen))
+        ((region-active-p)
+         (narrow-to-region-indirect-buffer-maybe (region-beginning)
+                                                 (region-end)
+                                                 use-indirect-buffer))
+        ((equal major-mode 'org-mode)
+         (org-narrow-to-subtree))
+        ((derived-mode-p 'diff-mode)
+         (let* (b e)
+           (save-excursion
+             ;; If the (point) is already beginning or end of file diff,
+             ;; the `diff-beginning-of-file' and `diff-end-of-file' return nil
+             (setq b (progn (diff-beginning-of-file) (point)))
+             (setq e (progn (diff-end-of-file) (point))))
+           (when (and b e (< b e))
+             (narrow-to-region-indirect-buffer-maybe b e use-indirect-buffer))))
+        ((derived-mode-p 'prog-mode)
+         (mark-defun)
+         (narrow-to-region-indirect-buffer-maybe (region-beginning)
+                                                 (region-end)
+                                                 use-indirect-buffer))
+        (t (error "Please select a region to narrow to"))))
+
+(jester/with-leader "n n" 'narrow-or-widen-dwim)
 
 
 (provide 'init-editing-utils)

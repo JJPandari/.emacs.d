@@ -23,7 +23,7 @@
 ;; Adjust garbage collection thresholds during startup, and thereafter
 ;;----------------------------------------------------------------------------
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
+      (init-gc-cons-threshold (* 512 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold)
@@ -61,6 +61,7 @@
 (require 'init-flycheck)
 
 (require 'init-ivy)
+;; (require 'init-helm)
 (require 'init-company)
 (require 'init-yas)
 (require 'init-windows)
@@ -90,10 +91,11 @@
 ;; ;; (require 'init-haskell)
 ;; (require 'init-ruby)
 ;; (require 'init-rails)
+;; (require 'init-php)
 ;; (require 'init-sql)
 (require 'init-yaml)
-;; (require 'init-docker)
-;; ;; (maybe-require-package 'nginx-mode)
+(require 'init-docker)
+(require 'init-nginx)
 (require 'init-lua)
 (require 'init-ahk)
 (require 'init-dotenv)
@@ -111,6 +113,7 @@
 (require 'init-chinese)
 (require 'init-keyfreq)
 (require 'init-edit-server)
+(require 'init-player)
 (require 'init-misc)
 
 ;; Extra packages which don't require any configuration

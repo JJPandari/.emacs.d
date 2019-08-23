@@ -1,5 +1,3 @@
-(setq initial-scratch-message "")
-
 (jester/with-leader
  "b b" 'switch-to-buffer
  "b i" 'ibuffer
@@ -11,6 +9,24 @@
  "b y" 'jester/copy-buffer-name
  "<return>" 'jester/alternate-buffer
  "m s" 'jester/switch-mode)
+
+;;----------------------------------------------------------------------------
+;; setup ibuffer.
+;;----------------------------------------------------------------------------
+(defun ibuffer-set-up-preferred-filters ()
+  (unless (eq ibuffer-sorting-mode 'filename/process)
+    (ibuffer-do-sort-by-filename/process)))
+
+(add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
+
+(after-load 'ibuffer
+  ;; Use human readable Size column instead of original one
+  (define-ibuffer-column size-h
+    (:name "Size" :inline t)
+    (cond
+     ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+     ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+     (t (format "%8d" (buffer-size))))))
 
 ;;----------------------------------------------------------------------------
 ;; switch *scratch* buffer
@@ -38,24 +54,6 @@ current window."
      (cl-find-if (lambda (buffer)
                    (not (eq buffer current-buffer)))
                  (mapcar #'car (window-prev-buffers window))))))
-
-;;----------------------------------------------------------------------------
-;; setup ibuffer.
-;;----------------------------------------------------------------------------
-(defun ibuffer-set-up-preferred-filters ()
-  (unless (eq ibuffer-sorting-mode 'filename/process)
-    (ibuffer-do-sort-by-filename/process)))
-
-(add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
-
-(after-load 'ibuffer
-            ;; Use human readable Size column instead of original one
-            (define-ibuffer-column size-h
-              (:name "Size" :inline t)
-              (cond
-               ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
-               ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-               (t (format "%8d" (buffer-size))))))
 
 ;;----------------------------------------------------------------------------
 ;; kill this buffer.

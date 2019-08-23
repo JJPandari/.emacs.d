@@ -49,6 +49,34 @@
   (evil-set-initial-state 'skewer-error-mode 'motion))
 
 
+;; (use-package rjsx-mode
+;;   :init
+;;   (setq
+;;    magic-mode-alist (append
+;;                      '(("import\s+.+\s+from\s+['\"]react['\"]" . rjsx-mode))
+;;                      magic-mode-alist))
+;;   (add-hook
+;;    'rjsx-mode-hook
+;;    (lambda () (flycheck-mode 1)
+;;      (evil-matchit-mode 1)
+;;      (add-hook 'post-command-hook 'jester/on-post-newline nil t)
+;;      (setq imenu-create-index-function (lambda () (jester/merge-imenu 'js2-mode-create-imenu-index)))
+;;      (setq
+;;       imenu-generic-expression
+;;       '((nil "^  \\(state\\) = {" 1)))))
+;;   :config
+;;   (evil-define-key 'insert rjsx-mode-map (kbd "C-b") #'rjsx-delete-creates-full-tag)
+;;   (modify-syntax-entry ?_ "w" rjsx-mode-syntax-table)
+
+;;   (defun jester/import-antd-form-function ()
+;;     "import the function at point as an antd form util function"
+;;     (interactive)
+;;     (let ((fun (thing-at-point 'symbol)))
+;;       (evil-open-above 1)
+;;       (insert (format "const { %s } = this.props.form;" fun))
+;;       (evil-normal-state))))
+
+
 ;; https://emacs-china.org/t/javascript/7860?u=jjpandari
 (defun jester/js2r-toggle-object-property-access-style ()
   "Convert the string at point into a template string."

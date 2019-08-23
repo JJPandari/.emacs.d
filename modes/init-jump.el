@@ -5,7 +5,8 @@
   (general-define-key
    :states '(normal motion)
    "g d" 'dumb-jump-go
-   "g b" 'dumb-jump-back)
+   ;; "g b" 'dumb-jump-back
+   "g b" 'xref-pop-marker-stack)
   (general-define-key
    :states '(normal motion)
    :keymaps '(emacs-lisp-mode-map lisp-mode-map)

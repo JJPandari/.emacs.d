@@ -7,3 +7,6 @@
 [submodule "targets"]
 	path = extensions/targets
 	url = git@github.com:noctuid/targets.el.git
+[submodule "elispfl"]
+	path = extensions/elispfl
+	url = git@github.com:cireu/elispfl.git

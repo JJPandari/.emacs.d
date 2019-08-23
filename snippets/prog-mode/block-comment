@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: documenty comment
-# key: dc
+# name: block comment
+# key: bc
 # --
 /**
  * $0

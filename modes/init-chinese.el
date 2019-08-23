@@ -10,6 +10,7 @@
   :bind ("C-c y" . youdao-dictionary-search-at-point+)
   )
 
+
 (use-package pyim
   :demand t
   :config
@@ -31,6 +32,7 @@
    ;; ("C-;" . pyim-delete-word-from-personal-buffer)
    ))
 
+
 (use-package pyim-wbdict
   :demand t
   :after pyim
