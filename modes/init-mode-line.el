@@ -46,7 +46,6 @@
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
 
 (setq-default mode-line-format
-              ;; setq mode-line-format ;; this is for debug
               (list
 
                "%1"
@@ -56,6 +55,12 @@
                ;; " %1"
                ;; ;; evil state
                ;; '(:eval evil-mode-line-tag)
+
+               "%1"
+               '(:eval (when defining-kbd-macro
+                         (format " %s%c "
+                                 (propertize "" 'face '((:family "FontAwesome")))
+                                 evil-this-macro)))
 
                " %+"
 
@@ -83,7 +88,7 @@
                "%1"
                ;; git info
                '(:eval (when vc-mode
-                         (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))
+                         (s-replace "Git" (propertize "" 'face '((:family "github-octicons"))) vc-mode)))
 
                ;; minor modes
                ;; minor-mode-alist
@@ -110,6 +115,5 @@
 
                mode-line-end-spaces))
 
-;; TODO  indicator for recording a macro
 
 (provide 'init-mode-line)

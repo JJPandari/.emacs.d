@@ -1,6 +1,5 @@
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
-;; TODO press a key in minibuffer to continue in evil-command-window
 
 (general-define-key
  :keymaps '(minibuffer-local-map minibuffer-local-ns-map minibuffer-local-completion-map minibuffer-local-must-match-map minibuffer-local-isearch-map

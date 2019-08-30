@@ -226,6 +226,7 @@
    "-" 'evil-numbers/dec-at-pt))
 
 
+;; TODO support for lispyville & `general-key-dispatch'
 (use-package evil-goggles
   :after evil
   :custom (evil-goggles-duration 0.1)
@@ -273,6 +274,7 @@
 ;; Set initial states for modes.
 ;;----------------------------------------------------------------------------
 (evil-set-initial-state 'debugger-mode 'motion)
+(evil-set-initial-state 'messages-buffer-mode 'motion)
 ;; special mode is for viewing info, e.g. "q" is bound to quit,
 ;; but it's normal state there so we lose the bindings. Use motion state.
 (evil-set-initial-state 'special-mode 'motion)

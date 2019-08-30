@@ -1,6 +1,3 @@
-;; TODO auto `else' when use space after if{
-;; }
-;; TODO pad-operator
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
@@ -27,7 +24,6 @@
       recentf-max-saved-items 1000)
 
 (electric-indent-mode -1) ;; this is global
-;; TODO undo: group to previous ops for evil
 (use-package aggressive-indent
   :custom (aggressive-indent-region-function 'evil-indent "also convert tab/space when indent")
   :hook (after-init . aggressive-indent-global-mode))
@@ -82,6 +78,19 @@
    "x" 'subword-forward
    "z" 'subword-backward)
   :commands (subword-forward subword-backward))
+
+
+(use-package electric-operator
+  :hook ((js2-mode . electric-operator-mode)
+         (css-mode . electric-operator-mode)
+         (sass-mode . electric-operator-mode)
+         (rust-mode . electric-operator-mode)
+         (java-mode . electric-operator-mode)
+         (python-mode . electric-operator-mode)
+         (sql-mode . electric-operator-mode)
+         (c-mode . electric-operator-mode)
+         (php-mode . electric-operator-mode)))
+
 
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation
@@ -376,19 +385,18 @@ Threat is as function body when from endline before )"
     (widen)
     (save-excursion
       (goto-char pos)
-      (+ 1 (current-line)))))
+      (+ 1 (count-lines (point-min) (line-beginning-position 1))))))
 
 (defun narrow-to-region-indirect-buffer-maybe (start end use-indirect-buffer)
   "Indirect buffer could multiple widen on same file."
   (if (region-active-p) (deactivate-mark))
   (if use-indirect-buffer
       (with-current-buffer
-          (jester/eval-with-display-in-same-window
-            (clone-indirect-buffer
-             (generate-new-buffer-name
-              (format "%s-indirect-:%s-:%s"
-                      (buffer-name) (line-number-at-position start) (line-number-at-position end)))
-             'display))
+          (clone-indirect-buffer
+           (generate-new-buffer-name
+            (format "%s-indirect-:%s-:%s"
+                    (buffer-name) (line-number-at-position start) (line-number-at-position end)))
+           'display)
         (narrow-to-region start end)
         (goto-char (point-min)))
     (narrow-to-region start end)))
@@ -423,6 +431,82 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
         (t (error "Please select a region to narrow to"))))
 
 (jester/with-leader "n n" 'narrow-or-widen-dwim)
+
+;;----------------------------------------------------------------------------
+;; insert lorem
+;;----------------------------------------------------------------------------
+(defun insert-lorem ()
+  (interactive)
+  (insert "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem mauris, aliquam vel interdum in, faucibus non libero. Asunt in anim uis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in anim id est laborum. Allamco laboris nisi ut aliquip ex ea commodo consequat."))
+
+;;----------------------------------------------------------------------------
+;; do something to a comma-delimitered sentence
+;;----------------------------------------------------------------------------
+(evil-define-text-object jester/evil-a-subsentence (count &optional beg end type)
+  "Select a subsentence(delimitered by comma)."
+  :extend-selection nil
+  (list (progn
+          (re-search-backward "[,.] ?")
+          (forward-char)
+          (when (eq (char-after (point)) ? ) (forward-char))
+          (point))
+        (re-search-forward "[,.] ?")))
+
+(evil-define-text-object jester/evil-inner-subsentence (count &optional beg end type)
+  "Select a subsentence(delimitered by comma), without the punctuations."
+  :extend-selection nil
+  (list (progn
+          (re-search-backward "[,.] ?")
+          ;; (re-search-backward "[,.] ?\\|( ?")
+          (forward-char)
+          (when (eq (char-after (point)) ? ) (forward-char))
+          (point))
+        (progn (re-search-forward "[,.] ?")
+               (backward-char)
+               (when (memq (char-before) (list ?. ?,)) (backward-char))
+               (point))))
+
+(general-define-key
+ :keymaps 'evil-outer-text-objects-map
+ "S" 'jester/evil-a-subsentence)
+(general-define-key
+ :keymaps 'evil-inner-text-objects-map
+ "S" 'jester/evil-inner-subsentence)
+
+;;----------------------------------------------------------------------------
+;; select an argument
+;;----------------------------------------------------------------------------
+(evil-define-text-object jester/evil-a-arg (count &optional beg end type)
+  "Select an argument."
+  :extend-selection nil
+  (let* (last-arg-p
+         (head (progn
+                 (re-search-backward "[,(] ?")
+                 (forward-char)
+                 (when (eq (char-after (point)) ? ) (forward-char))
+                 (point)))
+         (tail (progn (re-search-forward "[,] ?\\| ?)")
+                      (setq last-arg-p (eq (char-before) ?\)))
+                      (when (eq (char-before) ?\))
+                        (while (memq (char-before) (list ?  ?\))) (backward-char)))
+                      (point))))
+    (when last-arg-p
+      (setq head (progn (goto-char head)
+                        (while (memq (char-before) (list ?, ? )) (backward-char))
+                        (point))))
+    (list head tail)))
+
+(evil-define-text-object jester/evil-inner-arg (count &optional beg end type)
+  "Select an argument, without the punctuations."
+  :extend-selection nil
+  (list (progn
+          (re-search-backward "[,(] ?")
+          (forward-char)
+          (when (eq (char-after (point)) ? ) (forward-char))
+          (point))
+        (progn (re-search-forward "[,] ?\\| ?)")
+               (while (memq (char-before) (list ?, ?  ?\))) (backward-char))
+               (point))))
 
 
 (provide 'init-editing-utils)

@@ -4,11 +4,7 @@
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
    ;; "t" 'jester/evil-a-tag-dwim
-   "t" 'evil-a-tag
-   "a" 'jester/evil-a-attribute)
-  (general-define-key
-   :keymaps 'evil-inner-text-objects-map
-   "a" 'jester/evil-inner-attribute)
+   "t" 'evil-a-tag)
   (jester/with-major-leader 'web-mode-map
                             "r" 'web-mode-element-rename
                             "f" 'web-mode-fold-or-unfold)
@@ -60,26 +56,6 @@
    "C-l" 'emmet-expand-yas))
 
 ;;----------------------------------------------------------------------------
-;; include line feeds when tag occupy whole lines
-;;----------------------------------------------------------------------------
-;; TODO evil-this-operator
-(evil-define-text-object jester/evil-a-tag-dwim (count &optional beg end type)
-  "Select a tag block's whole lines.
-if the open tag is the first in its line and the close tag is the last in its,
-  mark the whole lines containing the this tag pair
-else only mark the tag pair"
-  :extend-selection nil
-  (let* ((point-list (evil-select-xml-tag beg end type count t))
-         (tag-beg (car point-list))
-         (tag-end (cadr point-list))
-         (line-beg (progn (goto-char tag-beg) (line-beginning-position))))
-    (if (and (looking-back "^\s*")
-             (progn (goto-char tag-end) (looking-at "\s*$"))
-             (not (equal (progn (print (car command-history)) (car command-history)) '(evil-surround-delete 116))))
-        (evil-range line-beg (line-end-position) 'line)
-      point-list)))
-
-;;----------------------------------------------------------------------------
 ;; evil text object for html attribute
 ;;----------------------------------------------------------------------------
 (evil-define-text-object jester/evil-a-attribute (count &optional beg end type)
@@ -87,10 +63,32 @@ else only mark the tag pair"
   :extend-selection nil
   (list (- (web-mode-attribute-beginning-position) 1)
         (+ (web-mode-attribute-end-position) 1)))
+
 (evil-define-text-object jester/evil-inner-attribute (count &optional beg end type)
   "Select an attribute."
   :extend-selection nil
   (list (web-mode-attribute-beginning-position)
         (+ (web-mode-attribute-end-position) 1)))
+
+(evil-define-text-object jester/evil-a-arg-or-attribute (count &optional beg end type)
+  "Select an arg or attribute."
+  :extend-selection nil
+  (condition-case err
+      (cl-subseq (jester/evil-a-attribute) 0 2)
+    (error (cl-subseq (jester/evil-a-arg) 0 2))))
+
+(evil-define-text-object jester/evil-inner-arg-or-attribute (count &optional beg end type)
+  "Select an arg or attribute."
+  :extend-selection nil
+  (condition-case err
+      (cl-subseq (jester/evil-inner-attribute) 0 2)
+    (error (cl-subseq (jester/evil-inner-arg) 0 2))))
+
+(general-define-key
+ :keymaps 'evil-outer-text-objects-map
+ "a" 'jester/evil-a-arg-or-attribute)
+(general-define-key
+ :keymaps 'evil-inner-text-objects-map
+ "a" 'jester/evil-inner-arg-or-attribute)
 
 (provide 'init-web)
