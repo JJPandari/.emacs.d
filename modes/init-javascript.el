@@ -7,7 +7,10 @@
         js2-global-externs '("$" "jQuery" "jquery" "_")
         js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil
-        js2-bounce-indent-p nil)
+        js2-bounce-indent-p nil
+        js-indent-align-list-continuation nil
+        js-chain-indent nil
+        js-switch-indent-offset 2)
 
   ;; "_" as word so company completes kabeb-case
   (modify-syntax-entry ?_ "w" js2-mode-syntax-table)

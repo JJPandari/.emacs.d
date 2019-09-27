@@ -3,8 +3,12 @@
 (require-package 'doom-themes)
 (require-package 'zenburn-theme)
 
+(setq solarized-use-variable-pitch nil
+      solarized-scale-org-headlines nil
+      solarized-scale-outline-headlines nil)
+
 ;; If you don't customize it, this is the theme you get.
-(setq-default custom-enabled-themes '(solarized-light))
+(setq custom-enabled-themes '(solarized-light))
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()

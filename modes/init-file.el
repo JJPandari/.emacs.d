@@ -1,3 +1,9 @@
+(require 'recentf)
+(setq recentf-exclude
+      (append recentf-exclude (list "/tmp/" "/ssh:" "COMMIT_EDITMSG\\'"
+                                    ;; (recentf-expand-file-name package-user-dir)
+                                    )))
+
 (jester/with-leader
  "f f" 'find-file
  "f s" 'save-buffer

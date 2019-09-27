@@ -29,18 +29,6 @@
 (when (fboundp 'horizontal-scroll-bar-mode)
   (horizontal-scroll-bar-mode -1))
 
-;; I generally prefer to hide the menu bar, but doing this on OS X
-;; simply makes it update unreliably in GUI frames, so we make an
-;; exception.
-(if *is-a-mac*
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (set-frame-parameter frame 'menu-bar-lines
-                                     (if (display-graphic-p frame)
-                                         1 0))))
-  (when (fboundp 'menu-bar-mode)
-    (menu-bar-mode -1)))
-
 (when (fboundp 'pixel-scroll-mode)
   (pixel-scroll-mode 1))
 
@@ -50,10 +38,6 @@
 
 (setq frame-title-format "看，灰机！ ✈✈✈✈✈✈✈✈✈"
       frame-resize-pixelwise t)
-(set-frame-parameter nil 'undecorated t)
-;; (set-frame-parameter nil 'fullscreen (cond ((eq window-system 'x) 'fullboth)
-;;                                            ((eq window-system 'mac) 'maximized)
-;;                                            (t 'maximized)))
 
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co,
 ;; so we zero it explicitly in those cases.
@@ -69,7 +53,8 @@
                         (t 'maximized)))
         ;; left & top are required on wsl to correctly position
         (left . (+ 0))
-        (top . (+ 0))))
+        (top . (+ 0))
+        (undecorated . t)))
 
 
 (provide 'init-gui-frames)

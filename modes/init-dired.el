@@ -20,7 +20,8 @@
          :map ranger-mode-map
          ("s" . 'ranger-sort-criteria))
   :config
-  (ranger-override-dired-mode 1))
+  (ranger-override-dired-mode 1)
+  (push 'deer find-directory-functions))
 
 (use-package all-the-icons-dired
   :after (all-the-icons ranger)

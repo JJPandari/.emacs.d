@@ -121,13 +121,35 @@ with traditional regex based imenu."
    modes))
 
 ;;----------------------------------------------------------------------------
-;; eval and always display in same window
+;; eval and always display in same window (not used)
 ;;----------------------------------------------------------------------------
 (defmacro jester/eval-with-display-in-same-window (&rest forms)
   "Eval `FORMS', with the behavior of `display-buffer' fixed to display in same window."
   (declare (indent defun))
   `(cl-flet ((display-buffer (buffer action) (display-buffer buffer '(display-buffer-same-window . nil))))
      ,@forms))
+
+;;----------------------------------------------------------------------------
+;; hash table to alist
+;;----------------------------------------------------------------------------
+(defun jester/hashtable-to-alist (table)
+  "Convert `TABLE' to an alist."
+  (let ((alist))
+    (maphash
+     (lambda (k v) (push (cons k v) alist))
+     table)
+    alist))
+
+;;----------------------------------------------------------------------------
+;; am I in expression but not comment/string?
+;;----------------------------------------------------------------------------
+(defun jester/in-expression-area-p ()
+  "Am I in expression but not comment/string?"
+  (pcase major-mode
+    ('emacs-lisp-mode (not (lispy--in-string-or-comment-p)))
+    ('js2-mode (let ((node (js2-node-at-point)))
+                 (and (not (js2-comment-node-p node))
+                      (not (js2-string-node-p node)))))))
 
 ;;----------------------------------------------------------------------------
 ;; add hook shorthand

@@ -15,6 +15,11 @@
  "<escape>" 'keyboard-escape-quit)
 
 (general-define-key
+ :keymaps 'evil-ex-completion-map
+ "M-p" 'previous-complete-history-element
+ "M-n" 'next-complete-history-element)
+
+(general-define-key
  :keymaps 'read-expression-map
  "C-r" 'counsel-minibuffer-history)
 

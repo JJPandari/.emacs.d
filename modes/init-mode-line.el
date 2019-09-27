@@ -10,35 +10,35 @@
               'face face))
 
 (defvar jester/flycheck-mode-line
-;; (setq jester/flycheck-mode-line ;; this is for debug
-      '(:eval
-        (when (featurep 'flycheck) (pcase flycheck-last-status-change
-           (`not-checked nil)
-           (`no-checker "❄")
-           (`running (propertize "..." 'face 'success))
-           (`errored (propertize "!" 'face 'error))
-           (`finished
-            (let* ((error-counts (flycheck-count-errors flycheck-current-errors))
-                   (no-errors (cdr (assq 'error error-counts)))
-                   (no-warnings (cdr (assq 'warning error-counts)))
-                   (face (cond (no-errors 'error)
-                               (no-warnings 'warning)
-                               (t 'success))))
-              (append
-               (if no-errors
-                   (list
-                    (propertize "❌" 'face '(:family "Apple Color Emoji" :height 0.7))
-                    (propertize (format "%s" (or no-errors 0))
-                                'face 'error))
-                 nil)
-               (if no-warnings
-                   (list
-                    (propertize "⚠" 'face '(:family "Apple Color Emoji" :height 0.8))
-                    (propertize (format "%s" (or no-warnings 0))
-                                'face 'warning))
-                 nil))))
-           (`interrupted ".")
-           (`suspicious '(propertize "?" 'face 'warning))))))
+  '(:eval
+    (when (featurep 'flycheck)
+      (pcase flycheck-last-status-change
+        (`not-checked nil)
+        (`no-checker "❄")
+        (`running (propertize "..." 'face 'success))
+        (`errored (propertize "!" 'face 'error))
+        (`finished
+         (let* ((error-counts (flycheck-count-errors flycheck-current-errors))
+                (no-errors (cdr (assq 'error error-counts)))
+                (no-warnings (cdr (assq 'warning error-counts)))
+                (face (cond (no-errors 'error)
+                            (no-warnings 'warning)
+                            (t 'success))))
+           (append
+            (if no-errors
+                (list
+                 (propertize "❌" 'face '(:family "Apple Color Emoji" :height 0.7))
+                 (propertize (format "%s" (or no-errors 0))
+                             'face 'error))
+              nil)
+            (if no-warnings
+                (list
+                 (propertize "⚠" 'face '(:family "Apple Color Emoji" :height 0.8))
+                 (propertize (format "%s" (or no-warnings 0))
+                             'face 'warning))
+              nil))))
+        (`interrupted ".")
+        (`suspicious '(propertize "?" 'face 'warning))))))
 
 (defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode css-mode))
 
@@ -57,8 +57,13 @@
                ;; '(:eval evil-mode-line-tag)
 
                "%1"
+               '(:eval (when (buffer-narrowed-p)
+                         (format " %s"
+                                 (propertize "" 'face '((:family "github-octicons"))))))
+
+               "%1"
                '(:eval (when defining-kbd-macro
-                         (format " %s%c "
+                         (format " %s%c"
                                  (propertize "" 'face '((:family "FontAwesome")))
                                  evil-this-macro)))
 
@@ -68,16 +73,15 @@
                "%1"
                '(:eval (when (and (featurep 'anzu) anzu--state) (concat " " (anzu--update-mode-line))))
 
-               "%1 "
+               "%1"
                ;; the buffer name; the file name as a tool tip
-               '(:eval (propertize "%b " 'face 'font-lock-keyword-face
+               '(:eval (propertize " %b" 'face 'font-lock-keyword-face
                                    'help-echo (buffer-file-name)))
 
-               "%1"
+               " %1"
                ;; the current major mode for the buffer.
                '(:eval mode-name)
 
-               '(:eval (when (and (featurep 'flycheck) flycheck-mode) " "))
                "%1"
                jester/flycheck-mode-line
 

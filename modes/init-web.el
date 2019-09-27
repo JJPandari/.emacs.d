@@ -58,37 +58,32 @@
 ;;----------------------------------------------------------------------------
 ;; evil text object for html attribute
 ;;----------------------------------------------------------------------------
-(evil-define-text-object jester/evil-a-attribute (count &optional beg end type)
-  "Select an attribute, including the leading space."
-  :extend-selection nil
-  (list (- (web-mode-attribute-beginning-position) 1)
-        (+ (web-mode-attribute-end-position) 1)))
-
-(evil-define-text-object jester/evil-inner-attribute (count &optional beg end type)
-  "Select an attribute."
-  :extend-selection nil
-  (list (web-mode-attribute-beginning-position)
-        (+ (web-mode-attribute-end-position) 1)))
-
-(evil-define-text-object jester/evil-a-arg-or-attribute (count &optional beg end type)
-  "Select an arg or attribute."
+(evil-define-text-object jester/evil-web-inner-attribute-or-arg (count &optional beg end type)
+  "Select an attribute, or arg, if not in html."
   :extend-selection nil
   (condition-case err
-      (cl-subseq (jester/evil-a-attribute) 0 2)
-    (error (cl-subseq (jester/evil-a-arg) 0 2))))
-
-(evil-define-text-object jester/evil-inner-arg-or-attribute (count &optional beg end type)
-  "Select an arg or attribute."
-  :extend-selection nil
-  (condition-case err
-      (cl-subseq (jester/evil-inner-attribute) 0 2)
+      (list (web-mode-attribute-beginning-position)
+            (+ (web-mode-attribute-end-position) 1))
     (error (cl-subseq (jester/evil-inner-arg) 0 2))))
 
-(general-define-key
- :keymaps 'evil-outer-text-objects-map
- "a" 'jester/evil-a-arg-or-attribute)
+(evil-define-text-object jester/evil-web-a-attribute-or-arg (count &optional beg end type)
+  "Select an attribute, including the leading space, or arg, if not in html."
+  :extend-selection nil
+  ;; when not at an attribute, an error occurs
+  (condition-case err
+      (list (- (web-mode-attribute-beginning-position) 1)
+            (+ (web-mode-attribute-end-position) 1))
+    (error (cl-subseq (jester/evil-a-arg) 0 2))))
+
 (general-define-key
  :keymaps 'evil-inner-text-objects-map
- "a" 'jester/evil-inner-arg-or-attribute)
+ "a" (general-predicate-dispatch 'jester/evil-inner-arg
+       (memq major-mode jester-lispy-modes) 'lispyville-inner-atom
+       (eq major-mode 'web-mode) 'jester/evil-web-inner-attribute-or-arg))
+(general-define-key
+ :keymaps 'evil-outer-text-objects-map
+ "a" (general-predicate-dispatch 'jester/evil-a-arg
+       (memq major-mode jester-lispy-modes) 'lispyville-a-atom
+       (eq major-mode 'web-mode) 'jester/evil-web-a-attribute-or-arg))
 
 (provide 'init-web)

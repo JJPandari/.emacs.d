@@ -73,6 +73,14 @@
 (require 'init-vc)
 (require 'init-git)
 
+(require 'init-lisp)
+;; (require 'init-scheme)
+;; (require 'init-slime)
+;; (require 'init-clojure)
+;; (require 'init-clojure-cider)
+;; (require 'init-common-lisp)
+(require 'init-paredit)
+
 (require 'init-lsp)
 (require 'init-jump)
 ;; (require 'init-compile)
@@ -93,21 +101,13 @@
 ;; (require 'init-rails)
 ;; (require 'init-php)
 ;; (require 'init-sql)
+(require 'init-rust)
 (require 'init-yaml)
 (require 'init-docker)
 (require 'init-nginx)
 (require 'init-lua)
 (require 'init-ahk)
 (require 'init-dotenv)
-
-(require 'init-paredit)
-(require 'init-lisp)
-;; (require 'init-scheme)
-;; (require 'init-slime)
-;; (require 'init-clojure)
-;; (require 'init-clojure-cider)
-;; (require 'init-common-lisp)
-
 (require 'init-shell)
 
 (require 'init-chinese)

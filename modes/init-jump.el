@@ -13,5 +13,4 @@
    "g d" 'evil-goto-definition)
   :commands (dumb-jump-go))
 
-
 (provide 'init-jump)

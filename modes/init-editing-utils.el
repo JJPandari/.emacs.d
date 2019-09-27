@@ -28,10 +28,6 @@
   :custom (aggressive-indent-region-function 'evil-indent "also convert tab/space when indent")
   :hook (after-init . aggressive-indent-global-mode))
 
-(require 'recentf)
-(add-to-list 'recentf-exclude (list "/tmp/" "/ssh:" "COMMIT_EDITMSG\\'"
-                                    (recentf-expand-file-name package-user-dir)))
-
 (after-init (transient-mark-mode 1))
 
 ;;----------------------------------------------------------------------------
@@ -77,7 +73,19 @@
    :states '(operator)
    "x" 'subword-forward
    "z" 'subword-backward)
-  :commands (subword-forward subword-backward))
+
+  (evil-define-text-object jester/evil-inner-subword (count &optional beg end type)
+    "Select a subword."
+    :extend-selection nil
+    (save-excursion (let ((start (progn (subword-backward) (point)))
+                          (end (progn (subword-forward) (point))))
+                      (list start end))))
+  (general-define-key
+   :keymaps 'evil-inner-text-objects-map
+   "x" 'jester/evil-inner-subword
+   "z" 'jester/evil-inner-subword)
+
+  :commands (subword-forward subword-backward jester/evil-inner-subword))
 
 
 (use-package electric-operator
@@ -90,7 +98,6 @@
          (sql-mode . electric-operator-mode)
          (c-mode . electric-operator-mode)
          (php-mode . electric-operator-mode)))
-
 
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation
@@ -360,6 +367,7 @@ Threat is as function body when from endline before )"
   "Move to paragraph end, line-wise."
   :type line
   (interactive "p")
+  (next-line)
   (forward-paragraph count)
   (previous-line))
 
@@ -367,6 +375,7 @@ Threat is as function body when from endline before )"
   "Move to paragraph start, line-wise."
   :type line
   (interactive "p")
+  (previous-line)
   (backward-paragraph count)
   (next-line))
 
@@ -379,14 +388,6 @@ Threat is as function body when from endline before )"
 ;; narrow
 ;;----------------------------------------------------------------------------
 ;; https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-misc.el
-(defun line-number-at-position (pos)
-  "Returns the line number for position `POS'."
-  (save-restriction
-    (widen)
-    (save-excursion
-      (goto-char pos)
-      (+ 1 (count-lines (point-min) (line-beginning-position 1))))))
-
 (defun narrow-to-region-indirect-buffer-maybe (start end use-indirect-buffer)
   "Indirect buffer could multiple widen on same file."
   (if (region-active-p) (deactivate-mark))
@@ -395,7 +396,7 @@ Threat is as function body when from endline before )"
           (clone-indirect-buffer
            (generate-new-buffer-name
             (format "%s-indirect-:%s-:%s"
-                    (buffer-name) (line-number-at-position start) (line-number-at-position end)))
+                    (buffer-name) (line-number-at-pos start t) (line-number-at-pos end t)))
            'display)
         (narrow-to-region start end)
         (goto-char (point-min)))
@@ -442,6 +443,19 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
 ;;----------------------------------------------------------------------------
 ;; do something to a comma-delimitered sentence
 ;;----------------------------------------------------------------------------
+(evil-define-text-object jester/evil-inner-subsentence (count &optional beg end type)
+  "Select a subsentence(delimitered by comma), without the punctuations."
+  :extend-selection nil
+  (list (progn
+          (re-search-backward "[,.] ?")
+          (forward-char)
+          (when (eq (char-after (point)) ? ) (forward-char))
+          (point))
+        (progn (re-search-forward "[,.] ?")
+               (backward-char)
+               (when (memq (char-before) (list ?. ?,)) (backward-char))
+               (point))))
+
 (evil-define-text-object jester/evil-a-subsentence (count &optional beg end type)
   "Select a subsentence(delimitered by comma)."
   :extend-selection nil
@@ -452,30 +466,28 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
           (point))
         (re-search-forward "[,.] ?")))
 
-(evil-define-text-object jester/evil-inner-subsentence (count &optional beg end type)
-  "Select a subsentence(delimitered by comma), without the punctuations."
-  :extend-selection nil
-  (list (progn
-          (re-search-backward "[,.] ?")
-          ;; (re-search-backward "[,.] ?\\|( ?")
-          (forward-char)
-          (when (eq (char-after (point)) ? ) (forward-char))
-          (point))
-        (progn (re-search-forward "[,.] ?")
-               (backward-char)
-               (when (memq (char-before) (list ?. ?,)) (backward-char))
-               (point))))
-
-(general-define-key
- :keymaps 'evil-outer-text-objects-map
- "S" 'jester/evil-a-subsentence)
 (general-define-key
  :keymaps 'evil-inner-text-objects-map
  "S" 'jester/evil-inner-subsentence)
+(general-define-key
+ :keymaps 'evil-outer-text-objects-map
+ "S" 'jester/evil-a-subsentence)
 
 ;;----------------------------------------------------------------------------
 ;; select an argument
 ;;----------------------------------------------------------------------------
+(evil-define-text-object jester/evil-inner-arg (count &optional beg end type)
+  "Select an argument, without the punctuations."
+  :extend-selection nil
+  (list (progn
+          (re-search-backward "[,(] ?")
+          (forward-char)
+          (when (eq (char-after (point)) ? ) (forward-char))
+          (point))
+        (progn (re-search-forward "[,] ?\\| ?)")
+               (while (memq (char-before) (list ?, ?  ?\))) (backward-char))
+               (point))))
+
 (evil-define-text-object jester/evil-a-arg (count &optional beg end type)
   "Select an argument."
   :extend-selection nil
@@ -495,18 +507,6 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
                         (while (memq (char-before) (list ?, ? )) (backward-char))
                         (point))))
     (list head tail)))
-
-(evil-define-text-object jester/evil-inner-arg (count &optional beg end type)
-  "Select an argument, without the punctuations."
-  :extend-selection nil
-  (list (progn
-          (re-search-backward "[,(] ?")
-          (forward-char)
-          (when (eq (char-after (point)) ? ) (forward-char))
-          (point))
-        (progn (re-search-forward "[,] ?\\| ?)")
-               (while (memq (char-before) (list ?, ?  ?\))) (backward-char))
-               (point))))
 
 
 (provide 'init-editing-utils)

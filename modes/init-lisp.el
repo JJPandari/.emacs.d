@@ -1,10 +1,9 @@
 (setq initial-scratch-message
       (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
-(general-define-key [remap eval-expression] 'pp-eval-expression)
-
-(when (maybe-require-package 'ipretty)
-  (add-hook 'after-init-hook 'ipretty-mode))
+;; (general-define-key [remap eval-expression] 'pp-eval-expression)
+;; (when (maybe-require-package 'ipretty)
+;;   (add-hook 'after-init-hook 'ipretty-mode))
 
 
 (defun jester/maybe-set-bundled-elisp-readonly ()
@@ -60,12 +59,12 @@
   (run-hooks 'jester-elispy-modes-hook))
 
 (defconst jester-elispy-modes
-  '(emacs-lisp-mode ielm-mode)
+  '(emacs-lisp-mode inferior-emacs-lisp-mode)
   "Major modes relating to elisp.")
 
 (defconst jester-lispy-modes
   (append jester-elispy-modes
-          '(lisp-mode inferior-lisp-mode lisp-interaction-mode))
+          '(lisp-mode lisp-interaction-mode))
   "Major modes relating to lisp.")
 
 (defconst jester-elispy-maps
@@ -182,7 +181,7 @@
   (add-hook! 'emacs-lisp-mode-hook (setq mode-name "ELisp"))
   ;; load it everywhere
   ;; :hook (prog-mode . lispyville-mode)
-  :hook ((emacs-lisp-mode ielm-mode lisp-mode inferior-lisp-mode lisp-interaction-mode) . lispyville-mode)
+  :hook ((emacs-lisp-mode lisp-mode inferior-emacs-lisp-mode lisp-interaction-mode) . lispyville-mode)
   :config
   (lispyville-set-key-theme
    '(operators
@@ -198,17 +197,21 @@
   (general-define-key
    :keymaps 'evil-inner-text-objects-map
    "l" 'lispyville-inner-list
-   "f" 'lispyville-inner-function)
+   "f" 'lispyville-inner-function
+   "c" 'lispyville-inner-comment)
+  ;; `lispyville-inner-atom' is bound in init-web.el
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
    "l" 'lispyville-a-list
-   "f" 'lispyville-a-function)
+   "f" 'lispyville-a-function
+   "c" 'lispyville-a-comment)
 
-  ;; manually set prettify key
+  ;; manually set prettify and comment key
   (jester/with-leader
-   ","
-   (general-predicate-dispatch 'evil-indent
-     (memq major-mode '(emacs-lisp-mode lisp-mode)) 'lispyville-prettify))
+   "," (general-predicate-dispatch 'evil-indent
+         (memq major-mode jester-lispy-modes) 'lispyville-prettify)
+   ";" (general-predicate-dispatch 'evilnc-comment-operator
+         (memq major-mode jester-lispy-modes) 'lispyville-comment-or-uncomment))
 
   ;; some other lispy{,ville} keys
   (general-define-key

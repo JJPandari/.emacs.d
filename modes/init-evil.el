@@ -196,17 +196,36 @@
   :demand t
   ;; :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
   :init
+  (setq evil-multiedit-use-symbols t)
   ;; Ex command that allows you to invoke evil-multiedit with a regular expression, e.g.
   (evil-ex-define-cmd "ie[dit]" 'evil-multiedit-ex-match)
   (general-define-key
    :states '(normal visual)
-   "R" 'evil-multiedit-match-all
+   "R" 'jester/evil-multiedit-match-all
    "C-n" 'evil-multiedit-match-symbol-and-next
    "C-p" 'evil-multiedit-match-symbol-and-prev)
+  (defun jester/evil-multiedit-match-all ()
+    "Match all occurences. with prefix arg, exclude those in comments or strings."
+    (interactive)
+    (evil-multiedit-match-all)
+    (when current-prefix-arg
+      (save-excursion
+        (let ((pos))
+          (iedit-goto-first-occurrence)
+          (setq pos (point))
+          (unless (jester/in-expression-area-p)
+            (evil-multiedit-toggle-or-restrict-region))
+          (while (evil-multiedit-next)
+            (unless (jester/in-expression-area-p)
+              (evil-multiedit-toggle-or-restrict-region)))))))
   :config
-  (define-key evil-multiedit-state-map (kbd "<return>") 'evil-multiedit-toggle-or-restrict-region)
-  (define-key evil-multiedit-state-map (kbd "<S-tab>") 'evil-multiedit-prev)
-  ;; these have to be loaded before company so they don't shadow tab binding in `company-active-map'
+  (general-define-key
+   :keymaps 'evil-multiedit-state-map
+   "<return>" 'evil-multiedit-toggle-or-restrict-region
+   "<S-tab>" 'evil-multiedit-prev
+   "C-a" 'evil-multiedit--beginning-of-line
+   "C-e" 'evil-multiedit--end-of-line)
+  ;; these have to be loaded before company so they don't shadow tab bindings in `company-active-map'
   (define-key evil-multiedit-state-map (kbd "<tab>") 'evil-multiedit-next)
   (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'tab-indent-or-complete)
   )
@@ -232,7 +251,9 @@
   :custom (evil-goggles-duration 0.1)
   :hook (evil-mode . evil-goggles-mode)
   :config
-  (evil-goggles-use-diff-faces))
+  ;; (evil-goggles-use-diff-faces)
+  (evil-goggles-use-diff-refine-faces)
+  )
 
 
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
@@ -443,13 +464,13 @@
 
 (defun jester/evil-visual-search (forward)
   "Search the region."
-  (let ((string (buffer-substring-no-properties (region-beginning) (region-end))))
+  (let ((regex (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))))
     (deactivate-mark)
-    (evil-push-search-history string forward)
+    (evil-push-search-history regex forward)
     ;; pushed to `regexp-search-ring'
-    (isearch-update-ring string evil-regexp-search)
+    (isearch-update-ring regex evil-regexp-search)
     (setq isearch-forward forward)
-    (evil-search string forward)))
+    (evil-search regex forward evil-regexp-search)))
 
 
 (provide 'init-evil)
