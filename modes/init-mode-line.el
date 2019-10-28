@@ -11,7 +11,7 @@
 
 (defvar jester/flycheck-mode-line
   '(:eval
-    (when (featurep 'flycheck)
+    (when (and (featurep 'flycheck) flycheck-mode)
       (pcase flycheck-last-status-change
         (`not-checked nil)
         (`no-checker "❄")
@@ -82,7 +82,7 @@
                ;; the current major mode for the buffer.
                '(:eval mode-name)
 
-               "%1"
+               " %1"
                jester/flycheck-mode-line
 
                '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes))) " "))

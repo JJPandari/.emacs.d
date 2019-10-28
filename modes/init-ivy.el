@@ -1,19 +1,19 @@
 (use-package ivy
   :demand t
+  :custom
+  ((ivy-use-virtual-buffers t)
+   (ivy-virtual-abbreviate 'full)
+   (ivy-initial-inputs-alist nil)
+   (ivy-use-selectable-prompt t)
+   (completing-read-function 'ivy-completing-read))
   :config
-  (setq
-   ivy-use-virtual-buffers t
-   ivy-virtual-abbreviate 'full
-   ivy-initial-inputs-alist nil
-   ivy-use-selectable-prompt t
-   completing-read-function 'ivy-completing-read)
   (general-define-key
    :keymaps 'ivy-switch-buffer-map
    "M-k" 'ivy-switch-buffer-kill)
   (jester/with-major-leader '(ivy-occur-mode-map ivy-occur-grep-mode-map wgrep-mode-map)
-                            "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
-                            "," (lambda! (wgrep-finish-edit) (evil-motion-state))
-                            "a" (lambda! (wgrep-abort-changes) (evil-motion-state))))
+    "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
+    "," (lambda! (wgrep-finish-edit) (evil-motion-state))
+    "a" (lambda! (wgrep-abort-changes) (evil-motion-state))))
 
 (use-package counsel
   :demand t
@@ -22,11 +22,11 @@
   ;; --no-sort is much faster
   (setq counsel-fzf-cmd "fzf --no-sort -f \"%s\""
         ;; limit file size and line length to be faster. long lines doesn't matter when search but is laggy to display
-        counsel-rg-base-command "rg -S --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s .")
+        counsel-rg-base-command "rg --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s .")
 
   (jester/with-leader
    "p f" 'jester/open-project-file
-   "p F" (lambda! (jester/open-project-file (thing-at-point 'filename)))
+   "p i" 'counsel-package
    ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
    "/" 'counsel-rg
    "*" (lambda! (counsel-rg (jester/region-or-symbol)))
@@ -37,7 +37,9 @@
    "." 'counsel-imenu
    "s b" 'swiper-all
    "s B" (lambda! (swiper-all (jester/region-or-symbol)))
-   "i u" 'counsel-unicode-char)
+   "i u" 'counsel-unicode-char
+   "i f" 'counsel-fonts
+   "v s" 'counsel-set-variable)
 
   (general-define-key
    "M-x" 'counsel-M-x
@@ -80,6 +82,7 @@ If called interactively, let the user select start directory first."
      ((locate-dominating-file default-directory ".git") (counsel-git))
      (t (jester/fzf-somewhere))))
 
+  ;; see doc for `counsel-mode'
   (general-define-key
    [remap switch-to-buffer] 'ivy-switch-buffer
    [remap bookmark-jump] 'counsel-bookmark
@@ -87,6 +90,7 @@ If called interactively, let the user select start directory first."
    [remap describe-face] 'counsel-describe-face
    [remap describe-function] 'counsel-describe-function
    [remap describe-variable] 'counsel-describe-variable
+   [remap execute-extended-command] 'counsel-M-x
    [remap find-file] 'counsel-find-file
    [remap find-library] 'counsel-find-library
    [remap imenu] 'counsel-imenu
@@ -94,7 +98,8 @@ If called interactively, let the user select start directory first."
    [remap list-faces-display] 'counsel-faces
    [remap load-library] 'counsel-load-library
    [remap load-theme] 'counsel-load-theme
-   [remap pop-to-mark-command] 'counsel-mark-ring))
+   [remap pop-to-mark-command] 'counsel-mark-ring
+   [remap yank-pop] 'counsel-yank-pop))
 
 (use-package wgrep
   :commands ivy-wgrep-change-to-wgrep-mode)

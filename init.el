@@ -72,18 +72,19 @@
 
 (require 'init-vc)
 (require 'init-git)
+(require 'init-compile)
+
+(require 'init-paredit)
 
 (require 'init-lisp)
-;; (require 'init-scheme)
+(require 'init-scheme)
 ;; (require 'init-slime)
 ;; (require 'init-clojure)
 ;; (require 'init-clojure-cider)
 ;; (require 'init-common-lisp)
-(require 'init-paredit)
 
 (require 'init-lsp)
 (require 'init-jump)
-;; (require 'init-compile)
 (require 'init-text)
 (require 'init-org)
 (require 'init-markdown)

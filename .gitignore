@@ -58,3 +58,4 @@ site-lisp/package/
 /forge-database.sqlite
 /server
 /transient
+/.lsp-*

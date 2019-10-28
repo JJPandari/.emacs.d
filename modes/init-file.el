@@ -17,7 +17,7 @@
 
 (defvar jester-auto-save-idle 1 "Time in seconds before auto-saving all buffers.")
 (run-with-idle-timer jester-auto-save-idle t #'jester/save-all-buffers)
-;; (cancel-function-timers 'jester/save-all-buffers) ;; for debugging
+;; (cancel-function-timers 'jester/save-all-buffers) ; for debugging
 (add-hook 'focus-out-hook #'jester/save-all-buffers)
 
 ;;----------------------------------------------------------------------------
@@ -30,9 +30,13 @@
              (not company-candidates)
              (not (eq major-mode 'snippet-mode)))
     ;; https://github.com/manateelazycat/lazycat-emacs/commit/da13a688ef89f8ab2c577a3e9d2a7bcf0ef9b71d
+    ;; https://emacs-china.org/t/topic/7687/30?u=jjpandari
+    ;; this prevents blink of eldoc
     (with-temp-message
-       (with-current-buffer " *Minibuf-0*" (buffer-string))
-     (save-some-buffers t #'(lambda () (and (buffer-file-name) (buffer-modified-p)))))))
+        (with-current-buffer " *Minibuf-0*" (buffer-string))
+      ;; this prevents blink of ivy
+      (let ((inhibit-message t))
+        (save-some-buffers t #'(lambda () (and (buffer-file-name) (buffer-modified-p))))))))
 
 ;;----------------------------------------------------------------------------
 ;; Delete the current file

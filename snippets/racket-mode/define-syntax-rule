@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: define-syntax-rule
+# key: defm
+# --
+(define-syntax-rule (${1:name} $2)
+  $0)

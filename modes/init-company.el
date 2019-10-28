@@ -31,7 +31,6 @@
    "C-p" #'company-select-previous
    "<C-m>" 'company-complete-common
    "<tab>" 'expand-snippet-or-complete-selection
-   "C-b" 'company-show-doc-buffer
    "C-g" 'company-abort
    "<escape>" (lambda! (company-abort) (evil-normal-state)))
   (dotimes (i 10)
@@ -75,10 +74,6 @@
         (backward-char 1)
         (if (looking-at "->") t nil)))))
 
-(defun do-yas-expand ()
-  (let ((yas-fallback-behavior 'return-nil))
-    (yas-expand)))
-
 (defun tab-indent-or-complete ()
   (interactive)
   (cond
@@ -87,7 +82,7 @@
    (t
     ;; (indent-for-tab-command)
     (if (and (or (not yas-minor-mode)
-                 (null (do-yas-expand)))
+                 (null (yas-expand)))
              (check-expansion))
         (progn
           (company-manual-begin)
@@ -99,25 +94,10 @@
                 )))
       ))))
 
-;; (defun tab-complete-or-next-field ()
-;;   (interactive)
-;;   (if (or (not yas-minor-mode)
-;;           (null (do-yas-expand)))
-;;       (if company-candidates
-;;           (company-complete-selection)
-;;         (if (check-expansion)
-;;             (progn
-;;               (company-manual-begin)
-;;               (if (null company-candidates)
-;;                   (progn
-;;                     (company-abort)
-;;                     (yas-next-field))))
-;;           (yas-next-field)))))
-
 (defun expand-snippet-or-complete-selection ()
   (interactive)
   (if (or (not yas-minor-mode)
-          (null (do-yas-expand))
+          (null (yas-expand))
           (company-abort))
       (company-complete-selection)))
 

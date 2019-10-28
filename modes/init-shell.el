@@ -1,3 +1,6 @@
+(setq shell-file-name "/bin/bash"
+      explicit-shell-file-name "/bin/zsh")
+
 (general-define-key
  :states '(insert emacs)
  :keymaps 'comint-mode-map

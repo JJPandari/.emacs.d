@@ -73,6 +73,7 @@
   (defvar jester-shackle-same-window-rule-cars
     '("*Help*"
       "*Warnings*"
+      "*shell*"
       "*Youdao Dictionary*"
       "JsDocTagDescription"
       "*skewer-error*"
@@ -92,7 +93,8 @@
         shackle-rules (append
                        (mapcar (lambda (condition) (append (doom-enlist condition) jester-shackle-same-window-rule))
                                jester-shackle-same-window-rule-cars)
-                       '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t))))
+                       '((flycheck-error-list-mode :other t :select t :inhibit-window-quit t)
+                         ("*compilation*" :ignore t))))
   (shackle-mode 1))
 
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4?u=jjpandari

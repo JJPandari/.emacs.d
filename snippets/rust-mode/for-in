@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for in
+# key: forin
+# --
+for $2 in $1 {
+    $0
+}

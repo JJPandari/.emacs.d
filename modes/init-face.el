@@ -143,5 +143,11 @@ This is helpful for writeroom-mode, in particular."
 (add-hook 'visual-fill-column-mode-hook
           'jester/maybe-adjust-visual-fill-column)
 
+;;----------------------------------------------------------------------------
+;; face related key bindings
+;;----------------------------------------------------------------------------
+(jester/with-leader
+ "t c" 'text-scale-adjust)
+
 
 (provide 'init-face)

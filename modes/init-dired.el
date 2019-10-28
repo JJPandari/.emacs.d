@@ -16,6 +16,7 @@
   ;; NOTE: remap doesn't change when dired-* is called from code
   (jester/with-leader
    "f d" 'dired-jump)
+  :custom (ranger-show-hidden 'format)
   :bind (([remap dired-jump] . deer)
          :map ranger-mode-map
          ("s" . 'ranger-sort-criteria))

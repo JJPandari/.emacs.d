@@ -285,6 +285,11 @@ typical word processor."
 
 (use-package org
   :config
+  (setq geiser-default-implementation 'racket)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (scheme . t)))
   (general-define-key
    :states '(normal)
    :keymaps 'org-mode-map
@@ -292,7 +297,11 @@ typical word processor."
    "H" 'org-shiftleft
    "L" 'org-shiftright)
   (jester/with-major-leader 'org-mode-map
-   "t t" 'org-todo))
+    "t t" 'org-todo)
+  (general-define-key
+   :states '(insert emacs)
+   :keymaps 'org-mode-map
+   "<tab>" 'org-cycle))
 
 (use-package org-bullets
   :if *is-a-mac*

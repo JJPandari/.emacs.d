@@ -41,10 +41,12 @@
             (jester/leader-emacs-def ,@args)))
   (defmacro jester/with-major-leader (keymaps &rest args)
     "Define a major-leader key sequence."
+    (declare (indent 1))
     `(progn (jester/major-leader-def :keymaps ,keymaps ,@args)
             (jester/major-leader-emacs-def :keymaps ,keymaps ,@args)))
   (defmacro jester/with-minor-leader (mode &rest args)
     "Define a leader key sequence using major leader key, but for a minor mode."
+    (declare (indent 1))
     `(progn (jester/minor-leader-def :keymaps ,mode ,@args)
             (jester/minor-leader-emacs-def :keymaps ,mode ,@args)))
   )
@@ -245,15 +247,52 @@
    "-" 'evil-numbers/dec-at-pt))
 
 
-;; TODO support for lispyville & `general-key-dispatch'
 (use-package evil-goggles
   :after evil
+  :demand t
   :custom (evil-goggles-duration 0.1)
-  :hook (evil-mode . evil-goggles-mode)
+  :init
+  ;; (lispyville->                    :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+  ;; (lispyville-<                    :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+  (setq evil-goggles--commands
+        '((evil-delete                     :face evil-goggles-delete-face                :switch evil-goggles-enable-delete                :advice evil-goggles--generic-blocking-advice)
+          (evil-delete-line                :face evil-goggles-delete-face                :switch evil-goggles-enable-delete                :advice evil-goggles--delete-line-advice)
+          (evil-org-delete                 :face evil-goggles-delete-face                :switch evil-goggles-enable-delete                :advice evil-goggles--delete-line-advice)
+          (evil-yank                       :face evil-goggles-yank-face                  :switch evil-goggles-enable-yank                  :advice evil-goggles--generic-async-advice)
+          (evil-yank-line                  :face evil-goggles-yank-face                  :switch evil-goggles-enable-yank                  :advice evil-goggles--generic-async-advice)
+          (evil-change                     :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (evil-change-line                :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (evil-change-whole-line          :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (evil-indent                     :face evil-goggles-indent-face                :switch evil-goggles-enable-indent                :advice evil-goggles--generic-async-advice)
+          (evil-join                       :face evil-goggles-join-face                  :switch evil-goggles-enable-join                  :advice evil-goggles--join-advice)
+          (evil-join-whitespace            :face evil-goggles-join-face                  :switch evil-goggles-enable-join                  :advice evil-goggles--join-advice)
+          (evil-fill-and-move              :face evil-goggles-fill-and-move-face         :switch evil-goggles-enable-fill-and-move         :advice evil-goggles--generic-async-advice)
+          (evil-shift-left                 :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+          (evil-shift-right                :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+          (evil-org-<                      :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+          (evil-org->                      :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
+          (evil-surround-region            :face evil-goggles-surround-face              :switch evil-goggles-enable-surround              :advice evil-goggles--generic-async-advice)
+          (evil-commentary                 :face evil-goggles-commentary-face            :switch evil-goggles-enable-commentary            :advice evil-goggles--generic-async-advice)
+          (evilnc-comment-operator         :face evil-goggles-nerd-commenter-face        :switch evil-goggles-enable-nerd-commenter        :advice evil-goggles--generic-async-advice)
+          (evil-replace-with-register      :face evil-goggles-replace-with-register-face :switch evil-goggles-enable-replace-with-register :advice evil-goggles--generic-async-advice-1)
+          (evil-set-marker                 :face evil-goggles-set-marker-face            :switch evil-goggles-enable-set-marker            :advice evil-goggles--set-marker-advice)
+          (evil-record-macro               :face evil-goggles-record-macro-face          :switch evil-goggles-enable-record-macro          :advice evil-goggles--record-macro-advice)
+          (evil-paste-before               :face evil-goggles-paste-face                 :switch evil-goggles-enable-paste                 :advice evil-goggles--paste-advice :after t)
+          (evil-paste-after                :face evil-goggles-paste-face                 :switch evil-goggles-enable-paste                 :advice evil-goggles--paste-advice :after t)
+          (lispyville-yank                 :face evil-goggles-yank-face                  :switch evil-goggles-enable-yank                  :advice evil-goggles--generic-async-advice)
+          (lispyville-delete               :face evil-goggles-delete-face                :switch evil-goggles-enable-delete                :advice evil-goggles--generic-blocking-advice)
+          (lispyville-change               :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (lispyville-yank-line            :face evil-goggles-yank-face                  :switch evil-goggles-enable-yank                  :advice evil-goggles--generic-async-advice)
+          (lispyville-delete-line          :face evil-goggles-delete-face                :switch evil-goggles-enable-delete                :advice evil-goggles--delete-line-advice)
+          (lispyville-change-line          :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (lispyville-change-whole-line    :face evil-goggles-change-face                :switch evil-goggles-enable-change                :advice evil-goggles--generic-blocking-advice)
+          (lispyville-join                 :face evil-goggles-join-face                  :switch evil-goggles-enable-join                  :advice evil-goggles--join-advice)
+          (lispyville-comment-or-uncomment :face evil-goggles-nerd-commenter-face        :switch evil-goggles-enable-nerd-commenter        :advice evil-goggles--generic-async-advice)
+          (lispyville-prettify             :face evil-goggles-indent-face                :switch evil-goggles-enable-indent                :advice evil-goggles--generic-async-advice)))
+  :hook (after-init . evil-goggles-mode)
   :config
   ;; (evil-goggles-use-diff-faces)
-  (evil-goggles-use-diff-refine-faces)
-  )
+  (evil-goggles-use-diff-refine-faces))
 
 
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
@@ -397,10 +436,7 @@
  "C-u" 'evil-scroll-up
  "C-j" 'evil-scroll-line-down
  "C-k" 'evil-scroll-line-up
- "'" 'evil-goto-mark
- "C-h C-f" 'list-faces-display
- "C-h p" 'describe-package
- "C-h c" 'describe-char)
+ "'" 'evil-goto-mark)
 
 (general-define-key
  :states '(normal visual motion operator)
@@ -430,7 +466,10 @@
 ;; Not-so-evil keys...
 ;;----------------------------------------------------------------------------
 (general-define-key
- "C-h p" 'describe-package)
+ "C-h C-f" 'list-faces-display
+ "C-h p" 'describe-package
+ "C-h c" 'describe-char
+ "C-h K" 'find-function-on-key)
 
 ;;----------------------------------------------------------------------------
 ;; Some functions.

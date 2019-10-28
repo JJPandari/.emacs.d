@@ -92,7 +92,7 @@
   :hook ((js2-mode . electric-operator-mode)
          (css-mode . electric-operator-mode)
          (sass-mode . electric-operator-mode)
-         (rust-mode . electric-operator-mode)
+         ;; (rust-mode . electric-operator-mode)
          (java-mode . electric-operator-mode)
          (python-mode . electric-operator-mode)
          (sql-mode . electric-operator-mode)
@@ -225,21 +225,34 @@ Effectively using symbol before point as the key."
  "<C-i>" 'jester/make-key-value-pair)
 
 ;;----------------------------------------------------------------------------
-;; Make a "foo: bar;" key-value pair
-;;----------------------------------------------------------------------------
-(defun jester/make-css-pair ()
-  "Make a key-value pair for css etc., by inserting \": ;\" at point."
-  (interactive)
-  (insert ": ;") (backward-char))
-
-(general-define-key
- :states '(insert emacs)
- :keymaps 'prog-mode-map
- "M-;" 'jester/make-css-pair)
-
-;;----------------------------------------------------------------------------
 ;; Insert " = " for me, please.
 ;;----------------------------------------------------------------------------
+(defmacro jester/def-make-assignment-function (fun-name eol-str &rest forms-for-bolt)
+  "Define a function with the name of `FUN-NAME'.
+`FORMS-FOR-BOLT' is some forms evaluated when point is at beginning of line text,
+who decides which type of assignment we currently have, and change it to the next one.
+Use `eol-str' as the tail."
+  `(defun ,fun-name ()
+     "Make a mode specific assignment statement,
+using things left of point as left value, things right as right value.
+
+If nothing is at left, move point to the left value's position,
+otherwise move to before semicolon.
+
+If this line is already an assignment (has a \"=\"), cycle through some styles."
+     (interactive)
+     (save-match-data
+       (let ((need-signs (save-excursion
+                           (beginning-of-line-text) (not (looking-at ".* = .*$"))))
+             (something-left-p (not (looking-back "^\s*"))))
+         (save-excursion
+           (if need-signs
+               (progn (insert " = ") (move-end-of-line 1)
+                      (unless (looking-back ,eol-str) (insert ,eol-str)))
+             (beginning-of-line-text)
+             ,@forms-for-bolt))
+         (when (and need-signs something-left-p) (move-end-of-line 1) (left-char))))))
+
 (defvar jester-javascript-assignment-declarer
   'var
   "What word to use when making a javascript assignment.
@@ -258,26 +271,24 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
   a \"const\" assignment,
   a \"let\" assignment."
   (interactive)
-  (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".* = .*$"))))
-        (something-left-p (not (looking-back "^\s*"))))
-    (save-excursion
-      (if need-signs
-          (progn (insert " = ") (move-end-of-line 1)
-                 (unless (looking-back ";") (insert ";")))
-        (beginning-of-line-text)
-        (cond
-         ((eq jester-javascript-assignment-declarer 'let)
-          (cond
-           ((looking-at "const ") (kill-word 1) (insert "let"))
-           ((looking-at "let ") (kill-word 1) (delete-char 1))
-           (t (insert "const "))))
-         ((eq jester-javascript-assignment-declarer 'var)
-          (cond
-           ((looking-at "var ") (kill-word 1) (delete-char 1))
-           (t (insert "var "))))
-         (t (user-error "Plz set `jester-javascript-assignment-declarer' to `let' or `var'")))
-        ))
-    (when (and need-signs something-left-p) (move-end-of-line 1) (left-char))))
+  (save-match-data
+    (let ((need-signs (save-excursion (beginning-of-line-text) (not (looking-at ".* = .*$"))))
+          (something-left-p (not (looking-back "^\s*"))))
+      (save-excursion
+        (if need-signs
+            (progn (insert " = ") (move-end-of-line 1)
+                   (unless (looking-back ";") (insert ";")))
+          (beginning-of-line-text)
+          (pcase jester-javascript-assignment-declarer
+            ('let (cond
+                   ((looking-at "const ") (replace-match "let "))
+                   ((looking-at "let ") (replace-match ""))
+                   (t (insert "const "))))
+            ('var (cond
+                   ((looking-at "var ") (replace-match ""))
+                   (t (insert "var "))))
+            (_ (user-error "Plz set `jester-javascript-assignment-declarer' to `let' or `var'")))))
+      (when (and need-signs something-left-p) (move-end-of-line 1) (left-char)))))
 
 (general-define-key
  :states '(insert emacs)
@@ -288,6 +299,8 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
   "Make a assignment statement,
 using things left of point as left value, things right as right value.
 
+Additional formats are added to this line as declared in `jester-assignment-format-alist'.
+
 If nothing is at left, move point to the left value's position,
 otherwise move to before semicolon."
   (interactive)
@@ -295,7 +308,7 @@ otherwise move to before semicolon."
         (something-left-p (not (looking-back "^\s*"))))
     (save-excursion
       (when need-signs
-          (progn (insert " = "))))
+        (progn (insert " = "))))
     (when (and need-signs something-left-p) (move-end-of-line 1))))
 
 (general-define-key
@@ -480,12 +493,21 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
   "Select an argument, without the punctuations."
   :extend-selection nil
   (list (progn
-          (re-search-backward "[,(] ?")
+          (re-search-backward (rx (sequence (or ","
+                                                "("
+                                                "["
+                                                "{")
+                                            (optional " "))))
           (forward-char)
           (when (eq (char-after (point)) ? ) (forward-char))
           (point))
-        (progn (re-search-forward "[,] ?\\| ?)")
-               (while (memq (char-before) (list ?, ?  ?\))) (backward-char))
+        (progn (re-search-forward (rx (or (sequence ","
+                                                    (optional " "))
+                                          (sequence (optional " ")
+                                                    (or ")"
+                                                        "]"
+                                                        "}")))))
+               (while (memq (char-before) (list ?, ?  ?\) ?\] ?})) (backward-char))
                (point))))
 
 (evil-define-text-object jester/evil-a-arg (count &optional beg end type)
@@ -493,14 +515,23 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
   :extend-selection nil
   (let* (last-arg-p
          (head (progn
-                 (re-search-backward "[,(] ?")
+                 (re-search-backward (rx (sequence (or ","
+                                                       "("
+                                                       "["
+                                                       "{")
+                                                   (optional " "))))
                  (forward-char)
                  (when (eq (char-after (point)) ? ) (forward-char))
                  (point)))
-         (tail (progn (re-search-forward "[,] ?\\| ?)")
-                      (setq last-arg-p (eq (char-before) ?\)))
-                      (when (eq (char-before) ?\))
-                        (while (memq (char-before) (list ?  ?\))) (backward-char)))
+         (tail (progn (re-search-forward (rx (or (sequence ","
+                                                           (optional " "))
+                                                 (sequence (optional " ")
+                                                           (or ")"
+                                                               "]"
+                                                               "}")))))
+                      (setq last-arg-p (memq (char-before) (list ?\) ?\] ?})))
+                      (when (memq (char-before) (list ?\) ?\] ?}))
+                        (while (memq (char-before) (list ?  ?\) ?\] ?})) (backward-char)))
                       (point))))
     (when last-arg-p
       (setq head (progn (goto-char head)

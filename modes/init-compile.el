@@ -1,8 +1,12 @@
-(setq-default compilation-scroll-output t)
+(setq compilation-read-command nil
+      compilation-scroll-output t)
 
+
 (require-package 'alert)
-
-;; Customize `alert-default-style' to get messages after compilation
+(setq alert-default-style (pcase window-system
+                            ('x 'x11)
+                            ('mac 'osx-notifier)
+                            (_ 'message)))
 
 (defun jester/alert-after-compilation-finish (buf result)
   "Use `alert' to report compilation RESULT if BUF is hidden."
@@ -20,36 +24,7 @@
   (add-hook 'compilation-finish-functions
             'jester/alert-after-compilation-finish))
 
-(defvar jester/last-compilation-buffer nil
-  "The last buffer in which compilation took place.")
-
-(after-load 'compile
-  (defadvice compilation-start (after jester/save-compilation-buffer activate)
-    "Save the compilation buffer to find it later."
-    (setq jester/last-compilation-buffer next-error-last-buffer))
-
-  (defadvice recompile (around jester/find-prev-compilation (&optional edit-command) activate)
-    "Find the previous compilation buffer, if present, and recompile there."
-    (if (and (null edit-command)
-             (not (derived-mode-p 'compilation-mode))
-             jester/last-compilation-buffer
-             (buffer-live-p (get-buffer jester/last-compilation-buffer)))
-        (with-current-buffer jester/last-compilation-buffer
-          ad-do-it)
-      ad-do-it)))
-
-(global-set-key [f6] 'recompile)
-
-(defadvice shell-command-on-region
-    (after jester/shell-command-in-view-mode
-           (start end command &optional output-buffer replace &rest other-args)
-           activate)
-  "Put \"*Shell Command Output*\" buffers into view-mode."
-  (unless (or output-buffer replace)
-    (with-current-buffer "*Shell Command Output*"
-      (view-mode 1))))
-
-
+
 (after-load 'compile
   (require 'ansi-color)
   (defun jester/colourise-compilation-buffer ()
@@ -57,8 +32,29 @@
       (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook 'jester/colourise-compilation-buffer))
 
+
+(defvar-local jester-run-command nil
+  "shell command to run the project.")
 
-(maybe-require-package 'cmd-to-echo)
+(defun jester/run-project ()
+  "Run it with `compile' and `jester-run-command'."
+  (interactive)
+  (if jester-run-command
+      (compile jester-run-command)
+    (user-error "no run command configured for %s" major-mode))
+  ;; switch to "*compilation*" buffer because it's configured not to show when `compile'
+  (switch-to-buffer "*compilation*"))
+
+(jester/with-leader
+ ;; TODO assign a key to "cargo check"?
+ "c i" 'compile ;; "compile it!"
+ "c l" (lambda! (switch-to-buffer "*compilation*"))
+ "c r" 'jester/run-project)
+
+(general-define-key
+ :states '(motion)
+ :keymaps 'compilation-mode-map
+ "f" 'link-hint-open-link)
 
 
 (provide 'init-compile)

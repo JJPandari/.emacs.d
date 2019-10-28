@@ -64,7 +64,7 @@
 
 (defconst jester-lispy-modes
   (append jester-elispy-modes
-          '(lisp-mode lisp-interaction-mode))
+          '(lisp-mode lisp-interaction-mode scheme-mode inferior-scheme-mode racket-mode))
   "Major modes relating to lisp.")
 
 (defconst jester-elispy-maps
@@ -86,9 +86,6 @@
 
 (use-package cl-lib-highlight
   :hook (lisp-mode . cl-lib-highlight-initialize))
-
-;; A quick way to jump to the definition of a function given its key binding
-(global-set-key (kbd "C-h K") 'find-function-on-key)
 
 
 
@@ -141,6 +138,7 @@
 
 ;; https://emacs-china.org/t/minibuffer-point-elisp/10048/6?u=jjpandari
 ;; show docstring after param list when point is on a function
+;; TODO ditch line if it's "advice"
 (advice-add
  'elisp-get-fnsym-args-string :around
  (lambda (oldfun sym &rest args)
@@ -179,9 +177,9 @@
   :init
   (add-hook! (emacs-lisp-mode lisp-mode) (flycheck-mode -1))
   (add-hook! 'emacs-lisp-mode-hook (setq mode-name "ELisp"))
+  (add-hook! 'jester-lispy-modes-hook (lispyville-mode 1))
   ;; load it everywhere
   ;; :hook (prog-mode . lispyville-mode)
-  :hook ((emacs-lisp-mode lisp-mode inferior-emacs-lisp-mode lisp-interaction-mode) . lispyville-mode)
   :config
   (lispyville-set-key-theme
    '(operators
