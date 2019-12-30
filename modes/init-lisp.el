@@ -155,14 +155,21 @@
 
 
 (jester/with-major-leader '(emacs-lisp-mode-map lisp-mode-map)
-                          "e" 'eval-last-sexp
-                          "f" 'eval-defun
-                          "i" 'ielm)
+  "e" 'eval-last-sexp
+  "f" 'eval-defun
+  "i" 'ielm)
+
+(defun jester/insert-lisp-comment-start ()
+  "Insert \";; \" or \"; \", based on whether at beginning of  line."
+  (interactive)
+  (if (looking-back "^\s*")
+      (insert ";; ")
+    (insert "; ")))
 
 (general-define-key
  :states '(emacs insert)
  :keymaps jester-lispy-maps
- "C-;" (lambda! (insert ";; ")))
+ "C-;" 'jester/insert-lisp-comment-start)
 
 
 (push (expand-file-name "elispfl" jester-submodules-dir) load-path)

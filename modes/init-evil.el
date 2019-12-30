@@ -81,11 +81,20 @@
    evil-insert-state-cursor '("chartreuse3" (bar . 2))
    evil-emacs-state-cursor '("SkyBlue2" box)
    evil-operator-state-cursor '("chocolate" box)
-   evil-replace-state-cursor '("chocolate" (hbar . 2)))
+   evil-replace-state-cursor '("chocolate" (hbar . 2))
+   evil-multiedit-state-cursor '("MediumPurple1" box)
+   evil-multiedit-insert-state-cursor '("MediumPurple1" (bar . 2)))
 
   (evil-define-text-object jester/evil-inner-buffer (count &optional beg end type)
     (list (point-min) (point-max)))
-  (define-key evil-inner-text-objects-map "g" 'jester/evil-inner-buffer)
+
+  (evil-define-text-object jester/evil-inner-line (count &optional beg end type)
+    (list (progn (beginning-of-line-text) (point)) (line-end-position)))
+
+  (general-define-key
+   :keymaps 'evil-inner-text-objects-map
+   "g" 'jester/evil-inner-buffer
+   "<return>" 'jester/evil-inner-line)
 
   (evil-define-operator jester/evil-join-no-whitespace (beg end)
     "Join lines without whitespace."
@@ -157,10 +166,10 @@
    "M" 'evilmi-jump-items)
   (general-define-key
    :keymaps '(evil-inner-text-objects-map)
-   "m" 'evilmi-inner-text-object)
+   "M" 'evilmi-inner-text-object)
   (general-define-key
    :keymaps '(evil-outer-text-objects-map)
-   "m" 'evilmi-outer-text-object)
+   "M" 'evilmi-outer-text-object)
 
   :config
   (global-evil-matchit-mode 1))
@@ -194,6 +203,7 @@
   (define-key evil-normal-state-map (kbd "DEL") 'evil-snipe-repeat-reverse))
 
 
+;; TODO fix paste
 (use-package evil-multiedit
   :demand t
   ;; :commands (evil-multiedit-match-all evil-multiedit-match-symbol-and-next evil-multiedit-match-symbol-and-prev)
@@ -252,6 +262,7 @@
   :demand t
   :custom (evil-goggles-duration 0.1)
   :init
+  ;; TODO use append
   ;; (lispyville->                    :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
   ;; (lispyville-<                    :face evil-goggles-shift-face                 :switch evil-goggles-enable-shift                 :advice evil-goggles--generic-async-advice)
   (setq evil-goggles--commands
@@ -295,6 +306,7 @@
   (evil-goggles-use-diff-refine-faces))
 
 
+;; TODO use more "v i remote o"; fix avy
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
 (require 'targets)
 ;; not needed if `targets-setup'?
@@ -305,9 +317,9 @@
 
 ;; setup has to come before custom bindings
 (targets-setup t
- :next-key "N"
- :last-key "L"
- :remote-key "M")
+               :next-key "N"
+               :last-key "L"
+               :remote-key "m")
 
 (targets-define-composite-to pair-delimiter
   (("(" ")" pair)
@@ -317,7 +329,7 @@
   :bind t
   :next-key "N"
   :last-key "L"
-  :remote-key "M"
+  :remote-key "m"
   :keys "o")
 
 (targets-define-composite-to quote
@@ -327,7 +339,7 @@
   :bind t
   :next-key "N"
   :last-key "L"
-  :remote-key "M"
+  :remote-key "m"
   :keys "'")
 
 ;;----------------------------------------------------------------------------
@@ -356,7 +368,15 @@
  "u" 'universal-argument
  "f i" (lambda! (find-file (expand-file-name "init.el" user-emacs-directory)))
  "j f" 'find-function
+ "j k" 'find-function-on-key
  "j v" 'find-variable
+ "h f" 'describe-function
+ "h F" 'describe-face
+ "h v" 'describe-variable
+ "h c" 'describe-char
+ "h k" 'describe-key
+ "h p" 'describe-package
+ "h m" 'describe-mode
  "n f" 'narrow-to-defun
  "n p" 'narrow-to-page
  "n v" 'narrow-to-region
@@ -364,7 +384,8 @@
  "n w" 'widen
  "q q" 'save-buffers-kill-terminal
  "i r" 'ivy-resume
- "x o" 'just-one-space
+ "t o" 'just-one-space
+ ;; NOTE: "a" "d" "." "'" are still there for the taking
  "," 'evil-indent
  "!" 'shell-command)
 
@@ -419,17 +440,11 @@
  "d" 'evil-scroll-down)
 
 (general-define-key
- :states 'motion
- :keymaps '(help-mode-map Man-mode-map)
- "K" 'help-go-back
- "J" 'help-go-forward)
-
-(general-define-key
  :states '(normal motion)
  "*" 'jester/evil-normal-search-forward
  "#" 'jester/evil-normal-search-backward
  "C-q" (lambda! (evil-ex-nohighlight)
-                (when (fboundp 'symbol-overlay-remove-all) (symbol-overlay-remove-all))))
+                (when (fboundp 'symbol-overlay-remove-all) (call-interactively 'symbol-overlay-remove-all))))
 
 (general-define-key
  :states '(normal motion visual)

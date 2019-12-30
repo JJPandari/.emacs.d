@@ -4,5 +4,5 @@
 # key: forin
 # --
 for(${1:const ${2:key}} in ${3:obj}) {
-    $0
+  $0
 }

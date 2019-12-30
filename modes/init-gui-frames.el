@@ -49,7 +49,7 @@
       `((fullscreen . ,(cond
                         ;; ((eq window-system 'x) 'fullboth)
                         ((eq window-system 'x) 'maximized) ;; wsl favours maximized
-                        ((eq window-system 'mac) 'maximized)
+                        ((eq window-system 'mac) 'fullboth)
                         (t 'maximized)))
         ;; left & top are required on wsl to correctly position
         (left . (+ 0))

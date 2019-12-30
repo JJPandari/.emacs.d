@@ -1,11 +1,11 @@
 # -*- mode: snippet -*-
-# name: return statement
-# key: ret
+# name: throw statement
+# key: th
 # type: command
 # --
 (if (eolp)
-    (yas-expand-snippet "return $0;")
-  (insert "return")
+    (yas-expand-snippet "throw $0;")
+  (insert "throw")
   (when (not (looking-at " "))
     (insert " "))
   (move-end-of-line 1)

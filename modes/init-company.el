@@ -19,7 +19,8 @@
    company-dabbrev-ignore-case nil
    company-dabbrev-downcase nil
    company-minimum-prefix-length 2
-   company-idle-delay 0.1)
+   company-idle-delay 0.1
+   company-require-match nil)
 
   ;; clear default bindings first
   (setq company-active-map (make-sparse-keymap))
@@ -67,12 +68,13 @@
 ;;----------------------------------------------------------------------------
 ;; https://emacs.stackexchange.com/a/7925/12854
 (defun check-expansion ()
-  (save-excursion
-    (if (looking-at "\\_>") t
-      (backward-char 1)
-      (if (looking-at "\\.") t
-        (backward-char 1)
-        (if (looking-at "->") t nil)))))
+  ;; (save-excursion
+  ;;   (if (looking-at "\\_>") t
+  ;;     (backward-char 1)
+  ;;     (if (looking-at "\\.") t
+  ;;       (backward-char 1)
+  ;;       (if (looking-at "->") t nil))))
+  t)
 
 (defun tab-indent-or-complete ()
   (interactive)
@@ -91,8 +93,7 @@
                 (company-abort)
                 (hippie-expand nil)
                 ;; (indent-for-tab-command)
-                )))
-      ))))
+                )))))))
 
 (defun expand-snippet-or-complete-selection ()
   (interactive)

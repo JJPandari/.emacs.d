@@ -14,6 +14,13 @@
     "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
     "," (lambda! (wgrep-finish-edit) (evil-motion-state))
     "a" (lambda! (wgrep-abort-changes) (evil-motion-state))))
+(general-define-key
+ :states '(motion)
+ :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
+ "C-d" 'evil-scroll-down
+ "H-d" 'ivy-occur-delete-candidate
+ "g g" 'evil-goto-first-line
+ "g r" 'ivy-occur-revert-buffer)
 
 (use-package counsel
   :demand t
@@ -28,13 +35,13 @@
    "p f" 'jester/open-project-file
    "p i" 'counsel-package
    ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+   "x" 'counsel-M-x
    "/" 'counsel-rg
    "*" (lambda! (counsel-rg (jester/region-or-symbol)))
    "f r" 'counsel-recentf
    "f z" 'jester/fzf-somewhere
    "t s" 'counsel-load-theme
    "s j" 'counsel-imenu
-   "." 'counsel-imenu
    "s b" 'swiper-all
    "s B" (lambda! (swiper-all (jester/region-or-symbol)))
    "i u" 'counsel-unicode-char

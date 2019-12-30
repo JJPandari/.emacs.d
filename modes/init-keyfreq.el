@@ -97,6 +97,7 @@
                                     ranger-prev-file
                                     ranger-next-file
                                     undo-tree-undo
-                                    undo-tree-redo)))
+                                    undo-tree-redo
+                                    org-self-insert-command)))
 
 (provide 'init-keyfreq)

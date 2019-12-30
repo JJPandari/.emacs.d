@@ -20,4 +20,23 @@
 
 (add-hook 'after-init-hook 'reapply-themes)
 
+
+;; https://gist.github.com/hlissner/1ace77658c772cf150a43dc9396fa2ed
+(defvar load-theme-hook nil
+  "Hook run after the theme is loaded with `load-theme'.")
+
+(defun run-load-theme-hooks (theme &optional _no-confirm no-enable)
+  "Set up `load-theme-hook' to run after `load-theme' is called."
+  (unless no-enable
+    (run-hooks 'load-theme-hook)))
+
+(advice-add #'load-theme :after #'run-load-theme-hooks)
+
+;; TODO not work
+(add-hook! 'load-theme-hook
+  (when (memq 'solarized-dark-high-contrast custom-enabled-themes)
+    (custom-theme-set-faces
+     'solarized-dark-high-contrast
+     '(default ((t (:foreground "#9AABAC")))))))
+
 (provide 'init-themes)

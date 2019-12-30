@@ -2,7 +2,7 @@
 (defvar cache-path-from-shell-loaded-p nil)
 (advice-add 'exec-path-from-shell-initialize :around
             (lambda (oldfun &rest args)
-              (if cache-path-from-shell-loaded-p
+              (if (and cache-path-from-shell-loaded-p (not (called-interactively-p)))
                   (message "exec-path-from-shell done already.")
                 (setq cache-path-from-shell-loaded-p t)
                 (apply oldfun args))))

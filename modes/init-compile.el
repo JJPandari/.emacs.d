@@ -1,5 +1,12 @@
 (setq compilation-read-command nil
       compilation-scroll-output t)
+(after-load 'compile
+  (require 'ansi-color)
+  (defun jester/colourise-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'jester/colourise-compilation-buffer)
+  (add-hook 'compilation-mode-hook 'jester/set-shell-buffer-face))
 
 
 (require-package 'alert)
@@ -25,14 +32,6 @@
             'jester/alert-after-compilation-finish))
 
 
-(after-load 'compile
-  (require 'ansi-color)
-  (defun jester/colourise-compilation-buffer ()
-    (when (eq major-mode 'compilation-mode)
-      (ansi-color-apply-on-region compilation-filter-start (point-max))))
-  (add-hook 'compilation-filter-hook 'jester/colourise-compilation-buffer))
-
-
 (defvar-local jester-run-command nil
   "shell command to run the project.")
 
@@ -41,20 +40,37 @@
   (interactive)
   (if jester-run-command
       (compile jester-run-command)
-    (user-error "no run command configured for %s" major-mode))
+    (user-error "no run command configured for this buffer, check mode hooks"))
+  ;; switch to "*compilation*" buffer because it's configured not to show when `compile'
+  (switch-to-buffer "*compilation*"))
+
+
+(defvar-local jester-test-command nil
+  "shell command to run the test.")
+
+(defun jester/run-test ()
+  "Run it with `compile' and `jester-test-command'."
+  (interactive)
+  (if jester-test-command
+      (compile jester-test-command)
+    (user-error "no test command configured for this buffer, check mode hooks"))
   ;; switch to "*compilation*" buffer because it's configured not to show when `compile'
   (switch-to-buffer "*compilation*"))
 
 (jester/with-leader
  ;; TODO assign a key to "cargo check"?
- "c i" 'compile ;; "compile it!"
- "c l" (lambda! (switch-to-buffer "*compilation*"))
- "c r" 'jester/run-project)
+ "c i" 'compile ; "compile it!"
+ "c l" (lambda! (switch-to-buffer "*compilation*")) ; "compilation log"
+ "c r" 'jester/run-project
+ "c t" 'jester/run-test)
 
 (general-define-key
  :states '(motion)
  :keymaps 'compilation-mode-map
- "f" 'link-hint-open-link)
+ "h" 'evil-backward-char
+ "f" 'link-hint-open-link
+ "g g" 'evil-goto-first-line
+ "g r" 'recompile)
 
 
 (provide 'init-compile)

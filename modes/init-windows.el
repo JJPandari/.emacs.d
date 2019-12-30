@@ -82,6 +82,7 @@
       ("-indirect-" :regexp t)
       'Man-mode
       'woman-mode
+      'process-menu-mode
       'snippet-mode)
     "cars for shackle rule, representing conditions using same-window rule")
 
@@ -137,12 +138,15 @@ bound to `KEY' in the leader sub-keymap."
     (let ((fun-name (intern (format "jester/eyebrowse-switch-to-%s" alias))))
       (eval `(jester/with-leader ,(format "l %s" key) fun-name))
       (eval `(defun ,fun-name ()
-               ,(format "Use %s as name/alias for slot %s, and switch to it." alias slot)
+               ,(format "Use %s as name/alias for slot %s (if it doesn't already have a name), and switch to it." alias slot)
                (interactive)
-               ;; have to switch (implicitly create) first,
-               ;; otherwise rename may operate on a non-existent config, causing error
-               (eyebrowse-switch-to-window-config ,slot)
-               (eyebrowse-rename-window-config ,slot ,alias)))))
+               ;; only rename when not already have a name
+               (if (eyebrowse--window-config-present-p ,slot)
+                   (eyebrowse-switch-to-window-config ,slot)
+                 ;; have to switch (implicitly create) first,
+                 ;; otherwise rename may operate on a non-existent config, causing error
+                 (eyebrowse-switch-to-window-config ,slot)
+                 (eyebrowse-rename-window-config ,slot ,alias))))))
 
   (jester/make-eyebrowse-switcher "alternative" 2 "a")
   (jester/make-eyebrowse-switcher "main" 3 "m")

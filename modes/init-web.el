@@ -6,8 +6,9 @@
    ;; "t" 'jester/evil-a-tag-dwim
    "t" 'evil-a-tag)
   (jester/with-major-leader 'web-mode-map
-                            "r" 'web-mode-element-rename
-                            "f" 'web-mode-fold-or-unfold)
+    "r" 'web-mode-element-rename
+    "f" 'web-mode-fold-or-unfold
+    "e" 'web-mode-element-extract)
 
   (setq
    web-mode-style-padding 0

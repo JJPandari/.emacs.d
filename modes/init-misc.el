@@ -46,5 +46,14 @@
 ;; make super key work on Windows
 ;; (when (eq system-type 'windows-nt) (w32-register-hot-key [s-]))
 
+;; profiler report mode
+(general-define-key
+ :states 'motion
+ :keymaps 'profiler-report-mode-map
+ "<tab>" 'profiler-report-toggle-entry
+ "<return>" 'profiler-report-toggle-entry
+ "j" 'profiler-report-next-entry
+ "k" 'profiler-report-previous-entry)
+
 
 (provide 'init-misc)

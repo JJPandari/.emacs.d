@@ -7,8 +7,9 @@
   ;; Enable Chinese word segmentation support (支持中文分词)
   ;; (setq youdao-dictionary-use-chinese-word-segmentation t)
   (jester/with-leader "y y" 'youdao-dictionary-search-at-point+)
+  (jester/with-leader "y i" 'youdao-dictionary-search-from-input)
   :bind ("C-c y" . youdao-dictionary-search-at-point+)
-  )
+  :hook (youdao-dictionary-mode . evil-motion-state))
 
 
 (use-package pyim
@@ -16,9 +17,9 @@
   :config
   (setq-default pyim-english-input-switch-functions
                 '(pyim-probe-dynamic-english
-                  pyim-probe-isearch-mode
-                  pyim-probe-program-mode
-                  pyim-probe-org-structure-template)
+                  ;; pyim-probe-isearch-mode
+                  ;; pyim-probe-org-structure-template
+                  )
 
                 pyim-punctuation-half-width-functions
                 '(pyim-probe-punctuation-line-beginning

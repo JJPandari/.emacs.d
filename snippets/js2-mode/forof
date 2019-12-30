@@ -3,6 +3,6 @@
 # name: forof
 # key: forof
 # --
-for(${1:const ${2:item}} of ${3:array}) {
-    $0
+for (${1:const ${2:item}} of ${3:array}) {
+  $0
 }

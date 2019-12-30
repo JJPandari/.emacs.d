@@ -128,7 +128,7 @@
   (set-face-attribute 'trailing-whitespace nil
                       :background (face-attribute 'font-lock-comment-face :foreground))
   (setq show-trailing-whitespace 1))
-(add-hook! 'prog-mode-hook (jester/show-trailing-whitespace))
+(add-hook! 'prog-mode-hook 'jester/show-trailing-whitespace)
 
 ;;----------------------------------------------------------------------------
 ;; adjust visual fill column

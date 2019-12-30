@@ -89,8 +89,8 @@
 
 
 (use-package electric-operator
-  :hook ((js2-mode . electric-operator-mode)
-         (css-mode . electric-operator-mode)
+  :hook (;; (js2-mode . electric-operator-mode)
+         ;; (css-mode . electric-operator-mode)
          (sass-mode . electric-operator-mode)
          ;; (rust-mode . electric-operator-mode)
          (java-mode . electric-operator-mode)
@@ -98,6 +98,32 @@
          (sql-mode . electric-operator-mode)
          (c-mode . electric-operator-mode)
          (php-mode . electric-operator-mode)))
+
+;;----------------------------------------------------------------------------
+;; smart ; key
+;;----------------------------------------------------------------------------
+(defun jester/insert-\;or-: ()
+  "Insert a \";\" or \":\" according to context."
+  (interactive)jester-lispy-modes
+  (cond ((memq major-mode jester-lispy-modes) (insert ":"))
+        ((derived-mode-p 'prog-mode) (if (eolp)
+                                         (insert ";")
+                                       (insert ":")))
+        (t (insert ";"))))
+
+(defun jester/toggle-char-before-point-\;-or-: ()
+  "Toggle the char before point between \";\" or \":\"."
+  (interactive)
+  (pcase (char-before)
+    (?\; (delete-backward-char 1) (insert ":"))
+    (?\: (delete-backward-char 1) (insert ";"))
+    (_ (message "toggle \";\" or \":\": char before is neither \";\" nor \":\""))))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps 'prog-mode-map
+ ";" 'jester/insert-\;or-:
+ ":" 'jester/toggle-char-before-point-\;-or-:)
 
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation
@@ -211,20 +237,6 @@
  "H-S-t" 'jester/expand-to-ternary-condensed)
 
 ;;----------------------------------------------------------------------------
-;; Make a "foo: bar," key-value pair
-;;----------------------------------------------------------------------------
-(defun jester/make-key-value-pair ()
-  "Make a key-value pair, by inserting \": ,\" at point.
-Effectively using symbol before point as the key."
-  (interactive)
-  (insert ": ,") (backward-char))
-
-(general-define-key
- :states '(insert emacs)
- :keymaps 'prog-mode-map
- "<C-i>" 'jester/make-key-value-pair)
-
-;;----------------------------------------------------------------------------
 ;; Insert " = " for me, please.
 ;;----------------------------------------------------------------------------
 (defmacro jester/def-make-assignment-function (fun-name eol-str &rest forms-for-bolt)
@@ -254,7 +266,7 @@ If this line is already an assignment (has a \"=\"), cycle through some styles."
          (when (and need-signs something-left-p) (move-end-of-line 1) (left-char))))))
 
 (defvar jester-javascript-assignment-declarer
-  'var
+  'let
   "What word to use when making a javascript assignment.
 When set to `let', use \"let\" and \"const\".
 When set to `var', use \"var\".")
@@ -334,8 +346,7 @@ otherwise move to before semicolon."
 ;;----------------------------------------------------------------------------
 ;; https://stackoverflow.com/a/22114743/4788022
 (defun jester/insert-curly-and-go-inside ()
-  "Insert {}.
-Threat is as function body when from endline before )"
+  "Insert {} on separate lines, and a new line in between."
   (interactive)
   (unless (looking-back "[ ({\\[]") (insert " "))
   (insert "{\n\n}") (indent-according-to-mode)
@@ -345,6 +356,21 @@ Threat is as function body when from endline before )"
  :states '(insert emacs)
  :keymaps '(prog-mode-map conf-mode-map)
  "<C-return>" 'jester/insert-curly-and-go-inside)
+
+;;----------------------------------------------------------------------------
+;; insert a line below point
+;;----------------------------------------------------------------------------
+(defun jester/insert-newline-below ()
+  "Insert a newline below point."
+  (interactive)
+  (save-excursion
+    (move-end-of-line 1)
+    (insert "\n")))
+
+(general-define-key
+ :states '(insert emacs)
+ :keymaps '(prog-mode-map conf-mode-map)
+ "<S-return>" 'jester/insert-newline-below)
 
 ;;----------------------------------------------------------------------------
 ;; move to bracket

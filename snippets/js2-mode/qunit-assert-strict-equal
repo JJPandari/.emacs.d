@@ -1,4 +1,0 @@
-# key: ae
-# name: qunit assert.strictEqual statement
-# --
-assert.strictEqual(${2:A}, ${0:B}, '$1');

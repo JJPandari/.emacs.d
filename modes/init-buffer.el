@@ -76,6 +76,7 @@ current window."
 ;;----------------------------------------------------------------------------
 ;; switch major mode
 ;;----------------------------------------------------------------------------
+;; TODO standalone history with `ivy-read'
 (defun jester/switch-mode ()
   "Toggle some mode."
   (interactive)

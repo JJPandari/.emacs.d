@@ -5,16 +5,26 @@
 (use-package awesome-pair
   :ensure nil
   :commands (awesome-pair-kill
+             awesome-pair-backward-delete awesome-pair-forward-delete
+             awesome-pair-equal awesome-pair-double-quote awesome-pair-space
              awesome-pair-open-round awesome-pair-open-bracket awesome-pair-open-curly
              awesome-pair-close-round awesome-pair-close-bracket awesome-pair-close-curly)
   :bind (("M-u" . awesome-pair-wrap-round))
   :init
-  ;; (general-define-key :states '(insert emacs) "(" 'awesome-pair-open-round)
-  ;; (general-define-key :states '(insert emacs) "[" 'awesome-pair-open-bracket)
-  ;; (general-define-key :states '(insert emacs) "{" 'awesome-pair-open-curly)
-  ;; (general-define-key :states '(insert emacs) ")" 'awesome-pair-close-round)
-  ;; (general-define-key :states '(insert emacs) "]" 'awesome-pair-close-bracket)
-  ;; (general-define-key :states '(insert emacs) "}" 'awesome-pair-close-curly)
+  (general-define-key
+   :states '(insert emacs)
+   ;; "(" 'awesome-pair-open-round
+   ;; "[" 'awesome-pair-open-bracket
+   ;; "{" 'awesome-pair-open-curly
+   ;; ")" 'awesome-pair-close-round
+   ;; "]" 'awesome-pair-close-bracket
+   ;; "}" 'awesome-pair-close-curly
+   "=" 'awesome-pair-equal
+   ;; "\"" 'awesome-pair-double-quote
+   "SPC" 'awesome-pair-space
+   ;; "<backspace>" 'awesome-pair-backward-delete
+   ;; "C-b" 'awesome-pair-forward-delete
+   )
 
   (defun jester/semantic-kill-maybe-whole-line ()
     "Kill semantic unit after point, if only whitespace is left afterwards, delete this line."

@@ -10,19 +10,11 @@
 
 
 ;;; Standard package repositories
-
 (setq package-archives
-      (append '(
-                ;; ("melpa-cn" . "https://elpa.emacs-china.org/melpa/")
-                ;; ("org-cn" . "https://elpa.emacs-china.org/org/")
-                ;; ("gnu-cn" . "https://elpa.emacs-china.org/gnu/")
-                ;; ("melpa-stable-cn" . "https://elpa.emacs-china.org/melpa-stable/")
-                ("melpa-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                ("org-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-                ("gnu-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                ("melpa-stable-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")
-                )
-              package-archives))
+      '(("melpa-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+        ("org-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+        ("gnu-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa-stable-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")))
 
 
 

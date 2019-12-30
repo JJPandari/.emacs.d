@@ -1,4 +1,7 @@
 (use-package yasnippet
+  :init
+  (setq yas-snippet-dirs (list (expand-file-name "snippets" user-emacs-directory))
+        yas-prompt-functions '(yas-no-prompt))
   :demand t
   :config
   (yas-global-mode 1)
@@ -17,8 +20,6 @@
    "s n" 'yas-new-snippet)
 
   (jester/with-major-leader 'snippet-mode-map
-   "l" 'yas-load-snippet-buffer)
-
-  (setq yas-snippet-dirs (list (expand-file-name "snippets" user-emacs-directory))))
+    "l" 'yas-load-snippet-buffer))
 
 (provide 'init-yas)

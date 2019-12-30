@@ -1,6 +1,0 @@
-# key: if
-# name: if block
-# --
-if ($1) {
-  $0
-}

@@ -5,11 +5,12 @@
   (when gls (setq insert-directory-program gls)))
 
 (jester/with-major-leader 'ranger-mode-map
-                          "w" 'wdired-change-to-wdired-mode)
+  "w" 'wdired-change-to-wdired-mode
+  "d" 'dired-create-directory)
 
 (jester/with-major-leader 'wdired-mode-map
-                          "," 'wdired-finish-edit
-                          "a" 'wdired-abort-changes)
+  "," 'wdired-finish-edit
+  "a" 'wdired-abort-changes)
 
 (use-package ranger
   :init

@@ -33,7 +33,7 @@
   :hook (js2-mode . js2-refactor-mode)
   :config
   (jester/with-major-leader 'js2-mode-map
-                            "r" (lambda! (counsel-M-x "^js2r- "))))
+    "r" (lambda! (counsel-M-x "^js2r- "))))
 
 
 (use-package js-doc
@@ -48,7 +48,7 @@
   :hook js2-mode
   :config
   (jester/with-major-leader 'js2-mode-map
-                            "e" 'skewer-eval-last-expression)
+    "e" 'skewer-eval-last-expression)
   (evil-set-initial-state 'skewer-error-mode 'motion))
 
 
@@ -72,6 +72,7 @@
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'js2-mode-create-imenu-index))
           imenu-generic-expression '((nil "^ *static \\(propTypes\\|defaultProps\\) = {$" 1))
           mode-name "JSX"))
+  (require 'web-mode)
   (custom-set-faces '(rjsx-tag
                       ((t (:inherit web-mode-html-tag-face)))))
   :config
@@ -108,6 +109,63 @@
   "Copy current buffer file's http address."
   (interactive)
   (message (kill-new (format "http://localhost:%s/%s" jester-monkey-scripts-port (buffer-name)))))
+
+(defun jester/prettier-js-file-1 ()
+  "Call prettier on current file."
+  (interactive)
+  (call-process-shell-command (format "prettier --write %s" (buffer-file-name))))
+
+(defun jester/prettier-js-file-2 ()
+  "Call prettier on current file."
+  (interactive)
+  (save-restriction
+    (widen)
+    (call-process-region (point-min) (point-max) "prettier" t t t)))
+
+(jester/with-major-leader 'js2-mode-map
+  "p" 'jester/prettier-js-file-1)
+
+(defun jester/make-default-evil-makers-for-js ()
+  "Make some evil markers to my habit."
+  (save-match-data
+    ;; i = "import"
+    (goto-char (point-min))
+    (cl-loop with x
+             while (or (when (looking-at "import")
+                         (progn (setq x (point))
+                                t))
+                       (looking-at "//")
+                       (and (looking-at "$")
+                            (not (looking-at (rx buffer-end)))))
+             do (beginning-of-line 2)
+             finally (when (not (null x)) (evil-set-marker ?i x)))
+    ;; m = "method"
+    ;; v = "view"
+    (goto-char (point-min))
+    (when (and (search-forward "render() {" nil t)
+               (search-forward "return (" nil t))
+      (evil-set-marker ?v))
+    ;; c = "constructor"
+    (goto-char (point-min))
+    (when (search-forward "constructor(" nil t)
+      (evil-set-marker ?c))
+    ;; s = "state"
+    (goto-char (point-min))
+    (when (search-forward "this.state =" nil t)
+      (evil-set-marker ?s))))
+
+(add-hook 'js2-mode-hook 'jester/make-default-evil-makers-for-js t)
+
+(defun jester/set-js-test-command ()
+  "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"npm run test ...\"."
+  (let ((file-name (buffer-file-name)))
+    (when (and file-name
+               (or (s-suffix-p ".test.js" file-name)
+                   (s-suffix-p ".spec.js" file-name)))
+      (setq jester-test-command (format "npm run test -- %s --collectCoverageOnlyFrom ''" file-name)))))
+
+(add-hook 'js2-mode-hook 'jester/set-js-test-command)
+
 
 (require 'init-ui5)
 

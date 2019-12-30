@@ -59,3 +59,4 @@ site-lisp/package/
 /server
 /transient
 /.lsp-*
+/.DS_Store

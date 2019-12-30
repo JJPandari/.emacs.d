@@ -285,7 +285,9 @@ typical word processor."
 
 (use-package org
   :config
-  (setq geiser-default-implementation 'racket)
+  (setq geiser-default-implementation 'racket
+        org-src-fontify-natively t
+        org-agenda-files '("~/org"))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -307,9 +309,9 @@ typical word processor."
   :if *is-a-mac*
   :hook (org-mode . org-bullets-mode)
   :config
-  (setq org-bullets-bullet-list '("🐳" "🐬" "🐠" "🐟" "🐤")
-        org-src-fontify-natively t
-        org-agenda-files '("~/org")))
+  (setq org-bullets-bullet-list '("✿" "✸" "◉" "○"))
+  ;; (setq org-bullets-bullet-list '("🐳" "🐬" "🐠" "🐟" "🐤"))
+  )
 
 (use-package evil-org
   :hook (org-mode . evil-org-mode)

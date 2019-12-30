@@ -47,9 +47,9 @@
 (require 'init-gui-frames)
 
 (require 'init-osx-keys)
+(require 'init-evil)
 (require 'init-which-key)
 (require 'init-hydra)
-(require 'init-evil)
 
 (require 'init-editing-utils)
 
@@ -58,7 +58,6 @@
 (require 'init-file)
 (require 'init-buffer)
 (require 'init-minibuffer)
-(require 'init-flycheck)
 
 (require 'init-ivy)
 ;; (require 'init-helm)
@@ -69,7 +68,9 @@
 (require 'init-sessions)
 (require 'init-face)
 (require 'init-avy)
+(require 'init-help)
 
+(require 'init-flycheck)
 (require 'init-vc)
 (require 'init-git)
 (require 'init-compile)
