@@ -84,6 +84,7 @@
 ;; (require 'init-clojure-cider)
 ;; (require 'init-common-lisp)
 
+(require 'init-projects)
 (require 'init-lsp)
 (require 'init-jump)
 (require 'init-text)

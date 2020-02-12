@@ -371,7 +371,7 @@
  "j k" 'find-function-on-key
  "j v" 'find-variable
  "h f" 'describe-function
- "h F" 'describe-face
+ "h F" 'list-faces-display
  "h v" 'describe-variable
  "h c" 'describe-char
  "h k" 'describe-key

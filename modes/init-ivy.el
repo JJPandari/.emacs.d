@@ -108,6 +108,7 @@ If called interactively, let the user select start directory first."
    [remap pop-to-mark-command] 'counsel-mark-ring
    [remap yank-pop] 'counsel-yank-pop))
 
+
 (use-package wgrep
   :commands ivy-wgrep-change-to-wgrep-mode)
 
@@ -134,6 +135,20 @@ If called interactively, let the user select start directory first."
 ;;         `((background-color . ,(face-attribute 'default :background))
 ;;           (foreground-color . ,(face-attribute 'default :foreground))))
 ;;   (ivy-posframe-mode 1))
+
+
+(use-package ivy-rich
+  :demand t
+  :after counsel
+  :config
+  (let ((columns (plist-get (cadr ivy-rich-display-transformers-list) :columns)))
+    (plist-put (cadr (car columns))
+               :width
+               60)
+    (plist-put (cadr (nth 4 columns))
+               :width
+               20))
+  (ivy-rich-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords

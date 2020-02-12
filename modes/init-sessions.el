@@ -11,10 +11,10 @@
   (if jester-auto-save-desktop-timer
       (progn (cancel-timer jester-auto-save-desktop-timer)
              (setq jester-auto-save-desktop-timer nil)
-             (message "auto save desktop is off."))
+             (message "auto save desktop is OFF."))
     (setq jester-auto-save-desktop-timer
           (run-with-idle-timer 30 t (lambda () (desktop-save desktop-dirname))))
-    (message "auto save desktop is on.")))
+    (message "auto save desktop is ON.")))
 (jester/toggle-auto-save-desktop)
 
 (defadvice desktop-read (around time-restore activate)

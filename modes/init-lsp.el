@@ -21,6 +21,7 @@
   (setq lsp-ui-doc-border (face-attribute 'default :foreground))
   :commands lsp-ui-mode
   :config
+  (setq lsp-ui-doc-alignment 'frame-left-or-right-other)
   (defun lsp-ui-doc--move-frame (frame)
     "Place our FRAME on screen."
     (-let* (((left top right _bottom) (window-edges nil nil nil t))
@@ -61,11 +62,6 @@
 (use-package company-lsp
   :after company
   :commands company-lsp)
-
-(use-package projectile
-  :demand t
-  :config
-  (projectile-mode 1))
 
 ;; TODO
 ;; (set-lookup-handlers! 'lsp-ui-mode :async t

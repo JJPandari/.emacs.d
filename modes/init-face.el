@@ -16,12 +16,14 @@
 (add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
 
 (use-package highlight-parentheses
-  :init
-  ;; the theme's setting will take precedence if simply `setq'
-  (customize-set-variable 'hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4"))
   :demand t
   :config
   (global-highlight-parentheses-mode 1)
+  ;; run after init due to `reapply-themes'
+  ;; TODO load-theme-hook
+  (add-hook! :append 'after-init-hook
+    ;; the theme's setting will take precedence if simply `setq'
+    (customize-set-variable 'hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4")))
   (set-face-attribute 'hl-paren-face nil :weight 'bold))
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -91,6 +93,7 @@
   (interactive)
   (set-face-attribute 'default nil
                       :family "Source Code Pro"
+                      ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-small-font-size
                       :weight 'normal
@@ -102,6 +105,7 @@
   (interactive)
   (set-face-attribute 'default nil
                       :family "Source Code Pro"
+                      ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-large-font-size
                       :weight 'normal
@@ -118,7 +122,7 @@
     (set-fontset-font t nil (font-spec :family "Fira Code") nil 'append)))
 
 (jester/use-large-font)
-;; try out Fira Code ligatures
+;; try out ligatures
 (when *is-a-mac* (mac-auto-operator-composition-mode 1))
 
 ;;----------------------------------------------------------------------------

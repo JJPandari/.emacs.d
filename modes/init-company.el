@@ -84,7 +84,7 @@
    (t
     ;; (indent-for-tab-command)
     (if (and (or (not yas-minor-mode)
-                 (null (yas-expand)))
+                 (null (jester/yas-expand-no-prompt)))
              (check-expansion))
         (progn
           (company-manual-begin)
@@ -98,7 +98,7 @@
 (defun expand-snippet-or-complete-selection ()
   (interactive)
   (if (or (not yas-minor-mode)
-          (null (yas-expand))
+          (null (jester/yas-expand-no-prompt))
           (company-abort))
       (company-complete-selection)))
 

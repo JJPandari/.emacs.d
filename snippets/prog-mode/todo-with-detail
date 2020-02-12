@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: todo
-# key: /tt
+# name: todo with detail
+# key: /t
 # type: command
 # --
 (insert "TODO ")

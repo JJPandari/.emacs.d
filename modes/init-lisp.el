@@ -222,7 +222,12 @@
   (general-define-key
    :states '(emacs insert normal visual)
    :keymaps jester-lispy-maps
-   "M-u" 'lispyville-wrap-round))
+   "M-u" 'lispyville-wrap-round)
+  ;; ugly fix
+  (general-define-key
+   :states '(emacs insert normal visual)
+   :keymaps 'inferior-emacs-lisp-mode-map
+   "M-r" 'lispy-raise))
 
 
 (use-package macrostep

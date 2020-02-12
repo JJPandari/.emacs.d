@@ -102,28 +102,29 @@
 ;;----------------------------------------------------------------------------
 ;; smart ; key
 ;;----------------------------------------------------------------------------
-(defun jester/insert-\;or-: ()
-  "Insert a \";\" or \":\" according to context."
-  (interactive)jester-lispy-modes
-  (cond ((memq major-mode jester-lispy-modes) (insert ":"))
-        ((derived-mode-p 'prog-mode) (if (eolp)
-                                         (insert ";")
-                                       (insert ":")))
-        (t (insert ";"))))
+;; TODO use tree-sitter
+;; (defun jester/insert-\;or-: ()
+;;   "Insert a \";\" or \":\" according to context."
+;;   (interactive)jester-lispy-modes
+;;   (cond ((memq major-mode jester-lispy-modes) (insert ":"))
+;;         ((derived-mode-p 'prog-mode) (if (eolp)
+;;                                          (insert ";")
+;;                                        (insert ":")))
+;;         (t (insert ";"))))
 
-(defun jester/toggle-char-before-point-\;-or-: ()
-  "Toggle the char before point between \";\" or \":\"."
-  (interactive)
-  (pcase (char-before)
-    (?\; (delete-backward-char 1) (insert ":"))
-    (?\: (delete-backward-char 1) (insert ";"))
-    (_ (message "toggle \";\" or \":\": char before is neither \";\" nor \":\""))))
+;; (defun jester/toggle-char-before-point-\;-or-: ()
+;;   "Toggle the char before point between \";\" or \":\"."
+;;   (interactive)
+;;   (pcase (char-before)
+;;     (?\; (delete-backward-char 1) (insert ":"))
+;;     (?\: (delete-backward-char 1) (insert ";"))
+;;     (_ (message "toggle \";\" or \":\": char before is neither \";\" nor \":\""))))
 
-(general-define-key
- :states '(insert emacs)
- :keymaps 'prog-mode-map
- ";" 'jester/insert-\;or-:
- ":" 'jester/toggle-char-before-point-\;-or-:)
+;; (general-define-key
+;;  :states '(insert emacs)
+;;  :keymaps 'prog-mode-map
+;;  ";" 'jester/insert-\;or-:
+;;  ":" 'jester/toggle-char-before-point-\;-or-:)
 
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation

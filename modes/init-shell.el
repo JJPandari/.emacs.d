@@ -20,7 +20,7 @@
    :keymaps 'eshell-mode-map
    "<return>" 'switch-to-buffer))
 
-(defface jester-shell-face '((t :family "Fira Code" :height 140))
+(defface jester-shell-face '((t :family "JetBrains Mono" :height 140))
   "Face for shell buffers. Use a different font and smaller font size.")
 
 ;; https://stackoverflow.com/questions/20866169/change-the-font-of-current-buffer-in-emacs

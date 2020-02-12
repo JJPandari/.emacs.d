@@ -35,8 +35,9 @@
 ;; TODO not work
 (add-hook! 'load-theme-hook
   (when (memq 'solarized-dark-high-contrast custom-enabled-themes)
-    (custom-theme-set-faces
-     'solarized-dark-high-contrast
-     '(default ((t (:foreground "#9AABAC")))))))
+    ;; (custom-theme-set-faces
+    ;;  'solarized-dark-high-contrast
+    ;;  '(default ((t (:foreground "#9AABAC")))))
+    ))
 
 (provide 'init-themes)
