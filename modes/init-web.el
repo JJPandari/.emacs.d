@@ -1,5 +1,8 @@
 (use-package web-mode
-  :mode ("\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'")
+  :init
+  (after-load 'flycheck
+    (flycheck-add-mode 'javascript-eslint 'web-mode))
+  :mode ("\\.tsx\\'" "\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'")
   :config
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
@@ -35,18 +38,28 @@
   (evil-define-key 'insert web-mode-map (kbd "TAB") #'tab-indent-or-complete)
   (evil-define-key 'insert web-mode-map (kbd "<tab>") #'tab-indent-or-complete)
 
-  (add-hook! 'web-mode-hook
-    (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
+  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue t)
+  (defun jester/web-mode-maybe-setup-vue ()
+    "Do something if it's a .vue file."
     (when (and buffer-file-name (equal (file-name-extension buffer-file-name) "vue"))
+      (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
       (setq imenu-generic-expression ; imenu regexps for vue.js
             '(("method" "^    \\([^ ]+\\)(.*) {" 1)
               ("data" "^    \\([^ ]+\\): {" 1)
               ("prop" "^  \\([^ ]+\\): {" 1)
-              ("hook" "^  \\([^ ]+\\)() {" 1)))
-      ;; only use eslint as checker in vue files
-      (flycheck-add-mode 'javascript-eslint 'web-mode)) t)
+              ("hook" "^  \\([^ ]+\\)() {" 1)))))
 
-  )
+  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-tsx t)
+  (defun jester/web-mode-maybe-setup-tsx ()
+    "Do something if it's a .tsx file."
+    (when (string-equal (file-name-extension (buffer-file-name))
+                        "tsx")
+      (lsp))
+    ;; lsp sets checker to lsp, set it back
+    (setq flycheck-checker 'javascript-eslint)
+    ;; lsp sets company backend to lsp, set it back
+    (setq-local company-backends jester-company-backends-with-tabnine)
+    (jester/make-default-evil-makers-for-js)))
 
 (use-package emmet-mode
   :hook (web-mode js2-mode)

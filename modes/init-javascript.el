@@ -56,15 +56,18 @@
   :init
   (defun jester/jsx-file-p ()
     "Check whether current buffer is a jsx file."
-    (point-min)
-    (while (looking-at "^//")
-      (beginning-of-line 2))
-    (looking-at (rx (sequence bol
-                              "import"
-                              (1+ (or word "," "{" "}" whitespace))
-                              "from 'react'"
-                              (optional ";")
-                              eol))))
+    (let ((ext (file-name-extension (buffer-file-name))))
+      (when (or (string-equal ext "js")
+                (string-equal ext "jsx"))
+        (point-min)
+        (while (looking-at "^//")
+          (beginning-of-line 2))
+        (looking-at (rx (sequence bol
+                                  "import"
+                                  (1+ (or word "," "{" "}" whitespace))
+                                  "from 'react'"
+                                  (optional ";")
+                                  eol))))))
   (setq magic-mode-alist
         (append '((jester/jsx-file-p . rjsx-mode)) magic-mode-alist))
   (add-hook! 'rjsx-mode-hook
@@ -78,6 +81,23 @@
   :config
   (evil-define-key 'insert rjsx-mode-map (kbd "C-b") #'rjsx-delete-creates-full-tag)
   (modify-syntax-entry ?_ "w" rjsx-mode-syntax-table))
+
+
+(use-package typescript-mode
+  :custom (typescript-indent-level 2)
+  :init
+  (after-load 'flycheck
+    (flycheck-add-mode 'javascript-eslint 'typescript-mode))
+  (add-hook! :append 'typescript-mode-hook
+    ;; lsp would set checker to lsp, set it back
+    (setq flycheck-checker 'javascript-eslint))
+  :mode "\\.ts\\'"
+  :config
+  ;; (require 'ansi-color)
+  ;; (defun colorize-compilation-buffer ()
+  ;;   (ansi-color-apply-on-region compilation-filter-start (point-max)))
+  ;; (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+  )
 
 
 ;; https://emacs-china.org/t/javascript/7860?u=jjpandari
@@ -102,6 +122,7 @@
                (goto-char end) (insert "\']")
                (goto-char start) (delete-char -1) (insert "[\'")))))))))
 
+
 (defvar jester-monkey-scripts-port "9981"
   "port number where monkey scripts are hosted on local http server.")
 
@@ -110,6 +131,7 @@
   (interactive)
   (message (kill-new (format "http://localhost:%s/%s" jester-monkey-scripts-port (buffer-name)))))
 
+
 (defun jester/prettier-js-file-1 ()
   "Call prettier on current file."
   (interactive)
@@ -122,9 +144,10 @@
     (widen)
     (call-process-region (point-min) (point-max) "prettier" t t t)))
 
-(jester/with-major-leader 'js2-mode-map
+(jester/with-major-leader '(js2-mode-map web-mode-map typescript-mode-map)
   "p" 'jester/prettier-js-file-1)
 
+
 (defun jester/make-default-evil-makers-for-js ()
   "Make some evil markers to my habit."
   (save-match-data
@@ -156,6 +179,7 @@
 
 (add-hook 'js2-mode-hook 'jester/make-default-evil-makers-for-js t)
 
+
 (defun jester/set-js-test-command ()
   "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"npm run test ...\"."
   (let ((file-name (buffer-file-name)))
@@ -165,6 +189,17 @@
       (setq jester-test-command (format "npm run test -- %s --collectCoverageOnlyFrom ''" file-name)))))
 
 (add-hook 'js2-mode-hook 'jester/set-js-test-command)
+
+
+(defun jester/typescript-goto-typings-file ()
+  "Goto this project's typings.d.ts file."
+  (interactive)
+  (if-let ((root (projectile-project-root)))
+      (find-file (concat (file-name-as-directory root) "typings.d.ts"))
+    (user-error "Not in a project.")))
+
+(jester/with-major-leader '(web-mode-map typescript-mode-map)
+  "t" 'jester/typescript-goto-typings-file)
 
 
 (require 'init-ui5)

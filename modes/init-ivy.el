@@ -86,7 +86,7 @@ If called interactively, let the user select start directory first."
   (defun jester/open-project-file ()
     (interactive)
     (cond
-     ((locate-dominating-file default-directory ".git") (counsel-git))
+     ((projectile-project-root) (counsel-git))
      (t (jester/fzf-somewhere))))
 
   ;; see doc for `counsel-mode'

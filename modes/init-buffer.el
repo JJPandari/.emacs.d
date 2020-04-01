@@ -6,6 +6,7 @@
  "b h" (lambda! (switch-to-buffer (help-buffer)))
  "b m" (lambda! (switch-to-buffer (messages-buffer)))
  "b s" 'jester/switch-to-scratch-buffer
+ "b S" 'jester/scratch-from-current-buffer
  "b y" 'jester/copy-buffer-name
  "<return>" 'jester/alternate-buffer
  "m s" 'jester/switch-mode)
@@ -29,7 +30,7 @@
      (t (format "%8d" (buffer-size))))))
 
 ;;----------------------------------------------------------------------------
-;; switch *scratch* buffer
+;; switch to *scratch* buffer
 ;;----------------------------------------------------------------------------
 (defun jester/switch-to-scratch-buffer (&optional arg)
   "Switch to the `*scratch*' buffer, creating it first if needed.
@@ -82,5 +83,20 @@ current window."
   (interactive)
   (minibuffer-with-setup-hook #'beginning-of-line
     (counsel-M-x " -mode$")))
+
+;;----------------------------------------------------------------------------
+;; copy buffer content and do some experiments
+;;----------------------------------------------------------------------------
+(defun jester/scratch-from-current-buffer ()
+  "Copy current buffer content, make a new buffer to fiddle with. If region active, only copy region."
+  (interactive)
+  (let ((mode major-mode)
+        (text (if (region-active-p)
+                  (prog1 (buffer-substring (region-beginning) (region-end))
+                    (deactivate-mark))
+                (buffer-substring (point-min) (point-max)))))
+    (switch-to-buffer (generate-new-buffer (format "fiddling: %s" (buffer-name))))
+    (insert text)
+    (funcall mode)))
 
 (provide 'init-buffer)

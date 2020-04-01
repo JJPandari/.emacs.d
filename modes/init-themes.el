@@ -40,4 +40,11 @@
     ;;  '(default ((t (:foreground "#9AABAC")))))
     ))
 
+(add-hook! 'load-theme-hook
+  (when (memq 'solarized-light custom-enabled-themes)
+    (custom-theme-set-faces
+     'solarized-light
+     '(web-mode-keyword-face ((t (:inherit 'font-lock-keyword-face)))))))
+
+
 (provide 'init-themes)

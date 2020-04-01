@@ -51,7 +51,7 @@
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
     (add-hook (intern (format "%s-hook" major-mode))
               (lambda () (setq-local company-backends jester-company-backends-with-tabnine))))
-  (dolist (mode '(js2-mode css-mode less-css-mode scss-mode))
+  (dolist (mode '(js2-mode web-mode css-mode less-css-mode scss-mode))
     (jester/use-tabnine-for-major-mode mode)))
 
 

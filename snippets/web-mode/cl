@@ -8,4 +8,9 @@
          (move-beginning-of-line 1)
          (looking-at "^[ \t]*$"))))
   (yas-expand-snippet
-   (if in-js-p "console.log($0);" "class=\"$0\"")))
+   (if in-js-p
+       "console.log($0);"
+     (format "%s=\"$0\""
+             (if (member (file-name-extension (buffer-file-name)) (list "js" "jsx" "ts" "tsx"))
+                 "className"
+               "class")))))

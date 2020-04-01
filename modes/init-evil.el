@@ -420,7 +420,15 @@
 
             gitconfig-mode-map
             diff-mode-map)
- "<return>" 'switch-to-buffer)
+ "<return>" 'jester/probably-switch-buffer)
+
+(defun jester/probably-switch-buffer ()
+  "Probably switch buffer, but do enter in special cases:
+when peeking definitions with lsp-ui."
+  (interactive)
+  (if (and (featurep 'lsp-ui) lsp-ui-peek-mode)
+      (call-interactively 'lsp-ui-peek--goto-xref)
+    (call-interactively 'ivy-switch-buffer)))
 
 (general-define-key
  :states '(visual)
@@ -462,7 +470,6 @@
  :states '(insert emacs)
  "C-b" 'delete-char
  "C-o" 'evil-open-below
- "C-S-o" 'evil-open-above
  "C-d" 'backward-char
  "C-n" 'next-line
  "C-p" 'previous-line
@@ -527,4 +534,5 @@
     (evil-search regex forward evil-regexp-search)))
 
 
+;; TODO use another key for register 0
 (provide 'init-evil)

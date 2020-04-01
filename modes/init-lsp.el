@@ -6,7 +6,9 @@
   :custom
   (lsp-prefer-flymake nil)
   (lsp-restart 'auto-restart)
-  :hook (rust-mode . lsp)
+  (lsp-enable-symbol-highlighting nil)
+  :init
+  :hook ((rust-mode . lsp) (typescript-mode . lsp))
   :commands (lsp lsp-deferred))
 
 ;; lsp-ui and company-lsp auto configured by lsp-mode
