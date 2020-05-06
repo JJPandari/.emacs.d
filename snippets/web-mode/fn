@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# contributor: 
-# name: fn
-# key: fn
-# --
-function ($1) {
-    $2
-}

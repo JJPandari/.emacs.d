@@ -1,4 +1,6 @@
+;;----------------------------------------------------------------------------
 ;; save a list of open files in ~/.emacs.d/.emacs.desktop
+;;----------------------------------------------------------------------------
 (setq desktop-dirname "~/.emacs.d")
 (require 'desktop)
 ;; (desktop-save-mode 1)
@@ -82,6 +84,13 @@
 (add-to-list 'desktop-modes-not-to-save 'dired-mode)
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+
+;;----------------------------------------------------------------------------
+;; save cursor place in file
+;;----------------------------------------------------------------------------
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode))
 
 
 (provide 'init-sessions)

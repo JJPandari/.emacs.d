@@ -23,4 +23,10 @@
  :keymaps 'read-expression-map
  "C-r" 'counsel-minibuffer-history)
 
+
+;; (use-package mini-frame
+;;   :demand t
+;;   :config
+;;   (mini-frame-mode 1))
+
 (provide 'init-minibuffer)

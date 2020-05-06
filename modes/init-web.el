@@ -56,9 +56,9 @@
                         "tsx")
       (lsp))
     ;; lsp sets checker to lsp, set it back
-    (setq flycheck-checker 'javascript-eslint)
-    ;; lsp sets company backend to lsp, set it back
-    (setq-local company-backends jester-company-backends-with-tabnine)
+    ;; lsp and eslint show different errors, using lsp for now...
+    ;; `flycheck-add-next-checker'
+    ;; (setq flycheck-checker 'javascript-eslint)
     (jester/make-default-evil-makers-for-js)))
 
 (use-package emmet-mode

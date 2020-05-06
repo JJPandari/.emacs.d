@@ -3,7 +3,9 @@
           (setq-local electric-pair-pairs (append '((?` . ?`)) electric-pair-pairs))
           (setq truncate-lines nil))
   :commands markdown-mode
-  :mode "\\.md\\.html\\'")
+  :mode "\\.md\\.html\\'"
+  :config
+  (set-face-attribute 'markdown-code-face nil :family "Fira Code"))
 
 
 (provide 'init-markdown)

@@ -1,4 +1,5 @@
 (use-package projectile
+  :custom (projectile-current-project-on-switch 'move-to-end)
   :demand t
   :config
   (projectile-mode 1)

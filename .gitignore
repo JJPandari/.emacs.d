@@ -60,3 +60,5 @@ site-lisp/package/
 /transient
 /.lsp-*
 /.DS_Store
+/places
+/games

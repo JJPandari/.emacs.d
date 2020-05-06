@@ -18,6 +18,8 @@
 
 (after-init (global-auto-revert-mode 1))
 (setq global-auto-revert-non-file-buffers t
+      ;; jumps around a vc conflicted file like crazy if I enable this :(
+      auto-revert-check-vc-info nil
       auto-revert-verbose nil
       initial-major-mode 'emacs-lisp-mode
       kill-ring-max 200

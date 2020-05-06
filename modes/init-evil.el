@@ -469,7 +469,7 @@ when peeking definitions with lsp-ui."
 (general-define-key
  :states '(insert emacs)
  "C-b" 'delete-char
- "C-o" 'evil-open-below
+ ;; "C-o" 'evil-open-below
  "C-d" 'backward-char
  "C-n" 'next-line
  "C-p" 'previous-line
@@ -532,6 +532,8 @@ when peeking definitions with lsp-ui."
     (isearch-update-ring regex evil-regexp-search)
     (setq isearch-forward forward)
     (evil-search regex forward evil-regexp-search)))
+
+;; TODO "vio" vs "yio": make visual "auto line-wise"?
 
 
 ;; TODO use another key for register 0

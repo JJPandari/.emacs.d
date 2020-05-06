@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: size attribute
+# name: string interpolation
 # key: si
 # --
-size="$0"
+\${$0}

@@ -15,10 +15,10 @@
   ;; "_" as word so company completes kabeb-case
   (modify-syntax-entry ?_ "w" js2-mode-syntax-table)
 
-  (general-define-key
-   :states '(normal)
-   :keymaps 'js2-mode-map
-   "g d" 'js2-jump-to-definition)
+  ;; (general-define-key
+  ;;  :states '(normal)
+  ;;  :keymaps 'js2-mode-map
+  ;;  "g d" 'js2-jump-to-definition)
 
   (general-define-key
    :states '(insert emacs)
@@ -39,7 +39,27 @@
 (use-package js-doc
   :after js2-mode)
 
-;; (maybe-require-package 'typescript-mode)
+
+(use-package xref-js2
+  :custom (xref-js2-search-program 'rg)
+  :init
+  (add-hook 'js2-mode-hook
+            (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
+  (defun jester/js2-jump-or-xref-definition ()
+    "`js2-jump-to-definition' if we can, `xref-find-definitions' if can't or already at import statement."
+    (interactive)
+    (if (save-excursion
+          (beginning-of-line)
+          (let ((case-fold-search nil)) (search-forward "import " nil t)))
+        (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))
+      (condition-case err
+          (js2-jump-to-definition)
+        (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend))))))
+  (general-define-key
+   :states '(normal motion)
+   :keymaps '(js2-mode-map)
+   "g d" 'jester/js2-jump-or-xref-definition
+   "g r" 'jester/xref-find-references-at-point))
 
 
 (use-package skewer-mode
@@ -88,9 +108,11 @@
   :init
   (after-load 'flycheck
     (flycheck-add-mode 'javascript-eslint 'typescript-mode))
-  (add-hook! :append 'typescript-mode-hook
-    ;; lsp would set checker to lsp, set it back
-    (setq flycheck-checker 'javascript-eslint))
+  ;; lsp would set checker to lsp, set it back
+  ;; lsp and eslint show different errors, using lsp for now...
+  ;; `flycheck-add-next-checker'
+  ;; (add-hook! :append 'typescript-mode-hook
+  ;;   (setq flycheck-checker 'javascript-eslint))
   :mode "\\.ts\\'"
   :config
   ;; (require 'ansi-color)
@@ -98,6 +120,14 @@
   ;;   (ansi-color-apply-on-region compilation-filter-start (point-max)))
   ;; (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
   )
+
+
+(use-package eacl
+  :init
+  (general-define-key
+   "H-," 'eacl-complete-line
+   "H-." 'eacl-complete-multiline)
+  :commands (eacl-complete-line eacl-complete-multiline))
 
 
 ;; https://emacs-china.org/t/javascript/7860?u=jjpandari
@@ -135,7 +165,7 @@
 (defun jester/prettier-js-file-1 ()
   "Call prettier on current file."
   (interactive)
-  (call-process-shell-command (format "prettier --write %s" (buffer-file-name))))
+  (call-process-shell-command (format "node %s/node_modules/.bin/prettier --write %s" (projectile-project-root) (buffer-file-name))))
 
 (defun jester/prettier-js-file-2 ()
   "Call prettier on current file."
@@ -181,12 +211,12 @@
 
 
 (defun jester/set-js-test-command ()
-  "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"npm run test ...\"."
+  "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"node node_modules/.bin/jest ...\"."
   (let ((file-name (buffer-file-name)))
     (when (and file-name
                (or (s-suffix-p ".test.js" file-name)
                    (s-suffix-p ".spec.js" file-name)))
-      (setq jester-test-command (format "npm run test -- %s --collectCoverageOnlyFrom ''" file-name)))))
+      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
 
 (add-hook 'js2-mode-hook 'jester/set-js-test-command)
 
@@ -202,7 +232,7 @@
   "t" 'jester/typescript-goto-typings-file)
 
 
-(require 'init-ui5)
+;; (require 'init-ui5)
 
 
 (provide 'init-javascript)

@@ -13,10 +13,8 @@
   :after anzu
   :demand t)
 ;; use this in place of anzu when Emacs 27 is here
-;; (setq isearch-lazy-count t)
-
-(global-auto-revert-mode 1)
-(setq auto-revert-check-vc-info t)
+;; (setq isearch-lazy-count t
+;;       lazy-count-prefix-format "%s/%s ")
 
 ;; http://emacs.stackexchange.com/a/7745/12854
 (defun browse-file-directory ()

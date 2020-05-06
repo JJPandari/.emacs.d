@@ -5,22 +5,29 @@
    (ivy-virtual-abbreviate 'full)
    (ivy-initial-inputs-alist nil)
    (ivy-use-selectable-prompt t)
-   (completing-read-function 'ivy-completing-read))
+   (ivy-height 20))
   :config
+  (ivy-mode 1)
   (general-define-key
    :keymaps 'ivy-switch-buffer-map
    "M-k" 'ivy-switch-buffer-kill)
   (jester/with-major-leader '(ivy-occur-mode-map ivy-occur-grep-mode-map wgrep-mode-map)
     "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
     "," (lambda! (wgrep-finish-edit) (evil-motion-state))
-    "a" (lambda! (wgrep-abort-changes) (evil-motion-state))))
-(general-define-key
- :states '(motion)
- :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
- "C-d" 'evil-scroll-down
- "H-d" 'ivy-occur-delete-candidate
- "g g" 'evil-goto-first-line
- "g r" 'ivy-occur-revert-buffer)
+    "a" (lambda! (wgrep-abort-changes) (evil-motion-state)))
+  (general-define-key
+   :states '(motion)
+   :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
+   "C-d" 'evil-scroll-down
+   "H-d" 'ivy-occur-delete-candidate
+   "g g" 'evil-goto-first-line
+   "g r" 'ivy-occur-revert-buffer)
+  (defun jester/ivy-copy-current-line ()
+    "Copy current line in ivy."
+    (interactive)
+    (kill-new (substring-no-properties
+               (ivy-state-current ivy-last) 0 nil))
+    (keyboard-escape-quit)))
 
 (use-package counsel
   :demand t
@@ -54,21 +61,23 @@
    "C-s" 'swiper
    "C-S-s" (lambda! (swiper (jester/region-or-symbol))))
 
-  (dolist (that-ivy-map
-           '(ivy-mode-map ivy-switch-buffer-map ivy-minibuffer-map
-                          counsel-mode-map counsel-describe-map counsel-find-file-map counsel-ag-map
-                          swiper-map swiper-all-map))
-    (general-define-key
-     :keymaps that-ivy-map
-     "M-d" #'backward-word
-     "M-b" #'kill-word
-     "C-w" #'backward-kill-word
-     "C-d" #'backward-char
-     "C-b" #'delete-char
-     "C-v" 'yank
-     "C-S-k" 'jester/kill-back-to-indentation
-     "H-x" 'kill-region
-     "<escape>" #'keyboard-escape-quit))
+  ;; key bindings in ivy popup
+  (general-define-key
+   :keymaps '(ivy-switch-buffer-map ivy-minibuffer-map
+                                    counsel-mode-map counsel-describe-map counsel-find-file-map counsel-ag-map
+                                    swiper-map swiper-all-map)
+   "M-d" #'backward-word
+   "M-b" #'kill-word
+   "C-w" #'backward-kill-word
+   "C-d" #'backward-char
+   "C-b" #'delete-char
+   "C-v" 'yank
+   "C-S-k" 'jester/kill-back-to-indentation
+   "H-x" 'kill-region
+   "<escape>" #'keyboard-escape-quit
+   "C-g" #'keyboard-escape-quit
+   "M-w" 'jester/ivy-copy-current-line
+   "<C-return>" 'ivy-call)
 
   (defun jester/fzf-somewhere (&optional start-dir)
     "Do `counsel-fzf' in directory START-DIR.
@@ -113,23 +122,17 @@ If called interactively, let the user select start directory first."
   :commands ivy-wgrep-change-to-wgrep-mode)
 
 
-(use-package smex
-  :init
-  (setq smex-history-length 32)
-  :demand t)
-
-
 ;; (use-package ivy-posframe
 ;;   :demand t
 ;;   :after ivy
 ;;   :if window-system
 ;;   :config
-;;   (setq ivy-display-function #'ivy-posframe-display)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-center)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-frame-bottom-left)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-window-bottom-left)
-;;   ;; (setq ivy-display-function #'ivy-posframe-display-at-point)
+;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display)))
+;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
+;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-left)))
+;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-bottom-left)))
+;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center)))
 ;;   (setq ivy-posframe-hide-minibuffer t)
 ;;   (setq ivy-posframe-parameters
 ;;         `((background-color . ,(face-attribute 'default :background))
@@ -149,6 +152,23 @@ If called interactively, let the user select start directory first."
                :width
                20))
   (ivy-rich-mode 1))
+
+
+(use-package prescient
+  :custom (prescient-aggressive-file-save t)
+  :demand t
+  :after (ivy counsel)
+  :config
+  (prescient-persist-mode 1))
+
+(use-package ivy-prescient
+  :custom ((ivy-prescient-retain-classic-highlighting t)
+           (ivy-prescient-sort-commands
+            '(:not ivy-switch-buffer swiper swiper-isearch counsel-rg)))
+  :demand t
+  :after (ivy counsel prescient)
+  :config
+  (ivy-prescient-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords

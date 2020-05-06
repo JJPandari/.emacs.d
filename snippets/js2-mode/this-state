@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: ts
+# name: this.state.
 # key: ts
 # --
-\${$1}
+this.state.

@@ -32,14 +32,16 @@
    "s" 'git-timemachine-show-revision-fuzzy
    "r" 'git-timemachine-kill-abbreviated-revision)
 
-  (defhydra jester/git-timemachine-hydra (nil nil :foreign-keys run)
-    "git timemachine"
-    ("K" git-timemachine-show-previous-revision "earlier")
-    ("J" git-timemachine-show-next-revision "later")
-    ("q" git-timemachine-quit "quit" :exit t)
-    ("s" git-timemachine-show-revision-fuzzy "arbitrary jump")
-    ("r" git-timemachine-kill-abbreviated-revision "copy rev"))
-  (add-hook! 'git-timemachine-mode-hook (jester/git-timemachine-hydra/body)))
+  ;; FIXME: hydra occupies the keys even when ivy is up
+  ;; (defhydra jester/git-timemachine-hydra (nil nil :foreign-keys run)
+  ;;   "git timemachine"
+  ;;   ("K" git-timemachine-show-previous-revision "earlier")
+  ;;   ("J" git-timemachine-show-next-revision "later")
+  ;;   ("q" git-timemachine-quit "quit" :exit t)
+  ;;   ("s" git-timemachine-show-revision-fuzzy "arbitrary jump")
+  ;;   ("r" git-timemachine-kill-abbreviated-revision "copy rev"))
+  ;; (add-hook! 'git-timemachine-mode-hook (jester/git-timemachine-hydra/body))
+  )
 
 ;;----------------------------------------------------------------------------
 ;; The mighty magit
@@ -53,13 +55,14 @@
    "g d" 'magit-diff-buffer-file
    "g r" 'diff-hl-revert-hunk
    "g l" 'magit-log
+   "g f" 'magit-find-file
    ;; "a" ≈ "actions"
    "g a" 'magit-dispatch-popup)
   :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)
   :config
   (jester/with-major-leader
-   'magit-log-mode-map
-   "a" 'magit-log-select-quit)
+      'magit-log-mode-map
+    "a" 'magit-log-select-quit)
   )
 
 (use-package evil-magit
