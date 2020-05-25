@@ -7,8 +7,7 @@
   (lsp-prefer-flymake nil)
   (lsp-restart 'auto-restart)
   (lsp-enable-symbol-highlighting nil)
-  ;; this prevents lsp from setting company backends from tabnine to lsp
-  ;; (lsp-prefer-capf t)
+  (lsp-prefer-capf nil)
   :init
   :hook ((rust-mode . lsp) (typescript-mode . lsp))
   :commands (lsp lsp-deferred))

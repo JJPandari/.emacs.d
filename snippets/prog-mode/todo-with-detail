@@ -5,8 +5,10 @@
 # --
 (insert "TODO ")
 (comment-line 1)
-(forward-line -1)
-(move-end-of-line 1)
+(beginning-of-line-text 0)
+;; place cursor between 2 consecutive spaces, otherwise at eol
+(if (search-forward "  " (line-end-position) t) (backward-char)
+   (move-end-of-line 1))
 ;; expand an empty snippet
 ;; otherwise my tab function would think the expand fails and invoke company / hippie-expand
 (yas-expand-snippet "")

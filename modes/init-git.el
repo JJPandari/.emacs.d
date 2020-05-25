@@ -60,10 +60,13 @@
    "g a" 'magit-dispatch-popup)
   :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)
   :config
+  ;; quit rev selection in a rebase or something
   (jester/with-major-leader
       'magit-log-mode-map
     "a" 'magit-log-select-quit)
-  )
+  (general-define-key
+   :keymaps 'transient-base-map
+   "<escape>" 'transient-quit-one))
 
 (use-package evil-magit
   :hook (magit-mode . evil-magit-init))

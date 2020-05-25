@@ -27,7 +27,8 @@
 
 (electric-indent-mode -1) ;; this is global
 (use-package aggressive-indent
-  :custom (aggressive-indent-region-function 'evil-indent "also convert tab/space when indent")
+  :custom ((aggressive-indent-region-function 'evil-indent "also convert tab/space when indent")
+           (aggressive-indent-sit-for-time 0.1))
   :hook (after-init . aggressive-indent-global-mode))
 
 (after-init (transient-mark-mode 1))

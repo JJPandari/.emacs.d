@@ -59,8 +59,9 @@
 (require 'init-buffer)
 (require 'init-minibuffer)
 
-(require 'init-ivy)
 ;; (require 'init-helm)
+(require 'init-ivy)
+;; (require 'init-selectrum)
 (require 'init-company)
 (require 'init-yas)
 (require 'init-windows)

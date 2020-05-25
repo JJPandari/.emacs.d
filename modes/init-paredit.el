@@ -8,8 +8,9 @@
              awesome-pair-backward-delete awesome-pair-forward-delete
              awesome-pair-equal awesome-pair-double-quote awesome-pair-space
              awesome-pair-open-round awesome-pair-open-bracket awesome-pair-open-curly
-             awesome-pair-close-round awesome-pair-close-bracket awesome-pair-close-curly)
-  :bind (("M-u" . awesome-pair-wrap-round))
+             awesome-pair-close-round awesome-pair-close-bracket awesome-pair-close-curly
+             awesome-pair-wrap-round-pair)
+  :bind (("M-u" . (lambda () (interactive) )))
   :init
   (general-define-key
    :states '(insert emacs)
@@ -25,6 +26,9 @@
    ;; "<backspace>" 'awesome-pair-backward-delete
    ;; "C-b" 'awesome-pair-forward-delete
    )
+  (general-define-key
+   :states '(emacs insert normal visual)
+   "M-u" (lambda! (awesome-pair-wrap-round-pair)))
 
   (defun jester/semantic-kill-maybe-whole-line ()
     "Kill semantic unit after point, if only whitespace is left afterwards, delete this line."

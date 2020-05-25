@@ -38,7 +38,7 @@
   (evil-define-key 'insert web-mode-map (kbd "TAB") #'tab-indent-or-complete)
   (evil-define-key 'insert web-mode-map (kbd "<tab>") #'tab-indent-or-complete)
 
-  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue t)
+  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue)
   (defun jester/web-mode-maybe-setup-vue ()
     "Do something if it's a .vue file."
     (when (and buffer-file-name (equal (file-name-extension buffer-file-name) "vue"))
@@ -49,7 +49,7 @@
               ("prop" "^  \\([^ ]+\\): {" 1)
               ("hook" "^  \\([^ ]+\\)() {" 1)))))
 
-  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-tsx t)
+  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-tsx)
   (defun jester/web-mode-maybe-setup-tsx ()
     "Do something if it's a .tsx file."
     (when (string-equal (file-name-extension (buffer-file-name))
@@ -99,5 +99,6 @@
  "a" (general-predicate-dispatch 'jester/evil-a-arg
        (memq major-mode jester-lispy-modes) 'lispyville-a-atom
        (eq major-mode 'web-mode) 'jester/evil-web-a-attribute-or-arg))
+
 
 (provide 'init-web)

@@ -420,15 +420,8 @@
 
             gitconfig-mode-map
             diff-mode-map)
- "<return>" 'jester/probably-switch-buffer)
-
-(defun jester/probably-switch-buffer ()
-  "Probably switch buffer, but do enter in special cases:
-when peeking definitions with lsp-ui."
-  (interactive)
-  (if (and (featurep 'lsp-ui) lsp-ui-peek-mode)
-      (call-interactively 'lsp-ui-peek--goto-xref)
-    (call-interactively 'ivy-switch-buffer)))
+ "<return>" (general-predicate-dispatch 'switch-to-buffer
+              (and (featurep 'lsp-ui) lsp-ui-peek-mode) 'lsp-ui-peek--goto-xref))
 
 (general-define-key
  :states '(visual)
@@ -536,5 +529,5 @@ when peeking definitions with lsp-ui."
 ;; TODO "vio" vs "yio": make visual "auto line-wise"?
 
 
-;; TODO use another key for register 0
+;; TODO use another key for register 0 ("(" looks good)
 (provide 'init-evil)

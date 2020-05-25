@@ -85,7 +85,7 @@
         (looking-at (rx (sequence bol
                                   "import"
                                   (1+ (or word "," "{" "}" whitespace))
-                                  "from 'react'"
+                                  (or "from 'react'" "from \"react\"")
                                   (optional ";")
                                   eol))))))
   (setq magic-mode-alist
@@ -230,9 +230,6 @@
 
 (jester/with-major-leader '(web-mode-map typescript-mode-map)
   "t" 'jester/typescript-goto-typings-file)
-
-
-;; (require 'init-ui5)
 
 
 (provide 'init-javascript)

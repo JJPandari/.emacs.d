@@ -6,9 +6,9 @@
   :after evil-multiedit
   :init
   (setq company-backends
-        '(company-capf company-files company-css
-                       (company-dabbrev-code company-gtags company-etags company-keywords)
-                       company-dabbrev))
+        '(company-lsp company-capf company-files
+                      (company-dabbrev-code company-gtags company-etags company-keywords)
+                      company-dabbrev))
   :config
   (global-company-mode 1)
   (setq
@@ -34,8 +34,18 @@
    "<tab>" 'expand-snippet-or-complete-selection
    "C-g" 'company-abort
    "<escape>" (lambda! (company-abort) (evil-normal-state)))
+  ;; M-1 ~ M-0 to select candidate 1 ~ 10
   (dotimes (i 10)
     (define-key company-active-map (read-kbd-macro (format "M-%d" i)) 'company-complete-number))
+  ;; H-1 ~ H-5 to select candidate 6 ~ 10
+  (cl-loop for num-key from 1 to 4
+           do (let ((candidate-index (+ num-key 5)))
+                (define-key company-active-map
+                  (read-kbd-macro (format "H-%d" num-key))
+                  `(lambda () (interactive) (company-complete-number ,candidate-index)))))
+  (define-key company-active-map
+    (read-kbd-macro "H-5")
+    (lambda () (interactive) (company-complete-number 10)))
 
   (general-define-key
    :states '(insert emacs)
@@ -46,13 +56,39 @@
 (use-package company-tabnine
   :demand t
   :config
-  (setq jester-company-backends-with-tabnine (cons 'company-tabnine company-backends))
+  (setq jester-company-backends-with-tabnine
+        '((company-lsp :with company-tabnine) (company-capf :with company-tabnine)
+          company-files
+          company-tabnine
+          (company-dabbrev-code company-gtags company-etags company-keywords)
+          company-dabbrev))
   (defun jester/use-tabnine-for-major-mode (major-mode)
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
     (add-hook (intern (format "%s-hook" major-mode))
-              (lambda () (setq-local company-backends jester-company-backends-with-tabnine))))
+              (lambda () (setq-local company-backends jester-company-backends-with-tabnine)) t))
   (dolist (mode '(js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode))
-    (jester/use-tabnine-for-major-mode mode)))
+    (jester/use-tabnine-for-major-mode mode))
+
+  (add-to-list 'company-transformers 'jester/company-merge-tabnine-with-other t)
+  (defun jester/company-merge-tabnine-with-other (candidates)
+    "Show first 5 of tabnine's candidates, followed by the other backend's candidates.
+\"the other\" means company-foo when the group is (company-foo :with company-tabnine)."
+    (if (not lsp-mode)
+        candidates
+      (let ((dedup-table (make-hash-table :test #'equal))
+            candidates-other
+            candidates-tabnine)
+        (dolist (candidate candidates)
+          (if (eq (get-text-property 0 'company-backend candidate)
+                  'company-tabnine)
+              (unless (gethash candidate dedup-table)
+                (push candidate candidates-tabnine))
+            (push candidate candidates-other)
+            (puthash candidate t dedup-table)))
+        (setq candidates-other (nreverse candidates-other))
+        (setq candidates-tabnine (nreverse candidates-tabnine))
+        (nconc (seq-take candidates-tabnine 5)
+               candidates-other)))))
 
 
 ;; (use-package company-quickhelp

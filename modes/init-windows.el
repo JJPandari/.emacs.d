@@ -13,9 +13,7 @@
 
 (jester/with-leader
  "w s" 'split-window-below
- "w S" 'split-window-below-and-focus
  "w v" 'split-window-right
- "w V" 'split-window-right-and-focus
  "w k" 'delete-window
  "w H" 'evil-window-move-far-left
  "w L" 'evil-window-move-far-right
