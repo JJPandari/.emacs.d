@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: dispatch
-# key: disp
-# --
-dispatch({ type: '$1'${2:, payload: $0} });

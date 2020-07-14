@@ -10,7 +10,7 @@
    "TAB" nil
    "<tab>" nil
    "<return>" #'yas-next-field
-   "C-g" 'abort-company-or-yas
+   "C-g" 'jester/abort-company-or-yas
    "C-d" nil
    "C-b" 'yas-skip-and-clear-or-delete-char)
 

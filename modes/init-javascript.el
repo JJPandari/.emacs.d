@@ -74,11 +74,11 @@
 
 (use-package rjsx-mode
   :init
-  (defun jester/jsx-file-p ()
-    "Check whether current buffer is a jsx file."
+  (defun jester/_sx-file-p (file-ext)
+    "Check whether current buffer file is a jsx/tsx file.
+`FILE-EXT' is file extension, can be \"js\" or \"ts\"."
     (let ((ext (file-name-extension (buffer-file-name))))
-      (when (or (string-equal ext "js")
-                (string-equal ext "jsx"))
+      (when (or (string-equal ext file-ext))
         (point-min)
         (while (looking-at "^//")
           (beginning-of-line 2))
@@ -88,16 +88,26 @@
                                   (or "from 'react'" "from \"react\"")
                                   (optional ";")
                                   eol))))))
+  (defun jester/jsx-file-p ()
+    "Check whether current buffer file is a jsx file."
+    (jester/_sx-file-p "js"))
+  (defun jester/tsx-file-p ()
+    "Check whether current buffer file is a jsx file."
+    (jester/_sx-file-p "ts"))
   (setq magic-mode-alist
         (append '((jester/jsx-file-p . rjsx-mode)) magic-mode-alist))
+  (setq magic-mode-alist
+        (append '((jester/tsx-file-p . web-mode)) magic-mode-alist))
   (add-hook! 'rjsx-mode-hook
     (add-hook 'post-command-hook 'jester/on-post-newline nil t)
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'js2-mode-create-imenu-index))
           imenu-generic-expression '((nil "^ *static \\(propTypes\\|defaultProps\\) = {$" 1))
-          mode-name "JSX"))
+          mode-name "JSX"
+          emmet-expand-jsx-className? t))
   (require 'web-mode)
   (custom-set-faces '(rjsx-tag
                       ((t (:inherit web-mode-html-tag-face)))))
+  :mode "\\.jsx\\'"
   :config
   (evil-define-key 'insert rjsx-mode-map (kbd "C-b") #'rjsx-delete-creates-full-tag)
   (modify-syntax-entry ?_ "w" rjsx-mode-syntax-table))
@@ -165,7 +175,9 @@
 (defun jester/prettier-js-file-1 ()
   "Call prettier on current file."
   (interactive)
-  (call-process-shell-command (format "node %s/node_modules/.bin/prettier --write %s" (projectile-project-root) (buffer-file-name))))
+  (call-process-shell-command (format "node %s/node_modules/.bin/prettier --write %s"
+                                      (projectile-project-root)
+                                      (buffer-file-name))))
 
 (defun jester/prettier-js-file-2 ()
   "Call prettier on current file."
@@ -210,26 +222,18 @@
 (add-hook 'js2-mode-hook 'jester/make-default-evil-makers-for-js t)
 
 
-(defun jester/set-js-test-command ()
+(defun jester/set-js-ts-test-command ()
   "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"node node_modules/.bin/jest ...\"."
   (let ((file-name (buffer-file-name)))
     (when (and file-name
-               (or (s-suffix-p ".test.js" file-name)
-                   (s-suffix-p ".spec.js" file-name)))
+               (cl-some (lambda (suffix) (s-suffix-p suffix file-name))
+                        '(".test.js" ".spec.js"
+                          ".test.jsx" ".spec.jsx"
+                          ".test.ts" ".spec.ts"
+                          ".test.tsx" ".spec.tsx")))
       (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
 
-(add-hook 'js2-mode-hook 'jester/set-js-test-command)
-
-
-(defun jester/typescript-goto-typings-file ()
-  "Goto this project's typings.d.ts file."
-  (interactive)
-  (if-let ((root (projectile-project-root)))
-      (find-file (concat (file-name-as-directory root) "typings.d.ts"))
-    (user-error "Not in a project.")))
-
-(jester/with-major-leader '(web-mode-map typescript-mode-map)
-  "t" 'jester/typescript-goto-typings-file)
+(add-hook! '(js2-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
 
 
 (provide 'init-javascript)

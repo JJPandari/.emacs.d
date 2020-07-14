@@ -36,7 +36,7 @@
   ;; --no-sort is much faster
   (setq counsel-fzf-cmd "fzf --no-sort -f \"%s\""
         ;; limit file size and line length to be faster. long lines doesn't matter when search but is laggy to display
-        counsel-rg-base-command "rg --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s .")
+        counsel-rg-base-command "rg --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s")
 
   (jester/with-leader
    "p f" 'jester/open-project-file

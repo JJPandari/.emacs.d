@@ -69,9 +69,9 @@
 
                " %+"
 
-               ;; anzu
-               "%1"
-               '(:eval (when (and (featurep 'anzu) anzu--state) (concat " " (anzu--update-mode-line))))
+               ;; TODO use this in place of anzu when Emacs 27 is here
+               ;; (setq isearch-lazy-count t
+               ;;       lazy-count-prefix-format "%s/%s ")
 
                "%1"
                ;; the buffer name; the file name as a tool tip

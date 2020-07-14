@@ -247,7 +247,7 @@
   "Define a function with the name of `FUN-NAME'.
 `FORMS-FOR-BOLT' is some forms evaluated when point is at beginning of line text,
 who decides which type of assignment we currently have, and change it to the next one.
-Use `eol-str' as the tail."
+Use `EOL-STR' as the tail."
   `(defun ,fun-name ()
      "Make a mode specific assignment statement,
 using things left of point as left value, things right as right value.
@@ -315,8 +315,6 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
   "Make a assignment statement,
 using things left of point as left value, things right as right value.
 
-Additional formats are added to this line as declared in `jester-assignment-format-alist'.
-
 If nothing is at left, move point to the left value's position,
 otherwise move to before semicolon."
   (interactive)
@@ -379,19 +377,34 @@ otherwise move to before semicolon."
 ;;----------------------------------------------------------------------------
 ;; move to bracket
 ;;----------------------------------------------------------------------------
+(defvar jester-buffer-lang-has-generic-p-list nil
+  "Decides whether `jester/backward-bracket' and `jester/forward-bracket' will move to \"<\" and \">\",
+by telling whether the language in current buffer has generic types (which are usually denoted by \"<T>\")")
+(push (lambda () (eq major-mode 'rust-mode)) jester-buffer-lang-has-generic-p-list)
+(push (lambda () (eq major-mode 'typescript-mode)) jester-buffer-lang-has-generic-p-list)
+(push (lambda () (and (buffer-file-name)
+                 (member (file-name-extension (buffer-file-name))
+                         '("ts" "tsx"))))
+      jester-buffer-lang-has-generic-p-list)
 (evil-define-motion jester/backward-bracket (count)
-  "Move backward to a (, [ or {."
+  "Move backward to a (, [ or {. Maybe <, if any of `jester-buffer-lang-has-generic-p-list' yields t."
   ;; TODO enable lispyville everywhere
   :type exclusive
   (setq count (or count 1))
-  (search-backward-regexp "[([{]" nil t count))
+  (search-backward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-lang-has-generic-p-list)
+                              "[([{<]"
+                            "[([{]")
+                          nil t count))
 
 (evil-define-motion jester/forward-bracket (count)
-  "Move forward to a ), ] or }."
+  "Move forward to a ), ] or }. Maybe >, if any of `jester-buffer-lang-has-generic-p-list' yields t."
   :type exclusive
   (setq count (or count 1))
   (forward-char)
-  (search-forward-regexp "[]})]" nil t count)
+  (search-forward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-lang-has-generic-p-list)
+                             "[]})>]"
+                           "[]})]")
+                         nil t count)
   (backward-char))
 
 (general-define-key

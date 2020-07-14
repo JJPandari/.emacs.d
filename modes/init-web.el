@@ -35,8 +35,8 @@
 
   (define-key web-mode-map (kbd "TAB") nil)
   (define-key web-mode-map (kbd "<tab>") nil)
-  (evil-define-key 'insert web-mode-map (kbd "TAB") #'tab-indent-or-complete)
-  (evil-define-key 'insert web-mode-map (kbd "<tab>") #'tab-indent-or-complete)
+  (evil-define-key 'insert web-mode-map (kbd "TAB") #'jester/yas-or-company-or-hippie)
+  (evil-define-key 'insert web-mode-map (kbd "<tab>") #'jester/yas-or-company-or-hippie)
 
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue)
   (defun jester/web-mode-maybe-setup-vue ()
@@ -52,22 +52,25 @@
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-tsx)
   (defun jester/web-mode-maybe-setup-tsx ()
     "Do something if it's a .tsx file."
-    (when (string-equal (file-name-extension (buffer-file-name))
-                        "tsx")
-      (lsp))
-    ;; lsp sets checker to lsp, set it back
-    ;; lsp and eslint show different errors, using lsp for now...
-    ;; `flycheck-add-next-checker'
-    ;; (setq flycheck-checker 'javascript-eslint)
-    (jester/make-default-evil-makers-for-js)))
+    (when (and (buffer-file-name)
+               (string-equal (file-name-extension (buffer-file-name))
+                             "tsx"))
+      (lsp)
+      ;; lsp sets checker to lsp, set it back
+      ;; lsp and eslint show different errors, using lsp for now...
+      ;; `flycheck-add-next-checker'
+      ;; (setq flycheck-checker 'javascript-eslint)
+      (jester/make-default-evil-makers-for-js)
+      (setq emmet-expand-jsx-className? t))))
 
 (use-package emmet-mode
-  :hook (web-mode js2-mode)
+  :custom (emmet-self-closing-tag-style " /")
+  :hook (js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode sass-mode)
   :config
   (general-define-key
    :states '(insert emacs)
-   :keymaps '(web-mode-map js2-mode-map)
-   "C-l" 'emmet-expand-yas))
+   :keymaps '(web-mode-map js2-mode-map typescript-mode-map css-mode-map sass-mode-map)
+   "C-l" 'emmet-expand-line))
 
 ;;----------------------------------------------------------------------------
 ;; evil text object for html attribute

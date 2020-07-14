@@ -97,7 +97,6 @@
 (require 'init-json)
 (require 'init-coffeescript)
 (require 'init-css)
-(require 'init-http)
 (require 'init-java)
 ;; (require 'init-python)
 ;; ;; (require 'init-haskell)
@@ -113,6 +112,7 @@
 (require 'init-ahk)
 (require 'init-dotenv)
 (require 'init-shell)
+(require 'init-http)
 
 (require 'init-chinese)
 (require 'init-keyfreq)

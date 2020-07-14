@@ -239,7 +239,7 @@
    "C-e" 'evil-multiedit--end-of-line)
   ;; these have to be loaded before company so they don't shadow tab bindings in `company-active-map'
   (define-key evil-multiedit-state-map (kbd "<tab>") 'evil-multiedit-next)
-  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'tab-indent-or-complete)
+  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'jester/yas-or-company-or-hippie)
   )
 
 
@@ -409,6 +409,7 @@
  :keymaps '(text-mode-map
             conf-mode-map
             prog-mode-map
+            restclient-mode-map
 
             messages-buffer-mode-map
 

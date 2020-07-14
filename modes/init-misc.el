@@ -7,15 +7,6 @@
 ;; Single space between sentences is more widespread than double
 (setq-default sentence-end-double-space nil)
 
-(use-package anzu
-  :demand t)
-(use-package evil-anzu
-  :after anzu
-  :demand t)
-;; use this in place of anzu when Emacs 27 is here
-;; (setq isearch-lazy-count t
-;;       lazy-count-prefix-format "%s/%s ")
-
 ;; http://emacs.stackexchange.com/a/7745/12854
 (defun browse-file-directory ()
   "Open the current file's directory however the OS would."

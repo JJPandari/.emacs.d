@@ -31,7 +31,7 @@
    "C-n" #'company-select-next
    "C-p" #'company-select-previous
    "<C-m>" 'company-complete-common
-   "<tab>" 'expand-snippet-or-complete-selection
+   "<tab>" 'jester/expand-yas-or-complete-company
    "C-g" 'company-abort
    "<escape>" (lambda! (company-abort) (evil-normal-state)))
   ;; M-1 ~ M-0 to select candidate 1 ~ 10
@@ -49,16 +49,14 @@
 
   (general-define-key
    :states '(insert emacs)
-   "<tab>" 'tab-indent-or-complete
-   ))
+   "<tab>" 'jester/yas-or-company-or-hippie))
 
 
 (use-package company-tabnine
   :demand t
   :config
   (setq jester-company-backends-with-tabnine
-        '((company-lsp :with company-tabnine) (company-capf :with company-tabnine)
-          company-files
+        '(company-files
           company-tabnine
           (company-dabbrev-code company-gtags company-etags company-keywords)
           company-dabbrev))
@@ -66,10 +64,10 @@
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
     (add-hook (intern (format "%s-hook" major-mode))
               (lambda () (setq-local company-backends jester-company-backends-with-tabnine)) t))
-  (dolist (mode '(js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode))
+  (dolist (mode '(js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode sass-mode))
     (jester/use-tabnine-for-major-mode mode))
 
-  (add-to-list 'company-transformers 'jester/company-merge-tabnine-with-other t)
+  ;; (add-to-list 'company-transformers 'jester/company-merge-tabnine-with-other t)
   (defun jester/company-merge-tabnine-with-other (candidates)
     "Show first 5 of tabnine's candidates, followed by the other backend's candidates.
 \"the other\" means company-foo when the group is (company-foo :with company-tabnine)."
@@ -103,42 +101,29 @@
 ;; Make tab do both yas expand and company.
 ;;----------------------------------------------------------------------------
 ;; https://emacs.stackexchange.com/a/7925/12854
-(defun check-expansion ()
-  ;; (save-excursion
-  ;;   (if (looking-at "\\_>") t
-  ;;     (backward-char 1)
-  ;;     (if (looking-at "\\.") t
-  ;;       (backward-char 1)
-  ;;       (if (looking-at "->") t nil))))
-  t)
-
-(defun tab-indent-or-complete ()
+(defun jester/yas-or-company-or-hippie ()
   (interactive)
   (cond
    ((minibufferp)
     (minibuffer-complete))
    (t
-    ;; (indent-for-tab-command)
-    (if (and (or (not yas-minor-mode)
-                 (null (jester/yas-expand-no-prompt)))
-             (check-expansion))
+    (if (or (not yas-minor-mode)
+            (null (jester/yas-expand-no-prompt)))
         (progn
           (company-manual-begin)
           (if (null company-candidates)
               (progn
                 (company-abort)
-                (hippie-expand nil)
-                ;; (indent-for-tab-command)
-                )))))))
+                (hippie-expand nil))))))))
 
-(defun expand-snippet-or-complete-selection ()
+(defun jester/expand-yas-or-complete-company ()
   (interactive)
   (if (or (not yas-minor-mode)
           (null (jester/yas-expand-no-prompt))
           (company-abort))
       (company-complete-selection)))
 
-(defun abort-company-or-yas ()
+(defun jester/abort-company-or-yas ()
   (interactive)
   (if (null company-candidates)
       (yas-abort-snippet)

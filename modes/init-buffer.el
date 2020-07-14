@@ -36,10 +36,10 @@
   "Switch to the `*scratch*' buffer, creating it first if needed.
 if prefix argument ARG is given, switch to it in an other, possibly new window."
   (interactive "P")
-  (let ((exists (get-buffer "*scratch*")))
-    (if arg
-        (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
-      (switch-to-buffer (get-buffer-create "*scratch*")))))
+  (if arg
+      (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
+    (switch-to-buffer (get-buffer-create "*scratch*")))
+  (lisp-interaction-mode))
 
 ;;----------------------------------------------------------------------------
 ;; switch to last buffer
