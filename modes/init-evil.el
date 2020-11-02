@@ -59,6 +59,8 @@
   :custom
   (evil-want-Y-yank-to-eol t "Y yanks to eol, not whole line")
   (evil-want-visual-char-semi-exclusive t "don't include line feed in visual select")
+  (evil-move-beyond-eol nil "stay at eol but no further")
+  (evil-undo-system 'undo-tree "use undo-tree, evil")
   :init
   :config
   (evil-mode 1)
@@ -67,7 +69,6 @@
   (defalias #'forward-evil-word #'forward-evil-symbol)
   (setq-default evil-shift-width 2)
   (setq
-   evil-move-beyond-eol nil
    evil-normal-state-tag   (propertize "N" 'face '((:background "DarkGoldenrod2" :foreground "black")))
    evil-motion-state-tag   (propertize "M" 'face '((:background "plum3") :foreground "white"))
    evil-visual-state-tag   (propertize "V" 'face '((:background "gray" :foreground "black")))

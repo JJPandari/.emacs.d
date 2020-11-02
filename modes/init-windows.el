@@ -12,8 +12,8 @@
   (setq golden-ratio-auto-scale t))
 
 (jester/with-leader
- "w s" 'split-window-below
- "w v" 'split-window-right
+ "w h" 'split-window-below
+ "w l" 'split-window-right
  "w k" 'delete-window
  "w H" 'evil-window-move-far-left
  "w L" 'evil-window-move-far-right
@@ -198,6 +198,15 @@ current frame."
   (split-window-below)
   (windmove-down)
   (jester/maybe-golden-ratio-adjust))
+
+(defun jester/copy-recent-window ()
+  "Use the same buffer as the recent window."
+  (interactive)
+  (switch-to-buffer (with-selected-window (get-mru-window nil t t)
+                      (current-buffer))))
+
+(jester/with-leader
+ "w c" 'jester/copy-recent-window)
 
 
 (provide 'init-windows)

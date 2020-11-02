@@ -70,7 +70,7 @@
  "h" 'evil-backward-char
  "f" 'link-hint-open-link
  "g g" 'evil-goto-first-line
- "g r" 'recompile)
+ "r" 'recompile)
 
 
 (provide 'init-compile)

@@ -1,7 +1,7 @@
 (use-package js2-mode
   :mode "\\.js\\'"
   :hook (js2-mode . js2-imenu-extras-mode)
-  :config
+  :init
   (setq js2-include-node-externs t
         js-indent-level 2
         js2-global-externs '("$" "jQuery" "jquery" "_")
@@ -11,7 +11,7 @@
         js-indent-align-list-continuation nil
         js-chain-indent nil
         js-switch-indent-offset 2)
-
+  :config
   ;; "_" as word so company completes kabeb-case
   (modify-syntax-entry ?_ "w" js2-mode-syntax-table)
 
@@ -175,8 +175,8 @@
 (defun jester/prettier-js-file-1 ()
   "Call prettier on current file."
   (interactive)
-  (call-process-shell-command (format "node %s/node_modules/.bin/prettier --write %s"
-                                      (projectile-project-root)
+  (call-process-shell-command (format "node %s --write %s"
+                                      (f-join (projectile-project-root) "node_modules/.bin/prettier")
                                       (buffer-file-name))))
 
 (defun jester/prettier-js-file-2 ()

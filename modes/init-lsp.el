@@ -11,8 +11,9 @@
   :init
   :hook ((rust-mode . lsp) (typescript-mode . lsp))
   :commands (lsp lsp-deferred))
+;; TODO add a hook to 'lsp-completion-mode to fix company-backends (hook does sth when 'jester-tabnine-active-modes)
 
-;; lsp-ui and company-lsp auto configured by lsp-mode
+;; lsp-ui auto configured by lsp-mode
 (use-package lsp-ui
   :custom ((lsp-ui-sideline-enable nil)
            (lsp-ui-flycheck-enable t)
@@ -22,7 +23,6 @@
   ;; (custom-set-faces `(lsp-ui-doc-background
   ;;                     ((t (:background ,(face-attribute 'hl-line :background))))))
   (setq lsp-ui-doc-border (face-attribute 'default :foreground))
-  :commands lsp-ui-mode
   :config
   (setq lsp-ui-doc-alignment 'frame-left-or-right-other)
   (defun lsp-ui-doc--move-frame (frame)
@@ -61,15 +61,6 @@
                                                height
                                                10)))))))))
   )
-
-(use-package company-lsp
-  :init
-  (general-define-key
-   :states '(insert emacs)
-   :keymaps 'prog-mode-map
-   "C-." 'company-lsp)
-  :after company
-  :commands company-lsp)
 
 ;; TODO
 ;; (set-lookup-handlers! 'lsp-ui-mode :async t

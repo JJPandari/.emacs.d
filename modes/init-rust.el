@@ -3,7 +3,8 @@
   :init
   (add-hook! 'rust-mode-hook
     (setq compile-command "cargo build")
-    (setq jester-run-command "cargo run"))
+    (setq jester-run-command "cargo run")
+    (setq jester-test-command "cargo test"))
   :mode "\\.rs\\'")
 
 (use-package flycheck-rust

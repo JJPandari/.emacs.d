@@ -582,5 +582,26 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
                         (point))))
     (list head tail)))
 
+;;----------------------------------------------------------------------------
+;; "just do what I mean"
+;;----------------------------------------------------------------------------
+(defvar jester-flip-symbol-alist
+  '(("true" . "false")
+    ("false" . "true"))
+  "symbols to be quick flipped when editing")
+
+(defun jester/just-do-what-i-mean ()
+  "\"I don't want to type here, just do it for me.\" (check source for what this function does)"
+  (interactive)
+  (-let* (((beg . end) (bounds-of-thing-at-point 'symbol))
+          (sym (buffer-substring-no-properties beg end)))
+    (when (member sym (cl-loop for cell in jester-flip-symbol-alist
+                               collect (car cell)))
+      (delete-region beg end)
+      (insert (alist-get sym jester-flip-symbol-alist "" nil 'equal)))))
+
+(jester/with-leader
+ "SPC" 'jester/just-do-what-i-mean)
+
 
 (provide 'init-editing-utils)

@@ -2,12 +2,17 @@
   :hook (after-init . keyfreq-mode)
   :config
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-excluded-commands '(self-insert-command
+  (setq keyfreq-excluded-commands '(
+                                    ;; self insert and alike
+                                    self-insert-command
+                                    newline
+                                    org-self-insert-command
+                                    awesome-pair-space
+                                    ;; cursor moving commands
                                     forward-char
                                     backward-char
                                     next-line
                                     previous-line
-                                    newline
                                     evil-a-WORD
                                     evil-append
                                     evil-backward-char
@@ -90,14 +95,19 @@
                                     evil-scroll-up
                                     evil-scroll-line-down
                                     evil-scroll-line-up
+                                    ranger-prev-file
+                                    ranger-next-file
+                                    ;; ivy
                                     ivy-done
                                     ivy-next-line
                                     ivy-previous-line
                                     ivy-backward-delete-char
-                                    ranger-prev-file
-                                    ranger-next-file
+                                    ivy-occur-next-line
+                                    ivy-occur-previous-line
+                                    ;; other
+                                    magit-section-toggle
                                     undo-tree-undo
                                     undo-tree-redo
-                                    org-self-insert-command)))
+                                    company-ignore)))
 
 (provide 'init-keyfreq)

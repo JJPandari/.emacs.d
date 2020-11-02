@@ -3,7 +3,11 @@
 ;;----------------------------------------------------------------------------
 (use-package diff-hl
   :hook (after-init . global-diff-hl-mode)
-  :hook (magit-post-refresh . diff-hl-magit-post-refresh))
+  :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+  :config
+  (jester/with-leader
+   "d n" 'diff-hl-next-hunk
+   "d p" 'diff-hl-previous-hunk))
 
 ;;----------------------------------------------------------------------------
 ;; major modes for git files.

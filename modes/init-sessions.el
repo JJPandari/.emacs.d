@@ -4,8 +4,6 @@
 (setq desktop-dirname "~/.emacs.d")
 (require 'desktop)
 ;; (desktop-save-mode 1)
-(push '(company-posframe-mode . nil)
-      desktop-minor-mode-table)
 (defvar jester-auto-save-desktop-timer nil)
 (defun jester/toggle-auto-save-desktop ()
   "Toggle auto save desktop."
@@ -44,6 +42,8 @@
 (setq-default history-length 1000)
 (add-hook 'after-init-hook 'savehist-mode)
 
+(push '(company-posframe-mode . nil)
+      desktop-minor-mode-table)
 ;; save a bunch of variables to the desktop file
 ;; for lists specify the len of the maximal saved data also
 (setq desktop-globals-to-save

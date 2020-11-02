@@ -2,12 +2,8 @@
   :init
   (setq dumb-jump-aggressive t
         dumb-jump-selector 'ivy)
-  (general-define-key
-   :states '(normal motion)
-   "g d" 'dumb-jump-go
-   ;; "g p" 'dumb-jump-back
-   "g p" 'xref-pop-marker-stack)
-  :commands (dumb-jump-go))
+  ;; sets the global value, will be overwritten by major mode / lsp
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package ivy-xref
   :init
@@ -27,13 +23,12 @@
 
 (general-define-key
  :states '(normal motion)
- :keymaps '(emacs-lisp-mode-map lisp-mode-map)
- "g d" 'xref-find-definitions)
+ "g d" 'xref-find-definitions
+ "g p" 'xref-pop-marker-stack)
 (general-define-key
  :definer 'minor-mode
  :states 'normal
  :keymaps 'lsp-mode
- "g d" 'xref-find-definitions
  "g r" 'jester/xref-find-references-at-point)
 
 (provide 'init-jump)
