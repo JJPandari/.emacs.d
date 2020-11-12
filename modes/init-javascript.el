@@ -186,8 +186,8 @@
     (widen)
     (call-process-region (point-min) (point-max) "prettier" t t t)))
 
-(jester/with-major-leader '(js2-mode-map web-mode-map typescript-mode-map)
-  "p" 'jester/prettier-js-file-1)
+;; (jester/with-major-leader '(js2-mode-map web-mode-map typescript-mode-map)
+;;   "p" 'jester/prettier-js-file-1)
 
 
 (defun jester/make-default-evil-makers-for-js ()

@@ -6,9 +6,9 @@
   :after evil-multiedit
   :init
   (setq company-backends
-        '(company-files company-capf
-                        (company-dabbrev-code company-gtags company-etags company-keywords)
-                        company-dabbrev))
+        '(company-capf company-files
+                       (company-dabbrev-code company-gtags company-etags company-keywords)
+                       company-dabbrev))
   :config
   (global-company-mode 1)
   (setq
@@ -56,8 +56,8 @@
   :demand t
   :config
   (setq jester-company-backends-with-tabnine
-        '(company-files
-          company-tabnine
+        '(company-tabnine
+          company-files
           (company-dabbrev-code company-gtags company-etags company-keywords)
           company-dabbrev))
   (defun jester/use-tabnine-for-major-mode (major-mode)

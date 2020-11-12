@@ -59,12 +59,12 @@
   (run-hooks 'jester-elispy-modes-hook))
 
 (defconst jester-elispy-modes
-  '(emacs-lisp-mode inferior-emacs-lisp-mode)
+  '(emacs-lisp-mode lisp-interaction-mode inferior-emacs-lisp-mode)
   "Major modes relating to elisp.")
 
 (defconst jester-lispy-modes
   (append jester-elispy-modes
-          '(lisp-mode lisp-interaction-mode scheme-mode inferior-scheme-mode racket-mode))
+          '(lisp-mode scheme-mode inferior-scheme-mode racket-mode))
   "Major modes relating to lisp.")
 
 (defconst jester-elispy-maps
@@ -154,7 +154,7 @@
  '((name . "docstring")))
 
 
-(jester/with-major-leader '(emacs-lisp-mode-map lisp-mode-map)
+(jester/with-major-leader jester-elispy-maps
   "e" 'eval-last-sexp
   "f" 'eval-defun
   "i" 'ielm)

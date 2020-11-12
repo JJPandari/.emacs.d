@@ -30,6 +30,7 @@
    :states '(emacs insert normal visual)
    "M-u" (lambda! (awesome-pair-wrap-round-pair)))
 
+  ;; TODO kill-new *killed-text*+\n to make it evil style
   (defun jester/semantic-kill-maybe-whole-line ()
     "Kill semantic unit after point, if only whitespace is left afterwards, delete this line."
     (interactive)

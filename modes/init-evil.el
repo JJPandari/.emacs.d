@@ -307,7 +307,7 @@
   (evil-goggles-use-diff-refine-faces))
 
 
-;; TODO use more "v i remote o"; fix avy
+;; TODO use more "y i remote o"; bind it to be "y i m"?
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
 (require 'targets)
 ;; not needed if `targets-setup'?
@@ -320,7 +320,22 @@
 (targets-setup t
                :next-key "N"
                :last-key "L"
-               :remote-key "m")
+               :remote-key "r")
+
+;; define jester/line-text for thingatpt/evil/targets
+(put 'jester/line-text 'forward-op #'jester/line-text-forward)
+
+(defun jester/line-text-forward ()
+  "Forward 1 line-text text object."
+  ;; TODO line is planned by targets
+  )
+
+(targets-define-to line-text 'jester/line-text nil object
+                   :bind t
+                   :keys "q" ;; TODO how to use <return> here
+                   :next-key "N"
+                   :last-key "L"
+                   :remote-key "r")
 
 (targets-define-composite-to pair-delimiter
   (("(" ")" pair)
@@ -330,7 +345,7 @@
   :bind t
   :next-key "N"
   :last-key "L"
-  :remote-key "m"
+  :remote-key "r"
   :keys "o")
 
 (targets-define-composite-to quote
@@ -340,7 +355,7 @@
   :bind t
   :next-key "N"
   :last-key "L"
-  :remote-key "m"
+  :remote-key "r"
   :keys "'")
 
 ;;----------------------------------------------------------------------------

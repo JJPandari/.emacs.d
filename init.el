@@ -75,6 +75,7 @@
 (require 'init-vc)
 (require 'init-git)
 (require 'init-compile)
+(require 'init-formatter)
 
 (require 'init-paredit)
 

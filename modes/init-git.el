@@ -26,7 +26,7 @@
    "g t" 'git-timemachine)
   :commands git-timemachine
   :config
-  (add-hook! 'git-timemachine-mode-hook (evil-motion-state))
+  (add-hook! 'git-timemachine-mode-hook (evil-motion-state 1))
   (general-define-key
    :states 'motion
    :keymaps 'git-timemachine-mode-map
