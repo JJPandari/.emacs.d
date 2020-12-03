@@ -62,7 +62,7 @@
           company-dabbrev))
   (defun jester/use-tabnine-for-major-mode (major-mode)
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
-    (add-hook (intern (format "%s-hook" major-mode))
+    (add-hook (derived-mode-hook-name major-mode)
               (lambda () (setq-local company-backends jester-company-backends-with-tabnine)) t))
   (dolist (mode '(js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode sass-mode))
     (jester/use-tabnine-for-major-mode mode))

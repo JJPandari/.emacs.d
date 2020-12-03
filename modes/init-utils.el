@@ -118,9 +118,7 @@
 ;;----------------------------------------------------------------------------
 (defun jester/mode-list-to-mode-map-list (modes)
   "Return a list of keymaps corresponding to the list `MODES'."
-  (mapcar
-   (lambda (mode) (intern (format "%s-map" mode)))
-   modes))
+  (mapcar 'derived-mode-map-name modes))
 
 ;;----------------------------------------------------------------------------
 ;; eval and always display in same window (not used)
@@ -213,7 +211,7 @@ Body forms can access the hook's arguments through the let-bound variable
             collect (cadr hook)
            else if quoted-p
             collect hook
-           else collect (intern (format "%s-hook" (symbol-name hook)))))
+           else collect (derived-mode-hook-name hook)))
 
 (defun doom-unquote (exp)
   "Return EXP unquoted."

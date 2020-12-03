@@ -398,8 +398,8 @@
  "n v" 'narrow-to-region
  "n r" 'narrow-to-region
  "n w" 'widen
+ "p l" 'list-packages
  "q q" 'save-buffers-kill-terminal
- "i r" 'ivy-resume
  "t o" 'just-one-space
  ;; NOTE: "a" "d" "." "'" are still there for the taking
  "," 'evil-indent

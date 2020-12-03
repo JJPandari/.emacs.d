@@ -77,6 +77,7 @@
 
 (require 'derived)
 
+;; FIXME lisp setups are actually run twice here
 (dolist (hook (mapcar #'derived-mode-hook-name jester-lispy-modes))
   (add-hook hook 'jester/lisp-setup))
 
