@@ -48,7 +48,7 @@
 (defvar jester/number-unicode-char-list
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
 
-;; (add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
 
 (setq-default mode-line-format
               (list
@@ -69,16 +69,16 @@
                '(:eval (when defining-kbd-macro
                          (propertize (format " %s%c" "" evil-this-macro) 'face '(:family "FontAwesome"))))
 
-               " %+"
-
                ;; TODO use this in place of anzu when Emacs 27 is here
                ;; (setq isearch-lazy-count t
                ;;       lazy-count-prefix-format "%s/%s ")
 
-               "%1"
-               ;; the buffer name; the file name as a tool tip
-               '(:eval (propertize " %b"
-                                   'face `(:foreground ,(face-attribute 'font-lock-keyword-face :foreground))
+               " %1"
+               ;; file save stat and buffer name
+               '(:eval (propertize "%+ %b"
+                                   'face (if (and (buffer-file-name) (buffer-modified-p))
+                                             'diff-removed
+                                           'font-lock-keyword-face)
                                    'help-echo (buffer-file-name)))
 
                " %1"
@@ -88,9 +88,9 @@
                " %1"
                jester/flycheck-mode-line
 
-               ;; " %1"
-               ;; '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes)))
-               ;;           which-func-format))
+               " %1"
+               '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes)))
+                         which-func-format))
 
                "%1"
                ;; git info
@@ -121,6 +121,12 @@
                '(:eval (propertize " %I" 'face `(:foreground ,(face-attribute 'font-lock-constant-face :foreground))))
 
                mode-line-end-spaces))
+
+
+;; (use-package doom-modeline
+;;   :ensure t
+;;   :custom ((doom-modeline-height 18))
+;;   :hook (after-init . doom-modeline-mode))
 
 
 (provide 'init-mode-line)
