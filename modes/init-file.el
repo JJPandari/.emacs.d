@@ -1,15 +1,17 @@
 (require 'recentf)
-(setq recentf-exclude
+(setq recentf-max-saved-items 1000
+      recentf-exclude
       (append recentf-exclude (list "/tmp/" "/ssh:" "COMMIT_EDITMSG\\'"
                                     ;; (recentf-expand-file-name package-user-dir)
                                     )))
+
+(add-to-list 'recentf-filename-handlers 'abbreviate-file-name)
 
 (jester/with-leader
  "f f" 'find-file
  "f s" 'save-buffer
  "f S" 'evil-write-all
  "f D" 'jester/delete-buffer-file
- "b D" 'jester/delete-buffer-file
  "f R" 'jester/rename-buffer-file
  "f y" 'jester/show-and-copy-buffer-filename)
 

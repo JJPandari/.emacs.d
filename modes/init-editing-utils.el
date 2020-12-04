@@ -22,8 +22,7 @@
       auto-revert-check-vc-info nil
       auto-revert-verbose nil
       initial-major-mode 'emacs-lisp-mode
-      kill-ring-max 200
-      recentf-max-saved-items 1000)
+      kill-ring-max 200)
 
 (electric-indent-mode -1) ;; this is global
 (use-package aggressive-indent

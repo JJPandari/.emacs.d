@@ -25,7 +25,7 @@
     (interactive)
     (jester/select-project-and-do
      (lambda (project-dir) (let ((default-directory project-dir))
-                        (counsel-ag)))
+                        (counsel-rg)))
      "search"))
   (defun jester/select-project-and-magit-status ()
     "Select a project with projectile, and open magit status."

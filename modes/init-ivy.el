@@ -45,8 +45,8 @@
    "p i" 'counsel-package
    ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
    "x" 'counsel-M-x
-   "/" 'counsel-ag
-   "*" (lambda! (counsel-ag (jester/region-or-symbol)))
+   "/" 'counsel-rg
+   "*" (lambda! (counsel-rg (jester/region-or-symbol)))
    "f r" 'counsel-recentf
    "f z" 'jester/fzf-somewhere
    "t s" 'counsel-load-theme

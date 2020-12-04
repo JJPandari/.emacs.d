@@ -111,48 +111,21 @@
   (add-to-list 'jester/theme-mode-hook (lambda () (aggressive-indent-mode -1)) t))
 
 
-(defun jester/cl-libify-next ()
-  "Find next symbol from 'cl and replace it with the 'cl-lib equivalent."
-  (interactive)
-  (let ((case-fold-search nil))
-    (re-search-forward
-     (concat
-      "("
-      (regexp-opt
-       ;; Not an exhaustive list
-       '("loop" "incf" "plusp" "first" "decf" "minusp" "assert"
-         "case" "destructuring-bind" "second" "third" "defun*"
-         "defmacro*" "return-from" "labels" "cadar" "fourth"
-         "cadadr") t)
-      "\\_>")))
-  (let ((form (match-string 1)))
-    (backward-sexp)
-    (cond
-     ((string-match "^\\(defun\\|defmacro\\)\\*$")
-      (kill-sexp)
-      (insert (concat "cl-" (match-string 1))))
-     (t
-      (insert "cl-")))
-    (when (fboundp 'aggressive-indent-indent-defun)
-      (aggressive-indent-indent-defun))))
-
-
 ;; https://emacs-china.org/t/minibuffer-point-elisp/10048/6?u=jjpandari
 ;; show docstring after param list when point is on a function
-;; TODO ditch line if it's "advice"
-(advice-add
- 'elisp-get-fnsym-args-string :around
- (lambda (oldfun sym &rest args)
-   "If SYM is a function, append its docstring."
-   (concat
-    (apply oldfun sym args)
-    (let* ((doc (and (fboundp sym) (documentation sym 'raw)))
-           (oneline (and doc (substring doc 0 (string-match "\n" doc)))))
-      (and oneline
-           (stringp oneline)
-           (not (string= "" oneline))
-           (concat "  |  " (propertize oneline 'face 'italic))))))
- '((name . "docstring")))
+(define-advice elisp-get-fnsym-args-string (:around (orig-fun sym &rest r) docstring)
+  "If SYM is a function, append its docstring."
+  (concat
+   (apply orig-fun sym r)
+   (when-let* ((doc (and (fboundp sym) (documentation sym 'raw)))
+               (stripped-advice-doc (replace-regexp-in-string
+                                     ;; regex from ivy-rich
+                                     ":\\(\\(before\\|after\\)\\(-\\(while\\|until\\)\\)?\\|around\\|override\\|\\(filter-\\(args\\|return\\)\\)\\) advice:[ ]*‘.+?’[\r\n]+"
+                                     ""
+                                     doc))
+               (oneline (substring stripped-advice-doc 0 (string-match "\n" stripped-advice-doc))))
+     (when (not (string= "" oneline))
+       (concat "  |  " (propertize oneline 'face 'italic))))))
 
 
 (jester/with-major-leader jester-elispy-maps
@@ -161,7 +134,7 @@
   "i" 'ielm)
 
 (defun jester/insert-lisp-comment-start ()
-  "Insert \";; \" or \"; \", based on whether at beginning of  line."
+  "Insert \";; \" or \"; \", based on whether at beginning of line."
   (interactive)
   (if (looking-back "^\s*")
       (insert ";; ")

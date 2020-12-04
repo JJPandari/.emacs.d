@@ -1,5 +1,5 @@
 ;;----------------------------------------------------------------------------
-;; Misc config - yet to be placed in separate files
+;; Misc config - yet to be placed in apropriate files
 ;;----------------------------------------------------------------------------
 ;; Highlight and allow to open http link at point in programming buffers
 (add-hook 'prog-mode-hook 'goto-address-prog-mode)

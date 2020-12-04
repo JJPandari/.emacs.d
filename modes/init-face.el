@@ -13,7 +13,6 @@
 (maybe-require-package 'list-unicode-display)
 
 (global-hl-line-mode 1)
-(add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
 
 (use-package highlight-parentheses
   :demand t
