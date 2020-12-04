@@ -118,6 +118,7 @@
 (require 'init-chinese)
 (require 'init-keyfreq)
 (require 'init-edit-server)
+(require 'init-browser)
 (require 'init-player)
 (require 'init-misc)
 
