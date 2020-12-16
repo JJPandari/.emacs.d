@@ -9,7 +9,7 @@
   (lsp-enable-symbol-highlighting nil)
   (lsp-prefer-capf nil)
   :init
-  :hook ((rust-mode . lsp) (typescript-mode . lsp))
+  :hook ((rust-mode . lsp) (typescript-mode . lsp) (elm-mode . lsp))
   :commands (lsp lsp-deferred))
 ;; TODO add a hook to 'lsp-completion-mode to fix company-backends (hook does sth when 'jester-tabnine-active-modes)
 

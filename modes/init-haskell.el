@@ -76,10 +76,7 @@
 
 
 (when (maybe-require-package 'dhall-mode)
-  (add-hook 'dhall-mode-hook 'jester/no-trailing-whitespace)
   (add-hook 'dhall-mode-hook 'stack-exec-path-mode))
-
-
 
 
 (provide 'init-haskell)

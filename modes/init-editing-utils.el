@@ -376,31 +376,32 @@ otherwise move to before semicolon."
 ;;----------------------------------------------------------------------------
 ;; move to bracket
 ;;----------------------------------------------------------------------------
-(defvar jester-buffer-lang-has-generic-p-list nil
+(defvar jester-buffer-has-generic-or-jsx-p-list nil
   "Decides whether `jester/backward-bracket' and `jester/forward-bracket' will move to \"<\" and \">\",
-by telling whether the language in current buffer has generic types (which are usually denoted by \"<T>\")")
-(push (lambda () (eq major-mode 'rust-mode)) jester-buffer-lang-has-generic-p-list)
-(push (lambda () (eq major-mode 'typescript-mode)) jester-buffer-lang-has-generic-p-list)
+by telling whether the language in current buffer has generic types (which are usually denoted by \"<T>\") or jsx.")
+(push (lambda () (eq major-mode 'rust-mode)) jester-buffer-has-generic-or-jsx-p-list)
+(push (lambda () (eq major-mode 'typescript-mode)) jester-buffer-has-generic-or-jsx-p-list)
+(push (lambda () (eq major-mode 'rjsx-mode)) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (and (buffer-file-name)
                  (member (file-name-extension (buffer-file-name))
                          '("ts" "tsx"))))
-      jester-buffer-lang-has-generic-p-list)
+      jester-buffer-has-generic-or-jsx-p-list)
 (evil-define-motion jester/backward-bracket (count)
-  "Move backward to a (, [ or {. Maybe <, if any of `jester-buffer-lang-has-generic-p-list' yields t."
+  "Move backward to a (, [ or {. Maybe <, if any of `jester-buffer-has-generic-or-jsx-p-list' yields t."
   ;; TODO enable lispyville everywhere
   :type exclusive
   (setq count (or count 1))
-  (search-backward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-lang-has-generic-p-list)
+  (search-backward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-has-generic-or-jsx-p-list)
                               "[([{<]"
                             "[([{]")
                           nil t count))
 
 (evil-define-motion jester/forward-bracket (count)
-  "Move forward to a ), ] or }. Maybe >, if any of `jester-buffer-lang-has-generic-p-list' yields t."
+  "Move forward to a ), ] or }. Maybe >, if any of `jester-buffer-has-generic-or-jsx-p-list' yields t."
   :type exclusive
   (setq count (or count 1))
   (forward-char)
-  (search-forward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-lang-has-generic-p-list)
+  (search-forward-regexp (if (cl-some (lambda (p) (funcall p)) jester-buffer-has-generic-or-jsx-p-list)
                              "[]})>]"
                            "[]})]")
                          nil t count)

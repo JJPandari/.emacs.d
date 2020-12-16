@@ -14,6 +14,7 @@
   :init
   (general-define-key
    :states '(insert emacs)
+   :keymaps 'prog-mode-map
    ;; "(" 'awesome-pair-open-round
    ;; "[" 'awesome-pair-open-bracket
    ;; "{" 'awesome-pair-open-curly

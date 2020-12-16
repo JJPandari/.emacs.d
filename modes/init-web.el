@@ -1,7 +1,8 @@
 (use-package web-mode
   :init
   (after-load 'flycheck
-    (flycheck-add-mode 'javascript-eslint 'web-mode))
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (flycheck-add-mode 'xml-xmllint 'web-mode))
   :mode ("\\.tsx\\'" "\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'")
   :config
   (general-define-key

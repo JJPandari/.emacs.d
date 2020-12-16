@@ -337,6 +337,7 @@
                    :last-key "L"
                    :remote-key "r")
 
+;; TODO expand-region is more reliable, investigate
 (targets-define-composite-to pair-delimiter
   (("(" ")" pair)
    ("[" "]" pair)
@@ -506,6 +507,7 @@
 ;;----------------------------------------------------------------------------
 ;; Some functions.
 ;;----------------------------------------------------------------------------
+;; TODO use symbol-overlay ... or?
 (evil-define-command jester/evil-normal-search-forward (&optional count)
   "Search symbol under point forward."
   :repeat nil

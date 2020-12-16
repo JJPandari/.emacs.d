@@ -115,7 +115,7 @@
                '(:eval (propertize " ❚%2c" 'face `(:foreground ,(face-attribute 'font-lock-type-face :foreground))))
 
                " %1"
-               '(:eval buffer-file-coding-system)
+               '(:eval (symbol-name buffer-file-coding-system))
 
                ;; size of file
                '(:eval (propertize " %I" 'face `(:foreground ,(face-attribute 'font-lock-constant-face :foreground))))
