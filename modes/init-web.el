@@ -11,7 +11,7 @@
    "t" 'evil-a-tag)
   (jester/with-major-leader 'web-mode-map
     "r" 'web-mode-element-rename
-    "f" 'web-mode-fold-or-unfold
+    "z" 'web-mode-fold-or-unfold
     "e" 'web-mode-element-extract)
 
   (setq
@@ -61,7 +61,7 @@
       ;; lsp and eslint show different errors, using lsp for now...
       ;; `flycheck-add-next-checker'
       ;; (setq flycheck-checker 'javascript-eslint)
-      (jester/make-default-evil-makers-for-js)
+      (jester/make-default-evil-markers-for-js)
       (setq emmet-expand-jsx-className? t))))
 
 (use-package emmet-mode

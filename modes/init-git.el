@@ -75,6 +75,9 @@
 (use-package evil-magit
   :hook (magit-mode . evil-magit-init))
 
+;; (use-package transient
+;;   :custom (transient-enable-popup-navigation t))
+
 ;;----------------------------------------------------------------------------
 ;; github & gitlab etc.
 ;;----------------------------------------------------------------------------

@@ -271,8 +271,6 @@ typical word processor."
 
 ;;; Archiving
 (setq org-archive-mark-done nil)
-(setq org-archive-location "%s_archive::* Archive")
-
 
 
 
@@ -303,7 +301,8 @@ typical word processor."
   (general-define-key
    :states '(insert emacs)
    :keymaps 'org-mode-map
-   "<tab>" 'org-cycle))
+   "<tab>" 'org-cycle
+   "C-d" 'backward-char))
 
 (use-package org-bullets
   :if *is-a-mac*

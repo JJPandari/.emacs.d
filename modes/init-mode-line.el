@@ -69,9 +69,11 @@
                '(:eval (when defining-kbd-macro
                          (propertize (format " %s%c" "" evil-this-macro) 'face '(:family "FontAwesome"))))
 
-               ;; TODO use this in place of anzu when Emacs 27 is here
-               ;; (setq isearch-lazy-count t
-               ;;       lazy-count-prefix-format "%s/%s ")
+               ;; TODO show count when evil search
+               ;; "%1"
+               ;; '(:eval (when (or isearch-mode (memq last-command '(evil-search-next evil-search-previous)))
+               ;;           (propertize (format " %s/%s" isearch-lazy-count-current isearch-lazy-count-total)
+               ;;                       'face 'font-lock-keyword-face)))
 
                " %1"
                ;; file save stat and buffer name

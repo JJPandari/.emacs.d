@@ -190,7 +190,7 @@
 ;;   "p" 'jester/prettier-js-file-1)
 
 
-(defun jester/make-default-evil-makers-for-js ()
+(defun jester/make-default-evil-markers-for-js ()
   "Make some evil markers to my habit."
   (save-match-data
     ;; i = "import"
@@ -219,7 +219,7 @@
     (when (search-forward "this.state =" nil t)
       (evil-set-marker ?s))))
 
-(add-hook 'js2-mode-hook 'jester/make-default-evil-makers-for-js t)
+(add-hook 'js2-mode-hook 'jester/make-default-evil-markers-for-js t)
 
 
 (defun jester/set-js-ts-test-command ()

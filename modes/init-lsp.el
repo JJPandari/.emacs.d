@@ -7,7 +7,9 @@
   (lsp-prefer-flymake nil)
   (lsp-restart 'auto-restart)
   (lsp-enable-symbol-highlighting nil)
-  (lsp-prefer-capf nil)
+  ;; don't mess with my `company-backends'
+  (lsp-completion-enable nil)
+  (lsp-headerline-breadcrumb-enable nil)
   :init
   :hook ((rust-mode . lsp) (typescript-mode . lsp) (elm-mode . lsp))
   :commands (lsp lsp-deferred))

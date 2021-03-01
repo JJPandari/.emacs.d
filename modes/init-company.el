@@ -20,7 +20,8 @@
    company-dabbrev-downcase nil
    company-minimum-prefix-length 2
    company-idle-delay 0.1
-   company-require-match nil)
+   company-require-match nil
+   company-show-numbers t)
 
   ;; clear default bindings first
   (setq company-active-map (make-sparse-keymap))
@@ -47,6 +48,52 @@
     (read-kbd-macro "H-5")
     (lambda () (interactive) (company-complete-number 10)))
 
+  ;; 1~0 selects candidates
+  ;; https://github.com/abo-abo/oremacs/blob/9c1dd95f52bd6f65313c50c1a85c8bacdde74581/modes/ora-company.el
+  (let ((map company-active-map))
+    (mapc
+     (lambda (x)
+       (define-key map (format "%d" x) 'ora-company-number))
+     (number-sequence 0 9)))
+
+  (defun ora-company-number ()
+    "Forward to `company-complete-number'.
+Unless the number is potentially part of the candidate.
+In that case, insert the number."
+    (interactive)
+    (let* ((k (this-command-keys))
+           (re (concat "^" company-prefix k)))
+      (if (or (cl-find-if (lambda (s) (string-match re s))
+                          company-candidates)
+              (> (string-to-number k)
+                 (length company-candidates))
+              (looking-back "[0-9]+\\.[0-9]*" (line-beginning-position)))
+          (self-insert-command 1)
+        (company-complete-number
+         (if (equal k "0")
+             10
+           (string-to-number k))))))
+
+  (defun my-company-number ()
+    "Forward to `company-complete-number'.
+Unless the number is potentially part of the candidate.
+In that case, insert the number."
+    (interactive)
+    (let* ((k (this-command-keys))
+           (re (concat "^" company-prefix k))
+           (n (if (equal k "0") 10 (string-to-number k))))
+      (cond
+       ((or (cl-find-if (lambda (s) (string-match re s)) company-candidates)
+            (> n (length company-candidates))
+            (looking-back "[0-9]+\\.[0-9]*" (line-beginning-position)))
+        (self-insert-command 1))
+
+       ((when (eq n 10))
+        (company-filter-candidates))
+
+       (t
+        (company-complete-number n)))))
+
   (general-define-key
    :states '(insert emacs)
    "<tab>" 'jester/yas-or-company-or-hippie))
@@ -60,11 +107,14 @@
           company-files
           (company-dabbrev-code company-gtags company-etags company-keywords)
           company-dabbrev))
+  (defvar jester-tabnine-active-modes
+    '(js2-mode web-mode typescript-mode)
+    "major modes I would like to use tabnine")
   (defun jester/use-tabnine-for-major-mode (major-mode)
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."
     (add-hook (derived-mode-hook-name major-mode)
               (lambda () (setq-local company-backends jester-company-backends-with-tabnine)) t))
-  (dolist (mode '(js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode sass-mode))
+  (dolist (mode jester-tabnine-active-modes)
     (jester/use-tabnine-for-major-mode mode))
 
   ;; (add-to-list 'company-transformers 'jester/company-merge-tabnine-with-other t)
@@ -95,6 +145,7 @@
 
 (use-package company-posframe
   :if window-system
+  :custom (company-posframe-quickhelp-delay nil)
   :hook (company-mode . company-posframe-mode))
 
 ;;----------------------------------------------------------------------------

@@ -44,5 +44,10 @@
  "j" 'profiler-report-next-entry
  "k" 'profiler-report-previous-entry)
 
+(use-package snow
+  :demand t)
+
+;; TODO remember layout when ediff
+
 
 (provide 'init-misc)

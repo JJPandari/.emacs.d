@@ -14,6 +14,11 @@
  :keymaps 'shell-mode-map
  "C-d" 'evil-scroll-down)
 
+(general-define-key
+ :states '(insert emacs)
+ :keymaps 'shell-mode-map
+ "C-r" 'counsel-shell-history)
+
 (add-hook! 'eshell-mode-hook
   (general-define-key
    :states '(normal motion)
@@ -76,6 +81,7 @@
    "C-p" 'term-send-raw
    "C-f" 'term-send-raw
    "C-d" 'term-send-raw
+   "C-b" 'term-send-raw
    "C-w" 'term-send-raw
    "C-k" 'term-send-raw
    "C-r" 'term-send-raw

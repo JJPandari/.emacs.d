@@ -8,9 +8,6 @@
    (ivy-height 20))
   :config
   (ivy-mode 1)
-  (general-define-key
-   :keymaps 'ivy-switch-buffer-map
-   "M-k" 'ivy-switch-buffer-kill)
   (jester/with-leader "i r" 'ivy-resume)
   (jester/with-major-leader '(ivy-occur-mode-map ivy-occur-grep-mode-map wgrep-mode-map)
     "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
@@ -36,9 +33,10 @@
   :config
   ;; --no-sort is much faster
   (setq counsel-fzf-cmd "fzf --no-sort -f \"%s\""
+        ;; https://github.com/hlissner/doom-emacs/issues/3038
+        ;; counsel-rg-base-command "rg --with-filename --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s || true"
         ;; limit file size and line length to be faster. long lines doesn't matter when search but is laggy to display
         counsel-rg-base-command '("rg" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--max-filesize" "1M" "--max-columns" "233" "--max-columns-preview" "%s"))
-  ;; (setq counsel-rg-base-command '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "%s"))
 
   (jester/with-leader
    "p f" 'jester/open-project-file
@@ -61,7 +59,8 @@
    "M-x" 'counsel-M-x
    "M-y" 'counsel-yank-pop
    "C-s" 'swiper
-   "C-S-s" (lambda! (swiper (jester/region-or-symbol))))
+   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
+   "H-s" 'swiper-isearch)
 
   ;; key bindings in ivy popup
   (general-define-key
@@ -152,7 +151,7 @@ If called interactively, let the user select start directory first."
                60)
     (plist-put (cadr (nth 4 columns))
                :width
-               20))
+               25))
   (ivy-rich-mode 1))
 
 
@@ -165,12 +164,19 @@ If called interactively, let the user select start directory first."
 
 (use-package ivy-prescient
   :custom ((ivy-prescient-retain-classic-highlighting t)
+           (ivy-prescient-enable-filtering nil)
            (ivy-prescient-sort-commands
             '(:not ivy-switch-buffer swiper swiper-isearch counsel-rg counsel-ag counsel-imenu)))
   :demand t
   :after (ivy counsel prescient)
   :config
   (ivy-prescient-mode 1))
+
+;; (use-package company-prescient
+;;   :demand t
+;;   :after (company prescient)
+;;   :config
+;;   (company-prescient-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords

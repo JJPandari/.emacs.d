@@ -148,6 +148,7 @@ bound to `KEY' in the leader sub-keymap."
 
   (jester/make-eyebrowse-switcher "alternative" 2 "a")
   (jester/make-eyebrowse-switcher "main" 3 "m")
+  (jester/make-eyebrowse-switcher "terms" 4 "t")
   (jester/make-eyebrowse-switcher "scratch" 6 "s")
   (jester/make-eyebrowse-switcher "config" 9 "c"))
 

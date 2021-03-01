@@ -11,6 +11,7 @@
  "C-b" #'delete-char
  "C-v" #'yank
  "C-S-k" 'jester/kill-back-to-indentation
+ "C-r" 'counsel-minibuffer-history
  "H-x" 'kill-region
  "<escape>" 'keyboard-escape-quit)
 
@@ -18,10 +19,6 @@
  :keymaps 'evil-ex-completion-map
  "M-p" 'previous-complete-history-element
  "M-n" 'next-complete-history-element)
-
-(general-define-key
- :keymaps 'read-expression-map
- "C-r" 'counsel-minibuffer-history)
 
 
 ;; (use-package mini-frame

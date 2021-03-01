@@ -12,7 +12,7 @@
   (defun jester/select-project-and-do (action &optional do-what)
     "Select a project with projectile, then do `ACTION' in the project.
 `ACTION' takes one arg, the selected project dir.
-`do-what' is a string, which is action name displayed by completion interface."
+`DO-WHAT' is a string, which is action name displayed by completion interface."
     (let ((projects (projectile-relevant-known-projects)))
       (if projects
           (ivy-read (concat (when do-what (format "%s " do-what)) "in project: ")

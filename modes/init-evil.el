@@ -12,9 +12,9 @@
   :demand t
   :config
   (defconst jester-leader "SPC" "Leader key in normal state.")
-  (defconst jester-leader-emacs "M-m" "Leader key in emacs state.")
+  (defconst jester-leader-emacs "S-SPC" "Leader key in emacs state.")
   (defconst jester-mode-leader "," "Mode specific leader key in normal state.")
-  (defconst jester-mode-leader-emacs "M-M" "Major-leader key in emacs state.")
+  (defconst jester-mode-leader-emacs "M-m" "Major-leader key in emacs state.")
 
   ;; https://github.com/noctuid/evil-guide#preventing-certain-keys-from-being-overridden
   (general-override-mode)
@@ -384,6 +384,7 @@
 (jester/with-leader
  "u" 'universal-argument
  "f i" (lambda! (find-file (expand-file-name "init.el" user-emacs-directory)))
+ "f a" 'find-alternate-file
  "j f" 'find-function
  "j k" 'find-function-on-key
  "j v" 'find-variable
@@ -507,6 +508,7 @@
 ;;----------------------------------------------------------------------------
 ;; Some functions.
 ;;----------------------------------------------------------------------------
+(setq isearch-lazy-count t)
 ;; TODO use symbol-overlay ... or?
 (evil-define-command jester/evil-normal-search-forward (&optional count)
   "Search symbol under point forward."

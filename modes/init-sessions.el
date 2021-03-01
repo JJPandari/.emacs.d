@@ -17,24 +17,25 @@
     (message "auto save desktop is ON.")))
 (jester/toggle-auto-save-desktop)
 
-(defadvice desktop-read (around time-restore activate)
-    (let ((start-time (current-time)))
-      (prog1
-          ad-do-it
-        (message "Desktop restored in %.2fms"
-                 (jester/time-subtract-millis (current-time)
-                                                 start-time)))))
-
-(defadvice desktop-create-buffer (around time-create activate)
-  (let ((start-time (current-time))
-        (filename (ad-get-arg 1)))
+(defun jester/desktop-time-restore (orig &rest args)
+  (let ((start-time (current-time)))
     (prog1
-        ad-do-it
+        (apply orig args)
+      (message "Desktop restored in %.2fms"
+               (jester/time-subtract-millis (current-time)
+                                            start-time)))))
+(advice-add 'desktop-read :around 'jester/desktop-time-restore)
+
+(defun jester/desktop-time-buffer-create (orig ver filename &rest args)
+  (let ((start-time (current-time)))
+    (prog1
+        (apply orig ver filename args)
       (message "Desktop: %.2fms to restore %s"
                (jester/time-subtract-millis (current-time)
-                                               start-time)
+                                            start-time)
                (when filename
                  (abbreviate-file-name filename))))))
+(advice-add 'desktop-create-buffer :around 'jester/desktop-time-buffer-create)
 
 ;;----------------------------------------------------------------------------
 ;; Restore histories and registers after saving
