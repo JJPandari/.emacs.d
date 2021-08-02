@@ -8,6 +8,7 @@
                                     newline
                                     org-self-insert-command
                                     awesome-pair-space
+                                    term-send-raw
                                     ;; cursor moving commands
                                     forward-char
                                     backward-char

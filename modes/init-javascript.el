@@ -54,7 +54,7 @@
         (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))
       (condition-case err
           (js2-jump-to-definition)
-        (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend))))))
+        (error (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))))))
   (general-define-key
    :states '(normal motion)
    :keymaps '(js2-mode-map)

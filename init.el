@@ -45,9 +45,11 @@
 (require 'init-frame-hooks)
 (require 'init-themes)
 (require 'init-gui-frames)
+;; (require 'init-eaf)
 
 (require 'init-osx-keys)
 (require 'init-evil)
+;; (require 'init-meow)
 (require 'init-which-key)
 (require 'init-hydra)
 
@@ -137,8 +139,15 @@
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
 (require 'server)
+;; "unless running" is to avoid prompting error when starting a second Emacs
+;; when app opened as main editor, start default server
 (unless (server-running-p)
   (server-start))
+;; when opened as maid, start server with name "maid"
+(when (string= (getenv "EMACS_SOCKET") "maid")
+  (unless (server-running-p "maid")
+    (setq server-name "maid")
+    (server-start)))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface

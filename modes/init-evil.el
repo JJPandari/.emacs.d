@@ -244,6 +244,42 @@
   )
 
 
+(use-package evil-mc
+  :init
+  ;; don't bind any keys
+  (setq evil-mc-key-map (make-sparse-keymap))
+  ;; TODO quit on esc, pause on enter
+  (general-define-key
+   :states '(normal visual)
+   "K" 'evil-mc-make-all-cursors
+   "M-n" 'evil-mc-make-and-goto-next-match
+   "M-p" 'evil-mc-make-and-goto-prev-match
+   "M-j" 'evil-mc-make-cursor-move-next-line
+   "M-k" 'evil-mc-make-cursor-move-prev-line
+   "<M-return>" 'jester/evil-mc-toggle-cursors-pause
+   "<M-backspace>" 'evil-mc-undo-all-cursors)
+  (defun jester/evil-mc-toggle-cursors-pause ()
+    "Toggle between pausing or resuming all cursors."
+    (interactive)
+    (if evil-mc-frozen
+        (evil-mc-resume-cursors)
+      (evil-mc-pause-cursors)))
+  :commands (evil-mc-make-all-cursors evil-mc-make-cursor-here
+                                      evil-mc-make-cursor-move-next-line evil-mc-make-cursor-move-prev-line
+                                      evil-mc-make-and-goto-next-match evil-mc-make-and-goto-prev-match)
+  :config
+  ;; FIXME activate mode after using some command may be buggy, but it's the only way to lazy-load evil-mc now.
+  (global-evil-mc-mode 1)
+
+  ;; Add custom commands to whitelisted commands
+  ;; TODO not work
+  (dolist (fn '(string-inflection-kebab-case
+                string-inflection-camelcase string-inflection-lower-camelcase
+                jester/expand-yas-or-complete-company))
+    (push (cons fn '((:default . evil-mc-execute-default-call)))
+          evil-mc-custom-known-commands)))
+
+
 (use-package evil-ediff
   :init
   (evil-ediff-init))
@@ -405,7 +441,8 @@
  "t o" 'just-one-space
  ;; NOTE: "a" "d" "." "'" are still there for the taking
  "," 'evil-indent
- "!" 'shell-command)
+ "!" 'shell-command
+ "'" 'evil-use-register)
 
 ;;----------------------------------------------------------------------------
 ;; With-major-leader keys...
@@ -439,8 +476,7 @@
 
             gitconfig-mode-map
             diff-mode-map)
- "<return>" (general-predicate-dispatch 'switch-to-buffer
-              (and (featurep 'lsp-ui) lsp-ui-peek-mode) 'lsp-ui-peek--goto-xref))
+ "<return>" 'switch-to-buffer)
 
 (general-define-key
  :states '(visual)
@@ -508,6 +544,21 @@
 ;;----------------------------------------------------------------------------
 ;; Some functions.
 ;;----------------------------------------------------------------------------
+(defun jester/evil-paste-after--from-copy-register (&optional count)
+  "So often do we paste from the copy register, let's make it a command and bind it to a key and forget about \"0p"
+  (interactive "p")
+  (evil-paste-after (or count 1) ?0))
+
+(defun jester/evil-paste-before--from-copy-register (&optional count)
+  "So often do we paste from the copy register, let's make it a command and bind it to a key and forget about \"0p"
+  (interactive "p")
+  (evil-paste-before (or count 1) ?0))
+
+(general-define-key
+ :states '(normal visual)
+ "z p" 'jester/evil-paste-after--from-copy-register
+ "z P" 'jester/evil-paste-before--from-copy-register)
+
 (setq isearch-lazy-count t)
 ;; TODO use symbol-overlay ... or?
 (evil-define-command jester/evil-normal-search-forward (&optional count)

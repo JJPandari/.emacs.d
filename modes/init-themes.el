@@ -1,6 +1,7 @@
 (require-package 'solarized-theme)
 (require-package 'color-theme-sanityinc-tomorrow)
 (require-package 'doom-themes)
+(require-package 'base16-theme)
 (require-package 'zenburn-theme)
 
 (setq solarized-use-variable-pitch nil
@@ -8,7 +9,9 @@
       solarized-scale-outline-headlines nil)
 
 ;; If you don't customize it, this is the theme you get.
-(setq custom-enabled-themes '(solarized-light))
+(setq custom-enabled-themes (if (string= (getenv "EMACS_SOCKET") "maid")
+                                '(doom-tomorrow-night)
+                              '(solarized-light)))
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()

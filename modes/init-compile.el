@@ -6,7 +6,8 @@
     (when (eq major-mode 'compilation-mode)
       (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook 'jester/colourise-compilation-buffer)
-  (add-hook 'compilation-mode-hook 'jester/set-shell-buffer-face))
+  (add-hook 'compilation-mode-hook 'jester/set-shell-buffer-face)
+  (add-hook 'compilation-mode-hook (lambda () (setq truncate-lines nil))))
 
 
 (require-package 'alert)

@@ -10,7 +10,6 @@
              awesome-pair-open-round awesome-pair-open-bracket awesome-pair-open-curly
              awesome-pair-close-round awesome-pair-close-bracket awesome-pair-close-curly
              awesome-pair-wrap-round-pair)
-  :bind (("M-u" . (lambda () (interactive) )))
   :init
   (general-define-key
    :states '(insert emacs)

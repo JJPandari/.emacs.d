@@ -164,9 +164,12 @@ If called interactively, let the user select start directory first."
 
 (use-package ivy-prescient
   :custom ((ivy-prescient-retain-classic-highlighting t)
-           (ivy-prescient-enable-filtering nil)
-           (ivy-prescient-sort-commands
-            '(:not ivy-switch-buffer swiper swiper-isearch counsel-rg counsel-ag counsel-imenu)))
+           (ivy-prescient-enable-filtering nil))
+  :init
+  ;; FIXME: put this in :custom doesn't work?
+  (setq ivy-prescient-sort-commands
+        '(:not ivy-switch-buffer swiper swiper-isearch counsel-rg counsel-ag counsel-imenu
+               ivy-xref-show-defs ivy-xref-show-xrefs))
   :demand t
   :after (ivy counsel prescient)
   :config

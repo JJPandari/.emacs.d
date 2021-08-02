@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (add-to-list 'completion-styles 'initials t)
 
 (use-package company
@@ -35,9 +37,11 @@
    "<tab>" 'jester/expand-yas-or-complete-company
    "C-g" 'company-abort
    "<escape>" (lambda! (company-abort) (evil-normal-state)))
-  ;; M-1 ~ M-0 to select candidate 1 ~ 10
+  ;; M-0 ~ M-9 to insert number 0 ~ 9
   (dotimes (i 10)
-    (define-key company-active-map (read-kbd-macro (format "M-%d" i)) 'company-complete-number))
+    (define-key company-active-map
+      (read-kbd-macro (format "M-%d" i))
+      (eval `(lambda! (insert ,(number-to-string i))))))
   ;; H-1 ~ H-5 to select candidate 6 ~ 10
   (cl-loop for num-key from 1 to 4
            do (let ((candidate-index (+ num-key 5)))

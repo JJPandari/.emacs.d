@@ -52,8 +52,8 @@
    :states '(normal visual motion)
    :keymaps '(prog-mode-map css-mode yaml-mode conf-mode markdown-mode help-mode)
    "<tab>" 'jester/probably-symbol-overlay-put
-   "M-n" 'symbol-overlay-jump-next
-   "M-p" 'symbol-overlay-jump-prev)
+   "H-n" 'symbol-overlay-jump-next
+   "H-p" 'symbol-overlay-jump-prev)
   (jester/with-leader "o p" 'jester/probably-symbol-overlay-put)
   ;; don't bind any key
   (setq symbol-overlay-map (make-sparse-keymap))

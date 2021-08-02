@@ -2,8 +2,11 @@
   :init
   (after-load 'flycheck
     (flycheck-add-mode 'javascript-eslint 'web-mode)
-    (flycheck-add-mode 'xml-xmllint 'web-mode))
-  :mode ("\\.tsx\\'" "\\.vue\\'" "\\.blade.php\\'" "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'")
+    (flycheck-add-mode 'xml-xmllint 'web-mode)
+    (flycheck-add-mode 'xml-xmlstarlet 'web-mode))
+  :mode ("\\.tsx\\'" "\\.vue\\'"
+         "\\.html\\'" "\\.xml\\'" "\\.xhtml\\'"
+         "\\.blade.php\\'" "\\.jsp\\'")
   :config
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
@@ -20,7 +23,7 @@
    web-mode-block-padding 0
    web-mode-enable-current-element-highlight t
    web-mode-enable-auto-indentation nil
-   web-mode-comment-formats '(("java" . "//") ("javascript" . "//") ("php" . "//")))
+   web-mode-comment-formats '(("java" . "//") ("javascript" . "//") ("typescript" . "//") ("php" . "//") ("css" . "/*")))
   (setq-default
    web-mode-markup-indent-offset 2
    web-mode-code-indent-offset 2
@@ -42,7 +45,7 @@
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue)
   (defun jester/web-mode-maybe-setup-vue ()
     "Do something if it's a .vue file."
-    (when (and buffer-file-name (equal (file-name-extension buffer-file-name) "vue"))
+    (when (string-equal (file-name-extension (buffer-name)) "vue")
       (setq imenu-create-index-function (lambda () (jester/merge-imenu 'web-mode-imenu-index)))
       (setq imenu-generic-expression ; imenu regexps for vue.js
             '(("method" "^    \\([^ ]+\\)(.*) {" 1)
@@ -53,16 +56,20 @@
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-tsx)
   (defun jester/web-mode-maybe-setup-tsx ()
     "Do something if it's a .tsx file."
-    (when (and (buffer-file-name)
-               (string-equal (file-name-extension (buffer-file-name))
-                             "tsx"))
+    (when (string-equal (file-name-extension (buffer-name)) "tsx")
       (lsp)
       ;; lsp sets checker to lsp, set it back
       ;; lsp and eslint show different errors, using lsp for now...
       ;; `flycheck-add-next-checker'
       ;; (setq flycheck-checker 'javascript-eslint)
       (jester/make-default-evil-markers-for-js)
-      (setq emmet-expand-jsx-className? t))))
+      (setq emmet-expand-jsx-className? t)))
+
+  (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-xml)
+  (defun jester/web-mode-maybe-setup-xml ()
+    "Do something if it's a .xml file."
+    (when (string-equal (file-name-extension (buffer-name)) "xml")
+      (flycheck-select-checker 'xml-xmllint))))
 
 (use-package emmet-mode
   :custom (emmet-self-closing-tag-style " /")
