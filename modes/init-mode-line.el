@@ -43,12 +43,8 @@
         (`interrupted ".")
         (`suspicious '(propertize "?" 'face 'warning))))))
 
-(defvar jester/which-function-mode-line-off-modes '(web-mode scss-mode css-mode))
-
 (defvar jester/number-unicode-char-list
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
-
-(add-hook 'prog-mode-hook (lambda () (which-function-mode 1)))
 
 (setq-default mode-line-format
               (list
@@ -89,10 +85,6 @@
 
                " %1"
                jester/flycheck-mode-line
-
-               " %1"
-               '(:eval (when (and (featurep 'which-func) (not (member major-mode jester/which-function-mode-line-off-modes)))
-                         which-func-format))
 
                "%1"
                ;; git info

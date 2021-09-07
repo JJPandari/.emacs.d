@@ -123,6 +123,7 @@
 (require 'init-edit-server)
 (require 'init-browser)
 (require 'init-player)
+(require 'init-time)
 (require 'init-misc)
 
 ;; Extra packages which don't require any configuration

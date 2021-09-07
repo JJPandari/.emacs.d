@@ -81,7 +81,8 @@
       'Man-mode
       'woman-mode
       'process-menu-mode
-      'snippet-mode)
+      'snippet-mode
+      'display-time-world-mode)
     "cars for shackle rule, representing conditions using same-window rule")
 
   (defvar jester-shackle-same-window-rule

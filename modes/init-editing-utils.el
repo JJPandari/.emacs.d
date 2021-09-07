@@ -601,5 +601,16 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
 (jester/with-leader
  "SPC" 'jester/just-do-what-i-mean)
 
+;;----------------------------------------------------------------------------
+;; show which function
+;;----------------------------------------------------------------------------
+(defun jester/show-which-function ()
+  "Show which function in minibuffer."
+  (interactive)
+  (message (which-function)))
+
+(jester/with-leader
+ "f w" 'jester/show-which-function)
+
 
 (provide 'init-editing-utils)
