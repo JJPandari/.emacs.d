@@ -72,6 +72,7 @@
 (require 'init-face)
 (require 'init-avy)
 (require 'init-help)
+(require 'init-read)
 
 (require 'init-flycheck)
 (require 'init-vc)

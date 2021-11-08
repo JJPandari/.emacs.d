@@ -1,6 +1,7 @@
 ;; parens are taken care by paredit etc., others shall be electric.
 (after-init (electric-pair-mode 1)) ;; this is global
 
+
 (push (expand-file-name "awesome-pair" jester-submodules-dir) load-path)
 (use-package awesome-pair
   :ensure nil
@@ -49,5 +50,38 @@
    :states '(visual)
    "d" 'evil-delete
    "c" 'evil-change))
+
+
+(use-package puni
+  :init
+  ;; (general-define-key
+  ;;  :states '(insert emacs)
+  ;;  :keymaps '(prog-mode-map)
+  ;;  ;; delete commands
+  ;;  [remap backward-delete-char] 'puni-backward-delete-char
+  ;;  [remap backward-delete-char-untabify] 'puni-backward-delete-char
+  ;;  [remap delete-char] 'puni-forward-delete-char
+  ;;  [remap delete-forward-char] 'puni-forward-delete-char
+  ;;  [remap kill-word] 'puni-forward-kill-word
+  ;;  [remap backward-kill-word] 'puni-backward-kill-word
+  ;;  [remap evil-delete-backward-word] 'puni-backward-kill-word
+  ;;  [remap kill-line] 'puni-kill-line
+  ;;  [remap jester/kill-back-to-indentation] 'puni-backward-kill-line
+  ;;  ;; (define-key map (kbd "C-c DEL") 'puni-force-delete)
+  ;;  [remap kill-region] 'puni-kill-active-region
+  ;;  ;; navigation commands
+  ;;  [remap forward-sexp] 'puni-forward-sexp
+  ;;  [remap backward-sexp] 'puni-backward-sexp
+  ;;  [remap beginning-of-sexp] 'puni-beginning-of-sexp
+  ;;  [remap end-of-sexp] 'puni-end-of-sexp)
+  (general-define-key
+   :states '(normal)
+   :keymaps 'prog-mode-map
+   ;; manipulating commands
+   "<" 'puni-slurp-forward
+   ">" 'puni-barf-forward
+   "M->" 'puni-slurp-backward
+   "M-<" 'puni-barf-backward))
+
 
 (provide 'init-paredit)

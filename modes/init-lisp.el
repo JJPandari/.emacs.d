@@ -120,7 +120,13 @@
    (when-let* ((doc (and (fboundp sym) (documentation sym 'raw)))
                (stripped-advice-doc (replace-regexp-in-string
                                      ;; regex from ivy-rich
-                                     ":\\(\\(before\\|after\\)\\(-\\(while\\|until\\)\\)?\\|around\\|override\\|\\(filter-\\(args\\|return\\)\\)\\) advice:[ ]*‘.+?’[\r\n]+"
+                                     (rx bos
+                                         (1+ (seq (? "This function has ")
+                                                  (or ":before" ":after" ":around" ":override"
+                                                      ":before-while" ":before-until" ":after-while"
+                                                      ":after-until" ":filter-args" ":filter-return")
+                                                  " advice: " (0+ nonl) "\n"))
+                                         "\n")
                                      ""
                                      doc))
                (oneline (substring stripped-advice-doc 0 (string-match "\n" stripped-advice-doc))))

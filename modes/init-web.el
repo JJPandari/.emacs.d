@@ -21,7 +21,7 @@
    web-mode-style-padding 0
    web-mode-script-padding 0
    web-mode-block-padding 0
-   web-mode-enable-current-element-highlight t
+   web-mode-enable-current-element-highlight nil
    web-mode-enable-auto-indentation nil
    web-mode-comment-formats '(("java" . "//") ("javascript" . "//") ("typescript" . "//") ("php" . "//") ("css" . "/*")))
   (setq-default
@@ -59,9 +59,8 @@
     (when (string-equal (file-name-extension (buffer-name)) "tsx")
       (lsp)
       ;; lsp sets checker to lsp, set it back
-      ;; lsp and eslint show different errors, using lsp for now...
       ;; `flycheck-add-next-checker'
-      ;; (setq flycheck-checker 'javascript-eslint)
+      (setq flycheck-checker 'javascript-eslint)
       (jester/make-default-evil-markers-for-js)
       (setq emmet-expand-jsx-className? t)))
 

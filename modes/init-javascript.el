@@ -40,28 +40,6 @@
   :after js2-mode)
 
 
-(use-package xref-js2
-  :custom (xref-js2-search-program 'rg)
-  :init
-  (add-hook 'js2-mode-hook
-            (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
-  (defun jester/js2-jump-or-xref-definition ()
-    "`js2-jump-to-definition' if we can, `xref-find-definitions' if can't or already at import statement."
-    (interactive)
-    (if (save-excursion
-          (beginning-of-line)
-          (let ((case-fold-search nil)) (search-forward "import " nil t)))
-        (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))
-      (condition-case err
-          (js2-jump-to-definition)
-        (error (xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))))))
-  (general-define-key
-   :states '(normal motion)
-   :keymaps '(js2-mode-map)
-   "g d" 'jester/js2-jump-or-xref-definition
-   "g r" 'jester/xref-find-references-at-point))
-
-
 (use-package skewer-mode
   :init
   (setq httpd-port 9871)
@@ -172,24 +150,6 @@
   (message (kill-new (format "http://localhost:%s/%s" jester-monkey-scripts-port (buffer-name)))))
 
 
-(defun jester/prettier-js-file-1 ()
-  "Call prettier on current file."
-  (interactive)
-  (call-process-shell-command (format "node %s --write %s"
-                                      (f-join (projectile-project-root) "node_modules/.bin/prettier")
-                                      (buffer-file-name))))
-
-(defun jester/prettier-js-file-2 ()
-  "Call prettier on current file."
-  (interactive)
-  (save-restriction
-    (widen)
-    (call-process-region (point-min) (point-max) "prettier" t t t)))
-
-;; (jester/with-major-leader '(js2-mode-map web-mode-map typescript-mode-map)
-;;   "p" 'jester/prettier-js-file-1)
-
-
 (defun jester/make-default-evil-markers-for-js ()
   "Make some evil markers to my habit."
   (save-match-data
@@ -234,6 +194,24 @@
       (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
 
 (add-hook! '(js2-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
+
+
+(defun jester/js2-jump-or-citre-jump ()
+  "`js2-jump-to-definition' if we can, `citre-jump' if can't or already at import statement."
+  (interactive)
+  (if (save-excursion
+        (beginning-of-line)
+        (let ((case-fold-search nil)) (search-forward "import " nil t)))
+      (citre-jump)
+    (condition-case err
+        (js2-jump-to-definition)
+      (error (citre-jump)))))
+(general-define-key
+ :states '(normal motion)
+ :keymaps '(js2-mode-map)
+ "g d" 'jester/js2-jump-or-citre-jump
+ ;; "g r" 'jester/xref-find-references-at-point
+ )
 
 
 (provide 'init-javascript)

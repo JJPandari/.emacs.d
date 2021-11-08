@@ -7,6 +7,7 @@
   (lsp-prefer-flymake nil)
   (lsp-restart 'auto-restart)
   (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-indentation nil)
   ;; don't mess with my `company-backends'
   (lsp-completion-enable nil)
   (lsp-headerline-breadcrumb-enable nil)

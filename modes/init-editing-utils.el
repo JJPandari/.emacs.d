@@ -585,7 +585,9 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
 ;;----------------------------------------------------------------------------
 (defvar jester-flip-symbol-alist
   '(("true" . "false")
-    ("false" . "true"))
+    ("false" . "true")
+    ("GET" . "POST")
+    ("POST" . "GET"))
   "symbols to be quick flipped when editing")
 
 (defun jester/just-do-what-i-mean ()

@@ -18,6 +18,7 @@
  "L" 'Info-next
  "C-r" 'Info-history
  "f" 'link-hint-open-link
+ "<return>" 'Info-follow-nearest-node
  "g g" 'evil-goto-first-line)
 
 

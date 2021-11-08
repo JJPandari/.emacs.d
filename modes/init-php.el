@@ -6,5 +6,7 @@
 ;; (evil-define-key 'insert php-mode-map (kbd "C-l") (lambda () (interactive) (insert "->")))
 ;; (evil-define-key 'insert php-mode-map (kbd "C-j") (lambda () (interactive) (insert " => ")))
 
+;; phps-mode
+
 
 (provide 'init-php)

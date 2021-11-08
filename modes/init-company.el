@@ -62,8 +62,9 @@
 
   (defun ora-company-number ()
     "Forward to `company-complete-number'.
-Unless the number is potentially part of the candidate.
-In that case, insert the number."
+In these cases just insert the number:
+1. the number is potentially part of the candidate
+2. last character is a number "
     (interactive)
     (let* ((k (this-command-keys))
            (re (concat "^" company-prefix k)))
@@ -71,7 +72,7 @@ In that case, insert the number."
                           company-candidates)
               (> (string-to-number k)
                  (length company-candidates))
-              (looking-back "[0-9]+\\.[0-9]*" (line-beginning-position)))
+              (looking-back "[0-9]"))
           (self-insert-command 1)
         (company-complete-number
          (if (equal k "0")

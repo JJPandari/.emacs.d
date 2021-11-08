@@ -87,9 +87,15 @@
                jester/flycheck-mode-line
 
                "%1"
+               ;; current project folder name
+               '(:eval (when-let ((full-dir (locate-dominating-file "." ".git/")))
+                         (propertize (concat " " (file-name-as-directory (file-name-nondirectory (directory-file-name full-dir))))
+                                     'face 'dired-directory)))
+
+               "%1"
                ;; git info
                '(:eval (when vc-mode
-                         (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) (propertize vc-mode))))
+                         (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))
 
                ;; minor modes
                ;; minor-mode-alist

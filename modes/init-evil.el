@@ -442,7 +442,8 @@
  ;; NOTE: "a" "d" "." "'" are still there for the taking
  "," 'evil-indent
  "!" 'shell-command
- "'" 'evil-use-register)
+ "<" 'evil-shift-left
+ ">" 'evil-shift-right)
 
 ;;----------------------------------------------------------------------------
 ;; With-major-leader keys...
@@ -457,7 +458,9 @@
 (general-define-key
  :states '(normal)
  "Q" "@q"
- "gJ" 'jester/evil-join-no-whitespace)
+ "gJ" 'jester/evil-join-no-whitespace
+ "<" nil
+ ">" nil)
 
 (general-define-key
  :states '(normal)
@@ -482,8 +485,6 @@
  :states '(visual)
  "*" 'jester/evil-visual-search-forward
  "#" 'jester/evil-visual-search-backward
- "<" (lambda! (call-interactively 'evil-shift-left) (execute-kbd-macro "gv"))
- ">" (lambda! (call-interactively 'evil-shift-right) (execute-kbd-macro "gv"))
  ;; run macro in the q register on all selected lines
  "Q" ":norm @q <return>"
 
@@ -516,8 +517,9 @@
 
 (general-define-key
  :states '(insert emacs)
- "C-b" 'delete-char
- ;; "C-o" 'evil-open-below
+ "M-v" 'evil-scroll-down
+ "M-c" 'evil-scroll-up
+ "C-b" 'delete-forward-char
  "C-d" 'backward-char
  "C-n" 'next-line
  "C-p" 'previous-line
@@ -528,8 +530,6 @@
  "C-v" 'yank
  "M-d" 'backward-word
  "M-b" 'kill-word
- "M-v" 'evil-scroll-down
- "M-c" 'evil-scroll-up
  "H-x" 'kill-region)
 
 ;;----------------------------------------------------------------------------
@@ -539,7 +539,20 @@
  "C-h C-f" 'list-faces-display
  "C-h p" 'describe-package
  "C-h c" 'describe-char
- "C-h K" 'find-function-on-key)
+ "C-h K" 'find-function-on-key
+ ;; copy insert state bindings here, so keys do the same when evil disabled
+ "C-b" 'delete-forward-char
+ "C-d" 'backward-char
+ "C-n" 'next-line
+ "C-p" 'previous-line
+ "C-a" 'beginning-of-line-text
+ "C-e" 'move-end-of-line
+ "C-k" 'kill-line
+ "C-w" 'evil-delete-backward-word
+ "C-v" 'yank
+ "M-d" 'backward-word
+ "M-b" 'kill-word
+ "H-x" 'kill-region)
 
 ;;----------------------------------------------------------------------------
 ;; Some functions.
