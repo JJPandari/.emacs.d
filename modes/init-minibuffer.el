@@ -7,6 +7,7 @@
  "M-d" #'backward-word
  "M-b" #'kill-word
  "C-w" #'backward-kill-word
+ "C-f" #'forward-char
  "C-d" #'backward-char
  "C-b" #'delete-char
  "C-v" #'yank

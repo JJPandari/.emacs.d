@@ -19,7 +19,9 @@
    "C-d" 'evil-scroll-down
    "H-d" 'ivy-occur-delete-candidate
    "g g" 'evil-goto-first-line
-   "g r" 'ivy-occur-revert-buffer)
+   "g r" 'ivy-occur-revert-buffer
+   "<return>" 'ivy-occur-press-and-switch
+   "f" 'ivy-occur-press)
   (defun jester/ivy-copy-current-line ()
     "Copy current line in ivy."
     (interactive)
@@ -32,11 +34,11 @@
   :after ivy
   :config
   ;; --no-sort is much faster
-  (setq counsel-fzf-cmd "fzf --no-sort -f \"%s\""
+  (setq counsel-fzf-cmd "fzf --no-sort --exact -f \"%s\""
         ;; https://github.com/hlissner/doom-emacs/issues/3038
-        ;; counsel-rg-base-command "rg --with-filename --no-heading --line-number --color never --max-filesize 1M --max-columns 233 --max-columns-preview %s || true"
+        ;; counsel-rg-base-command "rg --with-filename --no-heading --line-number --color never --hidden --max-filesize 1M --max-columns 233 --max-columns-preview %s || true"
         ;; limit file size and line length to be faster. long lines doesn't matter when search but is laggy to display
-        counsel-rg-base-command '("rg" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--max-filesize" "1M" "--max-columns" "233" "--max-columns-preview" "%s"))
+        counsel-rg-base-command '("rg" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--hidden" "--max-filesize" "1M" "--max-columns" "233" "--max-columns-preview" "%s"))
 
   (jester/with-leader
    "p f" 'jester/open-project-file

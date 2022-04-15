@@ -151,7 +151,8 @@ bound to `KEY' in the leader sub-keymap."
   (jester/make-eyebrowse-switcher "main" 3 "m")
   (jester/make-eyebrowse-switcher "terms" 4 "t")
   (jester/make-eyebrowse-switcher "scratch" 6 "s")
-  (jester/make-eyebrowse-switcher "config" 9 "c"))
+  (jester/make-eyebrowse-switcher "config" 9 "c")
+  (jester/make-eyebrowse-switcher "org" 0 "g"))
 
 
 (defun jester/kill-buffer-and-window ()

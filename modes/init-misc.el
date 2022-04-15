@@ -47,6 +47,8 @@
 (use-package snow
   :demand t)
 
+;; (zone-when-idle 300)
+
 ;; TODO remember layout when ediff
 
 

@@ -118,6 +118,7 @@
 (require 'init-dotenv)
 (require 'init-shell)
 (require 'init-http)
+(require 'init-cucumber)
 
 (require 'init-chinese)
 (require 'init-keyfreq)

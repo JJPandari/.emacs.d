@@ -62,7 +62,8 @@
       ;; `flycheck-add-next-checker'
       (setq flycheck-checker 'javascript-eslint)
       (jester/make-default-evil-markers-for-js)
-      (setq emmet-expand-jsx-className? t)))
+      (setq-local emmet-expand-jsx-className? t)
+      (aggressive-indent-mode -1)))
 
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-xml)
   (defun jester/web-mode-maybe-setup-xml ()

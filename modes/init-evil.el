@@ -614,5 +614,4 @@
 ;; TODO "vio" vs "yio": make visual "auto line-wise"?
 
 
-;; TODO use another key for register 0 ("(" looks good)
 (provide 'init-evil)

@@ -53,7 +53,8 @@
 (use-package magit
   :init
   (setq magit-diff-refine-hunk t
-        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+        magit-log-margin '(t "周%u %Y-%m-%d %H:%M:%S %z" magit-log-margin-width t 18))
   (jester/with-leader
    "g s" 'magit-status
    "g d" 'magit-diff-buffer-file
@@ -86,6 +87,7 @@
 ;;   :config
 ;;   (magithub-feature-autoinject t))
 
+;; TODO setup forge
 ;; (use-package forge
 ;;   :after magit)
 

@@ -16,3 +16,6 @@
 [submodule "emacs-application-framework"]
 	path = extensions/emacs-application-framework
 	url = git@github.com:manateelazycat/emacs-application-framework.git
+[submodule "company-anywhere"]
+	path = extensions/company-anywhere
+	url = https://github.com/zk-phi/company-anywhere.git

@@ -81,7 +81,8 @@
     (setq imenu-create-index-function (lambda () (jester/merge-imenu 'js2-mode-create-imenu-index))
           imenu-generic-expression '((nil "^ *static \\(propTypes\\|defaultProps\\) = {$" 1))
           mode-name "JSX"
-          emmet-expand-jsx-className? t))
+          emmet-expand-jsx-className? t)
+    (aggressive-indent-mode -1))
   (require 'web-mode)
   (custom-set-faces '(rjsx-tag
                       ((t (:inherit web-mode-html-tag-face)))))

@@ -153,6 +153,14 @@ In that case, insert the number."
   :custom (company-posframe-quickhelp-delay nil)
   :hook (company-mode . company-posframe-mode))
 
+
+(push (expand-file-name "company-anywhere" jester-submodules-dir) load-path)
+(use-package company-anywhere
+  :ensure nil
+  :after company
+  :demand t)
+
+
 ;;----------------------------------------------------------------------------
 ;; Make tab do both yas expand and company.
 ;;----------------------------------------------------------------------------

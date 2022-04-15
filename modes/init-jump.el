@@ -23,6 +23,10 @@
  :keymaps 'lsp-mode
  "g r" 'jester/xref-find-references-at-point)
 
+
+;; TODO xref-ring
+;; (advice-add 'xref-find-definitions :after )
+
 
 (use-package dumb-jump
   :init
@@ -45,7 +49,9 @@
 
 
 (use-package citre
-  :custom (citre-tags-files '("tagz" ".tags" "tags"))
+  :custom ((citre-enable-imenu-integration nil)
+           (citre-update-tags-file-when-no-definitions nil)
+           (citre-tags-files '("tagz" ".tags" "tags")))
   :init
   (require 'citre-config))
 ;; TODO try `citre-peek'

@@ -380,6 +380,7 @@ by telling whether the language in current buffer has generic types (which are u
 (push (lambda () (eq major-mode 'rust-mode)) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (eq major-mode 'typescript-mode)) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (eq major-mode 'rjsx-mode)) jester-buffer-has-generic-or-jsx-p-list)
+(push (lambda () (and (eq major-mode 'web-mode) (string-equal web-mode-engine "none"))) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (and (buffer-file-name)
                  (member (file-name-extension (buffer-file-name))
                          '("ts" "tsx"))))
