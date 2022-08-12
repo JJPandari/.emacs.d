@@ -76,6 +76,10 @@
 (use-package evil-magit
   :hook (magit-mode . evil-magit-init))
 
+;; not using this for now: 1. only 1 hunk per file because magit no longer does the hunking 2. colors not fit theme well
+;; (use-package magit-delta
+;;   :hook (magit-mode . magit-delta-mode))
+
 ;; (use-package transient
 ;;   :custom (transient-enable-popup-navigation t))
 

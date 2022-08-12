@@ -103,5 +103,38 @@
    :keymaps 'term-mode-map
    "a" (lambda! (evil-insert-state) (term-char-mode))))
 
+;;----------------------------------------------------------------------------
+;; vterm
+;;----------------------------------------------------------------------------
+(use-package vterm
+  :custom (vterm-shell "/bin/zsh")
+  :init
+  ;; (jester/with-leader "t n" (lambda! (vterm 'new-session)))
+  :config
+  (general-define-key
+   :states '(insert emacs)
+   :keymaps 'vterm-mode-map
+   "<tab>" nil
+   "C-a" nil
+   "C-e" nil
+   "C-n" nil
+   "C-p" nil
+   "C-f" 'vterm--self-insert
+   "C-d" nil
+   "C-h" nil
+   "C-b" 'vterm--self-insert
+   "C-w" 'vterm--self-insert
+   "C-k" nil
+   "C-r" nil
+   "C-t" nil
+   "C-v" nil
+   "C-/" nil
+   "C-c" 'vterm-send-C-c
+   "C-s" 'swiper
+   "M-c" nil
+   "M-f" nil
+   "M-d" nil
+   "M-b" nil))
+
 
 (provide 'init-shell)
