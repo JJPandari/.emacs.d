@@ -51,7 +51,9 @@
 
                "%1"
                '(:eval (when (and (featurep 'eyebrowse) eyebrowse-mode)
-                         (nth (eyebrowse--get 'current-slot) jester/number-unicode-char-list)))
+                         (let ((num (eyebrowse--get 'current-slot)))
+                           (or (nth num jester/number-unicode-char-list)
+                               (format "[%d]" num)))))
 
                ;; " %1"
                ;; ;; evil state
@@ -64,6 +66,10 @@
                "%1"
                '(:eval (when defining-kbd-macro
                          (propertize (format " %s%c" "" evil-this-macro) 'face '(:family "FontAwesome"))))
+
+               "%1"
+               '(:eval (when (/= jester-evil-portal-location 0)
+                         (propertize "🔮" 'face 'diff-removed)))
 
                ;; TODO show count when evil search
                ;; "%1"

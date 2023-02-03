@@ -120,6 +120,7 @@
    "l TAB" #'eyebrowse-last-window-config
    "l k" #'eyebrowse-close-window-config
    "l r" #'eyebrowse-rename-window-config
+   "l S" #'jester/eyebrowse-duplicate-window-config
    "l 0" #'eyebrowse-switch-to-window-config-0
    "l 1" #'eyebrowse-switch-to-window-config-1
    "l 2" #'eyebrowse-switch-to-window-config-2
@@ -132,8 +133,8 @@
    "l 9" #'eyebrowse-switch-to-window-config-9)
 
   (defun jester/make-eyebrowse-switcher (alias slot key)
-    "Make an eyebrowse switch function for `SLOT', which has the name/alias of `ALIAS',
-bound to `KEY' in the leader sub-keymap."
+    "Make an eyebrowse switch function for SLOT, which has the name/alias of ALIAS,
+bound to KEY in the leader sub-keymap."
     (let ((fun-name (intern (format "jester/eyebrowse-switch-to-%s" alias))))
       (eval `(jester/with-leader ,(format "l %s" key) fun-name))
       (eval `(defun ,fun-name ()
@@ -153,6 +154,14 @@ bound to `KEY' in the leader sub-keymap."
   (jester/make-eyebrowse-switcher "scratch" 6 "s")
   (jester/make-eyebrowse-switcher "config" 9 "c")
   (jester/make-eyebrowse-switcher "org" 0 "g"))
+
+(defvar jester/eyebrowse-random-number-seed 1 "For generating a layout number for `jester/eyebrowse-duplicate-window-config'.")
+
+(defun jester/eyebrowse-duplicate-window-config ()
+  "Duplicate current window config, assign a random layout number starting from 10001."
+  (interactive)
+  (cl-incf jester/eyebrowse-random-number-seed)
+  (eyebrowse-switch-to-window-config (+ jester/eyebrowse-random-number-seed 10000)))
 
 
 (defun jester/kill-buffer-and-window ()

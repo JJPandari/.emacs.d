@@ -248,7 +248,6 @@
   :init
   ;; don't bind any keys
   (setq evil-mc-key-map (make-sparse-keymap))
-  ;; TODO quit on esc, pause on enter
   (general-define-key
    :states '(normal visual)
    "K" 'evil-mc-make-all-cursors
@@ -256,8 +255,7 @@
    "M-p" 'evil-mc-make-and-goto-prev-match
    "M-j" 'evil-mc-make-cursor-move-next-line
    "M-k" 'evil-mc-make-cursor-move-prev-line
-   "<M-return>" 'jester/evil-mc-toggle-cursors-pause
-   "<M-backspace>" 'evil-mc-undo-all-cursors)
+   "<M-return>" 'jester/evil-mc-toggle-cursors-pause)
   (defun jester/evil-mc-toggle-cursors-pause ()
     "Toggle between pausing or resuming all cursors."
     (interactive)
@@ -268,6 +266,7 @@
                                       evil-mc-make-cursor-move-next-line evil-mc-make-cursor-move-prev-line
                                       evil-mc-make-and-goto-next-match evil-mc-make-and-goto-prev-match)
   :config
+  (advice-add 'evil-force-normal-state :after 'evil-mc-undo-all-cursors)
   ;; FIXME activate mode after using some command may be buggy, but it's the only way to lazy-load evil-mc now.
   (global-evil-mc-mode 1)
 
@@ -439,11 +438,18 @@
  "p l" 'list-packages
  "q q" 'save-buffers-kill-terminal
  "t o" 'just-one-space
- ;; NOTE: "a" "d" "." "'" are still there for the taking
+ "t a" 'aggressive-indent-mode
+ ;; NOTE: "a" "d" "'" are still there for the taking
  "," 'evil-indent
+ "." 'jester/evil-portal-set-portal-location
+ ">" 'jester/evil-portal-clear-portal-location
  "!" 'shell-command
  "<" 'evil-shift-left
  ">" 'evil-shift-right)
+
+(general-define-key
+ :keymaps 'universal-argument-map
+ (concat jester-leader " u") 'universal-argument-more)
 
 ;;----------------------------------------------------------------------------
 ;; With-major-leader keys...
@@ -494,7 +500,8 @@
 (general-define-key
  :states 'motion
  "u" 'evil-scroll-up
- "d" 'evil-scroll-down)
+ "d" 'evil-scroll-down
+ "<escape>" 'evil-motion-state)
 
 (general-define-key
  :states '(normal motion)
@@ -610,6 +617,33 @@
     (isearch-update-ring regex evil-regexp-search)
     (setq isearch-forward forward)
     (evil-search regex forward evil-regexp-search)))
+
+;;----------------------------------------------------------------------------
+;; "portal"
+;;----------------------------------------------------------------------------
+(defvar-local jester-evil-portal-location 0 "Position marked to jump back to after a evil delete or yank.")
+
+(defun jester/evil-portal-set-portal-location ()
+  "Mark the current point for jumping back after next evil yank or delete."
+  (interactive)
+  (setq jester-evil-portal-location (point))
+  (evil-goggles--show-async-hint (line-beginning-position) (1+ (line-end-position))))
+
+(defun jester/evil-portal-clear-portal-location ()
+  "Clear jump back location. See `jester/evil-portal-set-portal-location'."
+  (interactive)
+  (setq jester-evil-portal-location 0))
+
+(defun jester/evil-portal-jump-advice (&rest _)
+  "Advice to jump back to marked position (if any) after an evil yank or delete."
+  (when (called-interactively-p 'interactive)
+    (when (/= jester-evil-portal-location 0)
+      (goto-char jester-evil-portal-location)
+      (setq jester-evil-portal-location 0))))
+(dolist (cmd '(evil-yank evil-delete lispyville-yank lispyville-delete))
+  (advice-add cmd :after 'jester/evil-portal-jump-advice))
+
+;; TODO try citre-read
 
 ;; TODO "vio" vs "yio": make visual "auto line-wise"?
 

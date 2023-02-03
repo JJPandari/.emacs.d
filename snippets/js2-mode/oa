@@ -2,4 +2,4 @@
 # name: oa
 # key: oa
 # --
-Object.assign(${1:{}}, $0)
+Object.assign(${1:\{\}}, $0)

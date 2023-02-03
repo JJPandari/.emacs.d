@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
@@ -588,7 +589,9 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
   '(("true" . "false")
     ("false" . "true")
     ("GET" . "POST")
-    ("POST" . "GET"))
+    ("POST" . "GET")
+    ("when" . "unless")
+    ("unless" . "when"))
   "symbols to be quick flipped when editing")
 
 (defun jester/just-do-what-i-mean ()
@@ -599,7 +602,7 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
     (when (member sym (cl-loop for cell in jester-flip-symbol-alist
                                collect (car cell)))
       (delete-region beg end)
-      (insert (alist-get sym jester-flip-symbol-alist "" nil 'equal)))))
+      (insert (alist-get sym jester-flip-symbol-alist "" nil 'string-equal)))))
 
 (jester/with-leader
  "SPC" 'jester/just-do-what-i-mean)
@@ -614,6 +617,46 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
 
 (jester/with-leader
  "f w" 'jester/show-which-function)
+
+;;----------------------------------------------------------------------------
+;; just one empty line
+;;----------------------------------------------------------------------------
+(defun jester/just-one-empty-line ()
+  "Trim empty lines around point to be just one."
+  (interactive)
+  (while (and (looking-at "\s*\n")
+              (not (equal (point) (point-min))))
+    (beginning-of-line 0))
+  (end-of-line)
+  (while (looking-at "[\s\n]")
+    (delete-forward-char 1))
+  (insert "\n\n")
+  (indent-according-to-mode)
+  (beginning-of-line 0))
+
+;;----------------------------------------------------------------------------
+;; capitalize words
+;;----------------------------------------------------------------------------
+(evil-define-operator jester/evil-capitalize (beg end)
+  "Capitalize words."
+  (capitalize-region beg end))
+
+(jester/with-leader
+ "`" 'jester/evil-capitalize)
+
+;;----------------------------------------------------------------------------
+;; sync buffer to another file
+;;----------------------------------------------------------------------------
+(defun jester/sync-current-buffer-to-another-file ()
+  "Sync current buffer to another file. (everytime after save)
+To stop it, just revisit the file so the buffer local hook gets cleared."
+  (interactive)
+  ;; FIXME: no clean up / remove hook yet
+  (let ((target-file (read-from-minibuffer "Sync current buffer to file: ")))
+    (add-hook 'after-save-hook
+              (lambda () (write-region (point-min) (point-max) target-file))
+              0 t)
+    (message "keeping syncing...")))
 
 
 (provide 'init-editing-utils)

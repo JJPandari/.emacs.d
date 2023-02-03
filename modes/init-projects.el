@@ -42,5 +42,8 @@
                         (counsel-git)))
      "open file")))
 
+
+(use-package find-file-in-project)
+
 
 (provide 'init-projects)
