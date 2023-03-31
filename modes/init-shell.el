@@ -10,11 +10,6 @@
  "C-l" 'comint-clear-buffer)
 
 (general-define-key
- :states '(normal motion)
- :keymaps 'shell-mode-map
- "C-d" 'evil-scroll-down)
-
-(general-define-key
  :states '(insert emacs)
  :keymaps 'shell-mode-map
  "C-r" 'counsel-shell-history)
@@ -36,6 +31,7 @@
 (add-hook 'comint-mode-hook 'jester/set-shell-buffer-face)
 (add-hook 'eshell-mode-hook 'jester/set-shell-buffer-face)
 (add-hook 'term-mode-hook 'jester/set-shell-buffer-face)
+(add-hook 'vterm-mode-hook 'jester/set-shell-buffer-face)
 
 (defun jester/shell-for-node.js ()
   "For buffer file, look up directories and find package.json, open a shell there."
@@ -60,7 +56,7 @@
 (use-package term
   :ensure nil
   :init
-  (jester/with-leader "t n" (lambda! (ansi-term "/bin/zsh")))
+  ;; (jester/with-leader "t n" (lambda! (ansi-term "/bin/zsh")))
   :custom (term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   :config
   ;; unleash some keys
@@ -107,34 +103,41 @@
 ;; vterm
 ;;----------------------------------------------------------------------------
 (use-package vterm
-  :custom (vterm-shell "/bin/zsh")
+  :custom ((vterm-shell "/bin/zsh")
+           (vterm-kill-buffer-on-exit t))
   :init
-  ;; (jester/with-leader "t n" (lambda! (vterm 'new-session)))
+  (jester/with-leader "t n" (lambda! (vterm 'new-session)))
+  :hook (vterm-mode . evil-insert-state)
   :config
+  ;; vterm-mode-map won't work because evil-insert-state-map takes precedence
+  ;; copy them to insert-state|vterm-mode map
+  (dolist (key '("<tab>"
+                 "C-f" "C-d" "C-a" "C-e" "C-n" "C-p"
+                 "C-b" "C-w" "C-k"
+                 "C-r" "C-t" "C-v" "C-/"
+                 "M-c" "M-f" "M-d" "M-b"))
+    (general-define-key
+     :states '(insert emacs)
+     :keymaps 'vterm-mode-map
+     key (lookup-key vterm-mode-map (kbd key))))
+
+  (general-define-key
+   :keymaps 'vterm-mode-map
+   "M-:" 'eval-expression)
+
   (general-define-key
    :states '(insert emacs)
    :keymaps 'vterm-mode-map
-   "<tab>" nil
-   "C-a" nil
-   "C-e" nil
-   "C-n" nil
-   "C-p" nil
-   "C-f" 'vterm--self-insert
-   "C-d" nil
    "C-h" nil
-   "C-b" 'vterm--self-insert
-   "C-w" 'vterm--self-insert
-   "C-k" nil
-   "C-r" nil
-   "C-t" nil
-   "C-v" nil
-   "C-/" nil
-   "C-c" 'vterm-send-C-c
-   "C-s" 'swiper
-   "M-c" nil
-   "M-f" nil
-   "M-d" nil
-   "M-b" nil))
+   "C-c" 'vterm--self-insert
+   "C-s" 'swiper)
+
+  (general-define-key
+   :states '(normal motion)
+   :keymaps 'vterm-mode-map
+   "<return>" 'switch-to-buffer
+   "i" (lambda! (vterm-reset-cursor-point) (evil-insert-state))
+   "a" (lambda! (vterm-reset-cursor-point) (evil-insert-state))))
 
 
 (provide 'init-shell)

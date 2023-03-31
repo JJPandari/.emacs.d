@@ -16,7 +16,6 @@
   (general-define-key
    :states '(motion)
    :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
-   "C-d" 'evil-scroll-down
    "H-d" 'ivy-occur-delete-candidate
    "g g" 'evil-goto-first-line
    "g r" 'ivy-occur-revert-buffer
@@ -29,9 +28,66 @@
                (ivy-state-current ivy-last) 0 nil))
     (keyboard-escape-quit)))
 
-(use-package counsel
+
+(use-package swiper
   :demand t
   :after ivy
+  :config
+  (jester/with-leader
+   "s b" (lambda! (swiper-all (jester/region-or-empty)))
+   "s B" (lambda! (swiper-all (jester/region-or-symbol))))
+
+  (general-define-key
+   "C-s" 'swiper
+   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
+   "H-s" 'swiper-isearch)
+
+  (defun jester/maybe-run-ivy-hydra ()
+    "Run `hydra-ivy/body' if there is any content in minibuffer."
+    (unless (save-excursion (beginning-of-line) (looking-at "$"))
+      (hydra-ivy/body)))
+
+  (defmacro jester/make-fuzzy-search-dwim-command (search-cmd)
+    "Make a fuzzy search dwim command with the search command `search-cmd'."
+    ;; TODO ...
+    ())
+
+  (defun jester/swiper-dwim ()
+    "If region is not active, just start swiper. If region contain 1 char, grab the symbol as swiper input, otherwise use the region content.
+If swiper started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
+    (interactive)
+    (if (region-active-p)
+        (minibuffer-with-setup-hook 'jester/maybe-run-ivy-hydra
+          (swiper (regexp-quote (let* ((beg (region-beginning))
+                                       (end (region-end))
+                                       (text (progn (deactivate-mark)
+                                                    (buffer-substring-no-properties
+                                                     beg end))))
+                                  (if (= (- end beg) 1)
+                                      (thing-at-point 'symbol t)
+                                    text)))))
+      (swiper)))
+
+  (general-define-key
+   :states '(normal motion)
+   "/" 'jester/swiper-dwim)
+
+  (defun jester/self-insert-or-search-previous ()
+    "Search previous if nothing in the input area, otherwise self insert."
+    (interactive)
+    (if (save-excursion (beginning-of-line) (looking-at "$"))
+        (progn (call-interactively 'previous-complete-history-element)
+               (end-of-line))
+      (call-interactively 'self-insert-command)))
+  (general-define-key
+   :keymaps 'swiper-map
+   "/" 'jester/self-insert-or-search-previous
+   "M-/" (lambda! (insert "/"))))
+
+
+(use-package counsel
+  :demand t
+  :after swiper
   :config
   ;; --no-sort is much faster
   (setq counsel-fzf-cmd "fzf --no-sort --exact -f \"%s\""
@@ -45,24 +101,22 @@
    "p i" 'counsel-package
    ;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
    "x" 'counsel-M-x
-   "/" 'counsel-rg
+   "/" 'jester/counsel-rg-dwim
    "*" (lambda! (counsel-rg (jester/region-or-symbol)))
    "f r" 'counsel-recentf
    "f z" 'jester/fzf-somewhere
    "t s" 'counsel-load-theme
    "s j" 'counsel-imenu
-   "s b" 'swiper-all
-   "s B" (lambda! (swiper-all (jester/region-or-symbol)))
    "i u" 'counsel-unicode-char
    "i f" 'counsel-fonts
    "v s" 'counsel-set-variable)
 
   (general-define-key
    "M-x" 'counsel-M-x
-   "M-y" 'counsel-yank-pop
-   "C-s" 'swiper
-   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
-   "H-s" 'swiper-isearch)
+   "M-y" 'counsel-yank-pop)
+
+  (general-define-key
+   :states '(normal motion))
 
   ;; key bindings in ivy popup
   (general-define-key
@@ -81,6 +135,27 @@
    "C-g" #'keyboard-escape-quit
    "M-w" 'jester/ivy-copy-current-line
    "<C-return>" 'ivy-call)
+
+  (general-define-key
+   :keymaps 'counsel-ag-map
+   "/" 'jester/self-insert-or-search-previous
+   "M-/" (lambda! (insert "/")))
+
+  (defun jester/counsel-rg-dwim ()
+    "If region is not active, just start counsel-rg. If region contain 1 char, grab the symbol as counsel-rg input, otherwise use the region content.
+If counsel-rg started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
+    (interactive)
+    (if (region-active-p)
+        (minibuffer-with-setup-hook 'jester/maybe-run-ivy-hydra
+          (counsel-rg (regexp-quote (let* ((beg (region-beginning))
+                                           (end (region-end))
+                                           (text (progn (deactivate-mark)
+                                                        (buffer-substring-no-properties
+                                                         beg end))))
+                                      (if (= (- end beg) 1)
+                                          (thing-at-point 'symbol t)
+                                        text)))))
+      (counsel-rg)))
 
   (defun jester/fzf-somewhere (&optional start-dir)
     "Do `counsel-fzf' in directory START-DIR.
@@ -119,6 +194,16 @@ If called interactively, let the user select start directory first."
    [remap load-theme] 'counsel-load-theme
    [remap pop-to-mark-command] 'counsel-mark-ring
    [remap yank-pop] 'counsel-yank-pop))
+
+
+(use-package ivy-hydra
+  :demand t
+  :after ivy
+  :config
+  (defhydra+ hydra-ivy ()
+    ("a" nil)
+    ("<escape>" keyboard-escape-quit :exit t)
+    ("q" keyboard-escape-quit :exit t)))
 
 
 (use-package wgrep

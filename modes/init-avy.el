@@ -1,7 +1,7 @@
 (use-package avy
   :init
-  (setq avy-all-windows nil)
-  (jester/with-leader "j j" 'avy-goto-char-timer)
+  (setq avy-all-windows t)
+  ;; (jester/with-leader "j j" 'avy-goto-char-timer)
   :commands (avy-goto-char-timer))
 
 (use-package link-hint

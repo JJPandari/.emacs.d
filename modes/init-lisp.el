@@ -42,6 +42,9 @@
   "Run `check-parens' when the current buffer is saved."
   (add-hook 'after-save-hook #'check-parens nil t))
 
+(defvar jester-lispy-modes-hook (list) "hook to run for all lisp modes.")
+(defvar jester-elispy-modes-hook (list) "hook to run for all elisp modes.")
+
 (add-hook 'jester-lispy-modes-hook 'jester/enable-check-parens-on-save)
 (after-load 'aggressive-indent
   (add-hook! 'jester-lispy-modes-hook
@@ -85,11 +88,6 @@
   (add-hook hook 'jester/elisp-setup))
 
 
-(use-package cl-lib-highlight
-  :hook (lisp-mode . cl-lib-highlight-initialize))
-
-
-
 ;; Extras for theme editing
 
 (defvar jester/theme-mode-hook nil
@@ -144,7 +142,7 @@
   (interactive)
   (if (looking-back "^\s*")
       (insert ";; ")
-    (insert "; ")))
+    (insert " ; ")))
 
 (general-define-key
  :states '(emacs insert)
@@ -160,7 +158,7 @@
 
 
 (use-package lispyville
-  :bind (("M-r" . lispy-raise) ("H-r" . lispy-raise-some))
+  :bind (("H-r" . lispy-raise) ("M-r" . lispy-raise-some))
   :init
   (add-hook! (emacs-lisp-mode lisp-mode) (flycheck-mode -1))
   (add-hook! 'emacs-lisp-mode-hook (setq mode-name "ELisp"))
@@ -198,16 +196,29 @@
    ";" (general-predicate-dispatch 'evilnc-comment-operator
          (memq major-mode jester-lispy-modes) 'lispyville-comment-or-uncomment))
 
+  ;; change some operator/movements
+  (general-define-key
+   :states '(normal visual motion operator)
+   :keymaps jester-lispy-maps
+   "(" 'lispyville-previous-opening
+   ")" 'lispyville-next-closing
+   "[" 'jester/backward-paragraph
+   "]" 'jester/forward-paragraph)
+  ;; need to combine `backward-up-list' and `lispyville-backward-up-list' into 1 func before binding
+  ;; (jester/with-leader
+  ;;  "(" 'lispyville-backward-up-list
+  ;;  ")" 'lispyville-up-list)
+
   ;; some other lispy{,ville} keys
   (general-define-key
    :states '(emacs insert normal visual)
    :keymaps jester-lispy-maps
-   "M-u" 'lispyville-wrap-round)
+   "H-w" 'lispyville-wrap-round)
   ;; ugly fix
   (general-define-key
    :states '(emacs insert normal visual)
    :keymaps 'inferior-emacs-lisp-mode-map
-   "M-r" 'lispy-raise))
+   "H-r" 'lispy-raise))
 
 
 (use-package macrostep

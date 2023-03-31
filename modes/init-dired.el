@@ -30,4 +30,8 @@
   :hook ((dired-mode . all-the-icons-dired-mode)
          (ranger-mode . all-the-icons-dired-mode)))
 
+;; (use-package dirvish
+;;   )
+
+
 (provide 'init-dired)

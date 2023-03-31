@@ -61,7 +61,7 @@
 (jester/with-leader
  ;; TODO assign a key to "cargo check"?
  "c i" 'compile ; "compile it!"
- "c l" (lambda! (switch-to-buffer "*compilation*")) ; "compilation log"
+ "b c" (lambda! (switch-to-buffer "*compilation*"))
  "c r" 'jester/run-project
  "c t" 'jester/run-test)
 

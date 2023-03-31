@@ -41,6 +41,7 @@
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
+(require 'init-emacs-server) ; need to put this first to know which instance/server we are in, for initing other features
 
 (require 'init-frame-hooks)
 (require 'init-themes)
@@ -137,20 +138,6 @@
 (unless (eq system-type 'windows-nt)
   (maybe-require-package 'daemons))
 
-
-;;----------------------------------------------------------------------------
-;; Allow access from emacsclient
-;;----------------------------------------------------------------------------
-(require 'server)
-;; "unless running" is to avoid prompting error when starting a second Emacs
-;; when app opened as main editor, start default server
-(unless (server-running-p)
-  (server-start))
-;; when opened as maid, start server with name "maid"
-(when (string= (getenv "EMACS_SOCKET") "maid")
-  (unless (server-running-p "maid")
-    (setq server-name "maid")
-    (server-start)))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface

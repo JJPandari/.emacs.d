@@ -12,6 +12,13 @@
   :hook (youdao-dictionary-mode . evil-motion-state))
 
 
+(push (expand-file-name "popweb" jester-submodules-dir) load-path)
+(push (expand-file-name "popweb/extension/dict" jester-submodules-dir) load-path)
+(use-package popweb-dict
+  :ensure nil
+  :commands popweb-dict-bing-pointer)
+
+
 (use-package pyim
   :demand t
   :config

@@ -1,3 +1,4 @@
+;; TODO in ts & tsx file, electric "<" when last symbol starts with Upper case (probably type)
 (use-package web-mode
   :init
   (after-load 'flycheck
@@ -23,7 +24,12 @@
    web-mode-block-padding 0
    web-mode-enable-current-element-highlight nil
    web-mode-enable-auto-indentation nil
-   web-mode-comment-formats '(("java" . "//") ("javascript" . "//") ("typescript" . "//") ("php" . "//") ("css" . "/*")))
+   web-mode-comment-formats '(("java" . "//")
+                              ("javascript" . "//")
+                              ("typescript" . "//")
+                              ("jsx" . "//")
+                              ("php" . "//")
+                              ("css" . "/*")))
   (setq-default
    web-mode-markup-indent-offset 2
    web-mode-code-indent-offset 2
@@ -57,12 +63,15 @@
   (defun jester/web-mode-maybe-setup-tsx ()
     "Do something if it's a .tsx file."
     (when (string-equal (file-name-extension (buffer-name)) "tsx")
+      (lsp-diagnostics--enable)
+      (flycheck-add-next-checker 'javascript-eslint 'lsp)
       (lsp)
       ;; lsp sets checker to lsp, set it back
       ;; `flycheck-add-next-checker'
       (setq flycheck-checker 'javascript-eslint)
       (jester/make-default-evil-markers-for-js)
-      (setq-local emmet-expand-jsx-className? t)
+      (setq-local emmet-expand-jsx-className? t
+                  web-mode-auto-quote-style 3)
       (aggressive-indent-mode -1)))
 
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-xml)

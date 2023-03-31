@@ -1,6 +1,6 @@
 (use-package docker
   :init
-  (jester/with-leader "d d" 'docker)
+  ;; (jester/with-leader "d d" 'docker)
   :commands docker
   :config
   (fullframe docker-images tablist-quit)

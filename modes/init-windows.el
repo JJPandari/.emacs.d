@@ -164,6 +164,57 @@ bound to KEY in the leader sub-keymap."
   (eyebrowse-switch-to-window-config (+ jester/eyebrowse-random-number-seed 10000)))
 
 
+;; set to 0 so we jump a lot by default, making sure we land at middle of window when using marks
+(setq scroll-conservatively 0)
+;; use 999 when moving the cursor, so it stays at top/bottom of window, not being jumpy
+;; TODO not work
+(dolist (no-jumpy-command '(evil-next-line evil-previous-line next-line previous-line))
+  (advice-add no-jumpy-command :around 'jester/run-command-no-jumpy))
+(defun jester/run-command-no-jumpy (old-fun &rest args)
+  "Around advice. Run OLD-FUN (next-line, prev-line etc.) without jumping cursor to middle of screen."
+  (let ((scroll-conservatively 999))
+    (apply old-fun args)))
+
+(use-package smooth-scroll
+  :demand t
+  :config
+  (smooth-scroll-mode 1)
+  (setq smooth-scroll/hscroll-step-size 2
+        smooth-scroll/vscroll-step-size 2)
+  (general-define-key
+   :states '(normal motion)
+   "C-j" 'evil-scroll-line-down
+   "C-k" 'evil-scroll-line-up))
+
+(defhydra jester/hydra-scroll ()
+  "scroll"
+  ("d" evil-scroll-down "down")
+  ("u" evil-scroll-up "up"))
+(hydra-set-property 'jester/hydra-scroll :verbosity 0)
+
+(jester/with-leader
+ "d" 'jester/hydra-scroll/evil-scroll-down
+ "u" 'jester/hydra-scroll/evil-scroll-up)
+
+(defhydra jester/hydra-scroll-line ()
+  "scroll line"
+  ;; the function names ("up" "down") are the opposite from intuition
+  ;; scroll-up-1
+  ;; scroll-down-1
+  ("k" scroll-down-line "up")
+  ("j" scroll-up-line "down")
+  ;; put "f" in body so (SPC j f) actually runs find-function
+  ("f" find-function "(j f) find-function" :exit t)
+  ("K" find-function-on-key "(j K) find-function-on-key" :exit t)
+  ("v" find-variable "(j v) find-variable" :exit t)
+  ("w" which-key-show-major-mode "(k w) which-key-show-major-mode" :exit t))
+(hydra-set-property 'jester/hydra-scroll-line :verbosity 0)
+
+(jester/with-leader
+ "k" 'jester/hydra-scroll-line/scroll-down-line
+ "j" 'jester/hydra-scroll-line/scroll-up-line)
+
+
 (defun jester/kill-buffer-and-window ()
   "Kill current buffer and window."
   (interactive)

@@ -98,10 +98,10 @@
                          (propertize (concat " " (file-name-as-directory (file-name-nondirectory (directory-file-name full-dir))))
                                      'face 'dired-directory)))
 
-               "%1"
-               ;; git info
-               '(:eval (when vc-mode
-                         (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))
+               ;; "%1"
+               ;; ;; git info
+               ;; '(:eval (when vc-mode
+               ;;           (s-replace "Git" (propertize "" 'face '(:family "github-octicons")) vc-mode)))
 
                ;; minor modes
                ;; minor-mode-alist

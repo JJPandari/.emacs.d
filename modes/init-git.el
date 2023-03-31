@@ -6,16 +6,13 @@
   :hook (magit-post-refresh . diff-hl-magit-post-refresh)
   :config
   (jester/with-leader
-   "d n" 'diff-hl-next-hunk
-   "d p" 'diff-hl-previous-hunk))
+   "v n" 'diff-hl-next-hunk
+   "v p" 'diff-hl-previous-hunk))
 
 ;;----------------------------------------------------------------------------
 ;; major modes for git files.
 ;;----------------------------------------------------------------------------
-(use-package gitignore-mode
-  :mode "\\.gitignore\\'")
-(use-package gitconfig-mode
-  :mode "\\.gitconfig\\'")
+(use-package git-modes)
 
 ;;----------------------------------------------------------------------------
 ;; browse current file history
@@ -54,6 +51,7 @@
   :init
   (setq magit-diff-refine-hunk t
         magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+        magit-bury-buffer-function 'magit-restore-window-configuration
         magit-log-margin '(t "周%u %Y-%m-%d %H:%M:%S %z" magit-log-margin-width t 18))
   (jester/with-leader
    "g s" 'magit-status
@@ -72,9 +70,6 @@
   (general-define-key
    :keymaps 'transient-base-map
    "<escape>" 'transient-quit-one))
-
-(use-package evil-magit
-  :hook (magit-mode . evil-magit-init))
 
 ;; not using this for now: 1. only 1 hunk per file because magit no longer does the hunking 2. colors not fit theme well
 ;; (use-package magit-delta

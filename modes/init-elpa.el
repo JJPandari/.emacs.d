@@ -13,8 +13,8 @@
 (setq package-archives
       '(("melpa-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ("org-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-        ("gnu-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-        ("melpa-stable-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")))
+        ("gnu-elpa-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa-stable-tuna" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")))
 
 
 

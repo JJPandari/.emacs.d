@@ -5,6 +5,7 @@
    "m u" 'smerge-keep-upper
    "m l" 'smerge-keep-lower
    "m b" 'smerge-keep-all
-   "m n" 'smerge-next))
+   "m n" 'smerge-next
+   "m p" 'smerge-prev))
 
 (provide 'init-vc)

@@ -61,6 +61,7 @@
   (evil-want-visual-char-semi-exclusive t "don't include line feed in visual select")
   (evil-move-beyond-eol nil "stay at eol but no further")
   (evil-undo-system 'undo-tree "use undo-tree, evil")
+  (evil-want-keybinding nil) ; required by evil-collection
   :init
   :config
   (evil-mode 1)
@@ -215,8 +216,8 @@
   (general-define-key
    :states '(normal visual)
    "R" 'jester/evil-multiedit-match-all
-   "C-n" 'evil-multiedit-match-symbol-and-next
-   "C-p" 'evil-multiedit-match-symbol-and-prev)
+   "C-n" 'evil-multiedit-match-and-next
+   "C-p" 'evil-multiedit-match-and-prev)
   (defun jester/evil-multiedit-match-all ()
     "Match all occurences. with prefix arg, exclude those in comments or strings."
     (interactive)
@@ -233,14 +234,22 @@
               (evil-multiedit-toggle-or-restrict-region)))))))
   :config
   (general-define-key
-   :keymaps 'evil-multiedit-state-map
+   :keymaps 'evil-multiedit-mode-map
    "<return>" 'evil-multiedit-toggle-or-restrict-region
-   "<S-tab>" 'evil-multiedit-prev
-   "C-a" 'evil-multiedit--beginning-of-line
-   "C-e" 'evil-multiedit--end-of-line)
+   "<S-tab>" 'evil-multiedit-prev)
   ;; these have to be loaded before company so they don't shadow tab bindings in `company-active-map'
-  (define-key evil-multiedit-state-map (kbd "<tab>") 'evil-multiedit-next)
-  (define-key evil-multiedit-insert-state-map (kbd "<tab>") 'jester/yas-or-company-or-hippie)
+  (general-define-key
+   :states '(normal)
+   :keymaps 'evil-multiedit-mode-map
+   "<tab>" 'evil-multiedit-next
+   "C-n" 'evil-multiedit-match-and-next
+   "C-p" 'evil-multiedit-match-and-prev)
+  (general-define-key
+   :states '(insert emacs)
+   :keymaps 'evil-multiedit-mode-map
+   "<tab>" 'jester/yas-or-company-or-hippie
+   "C-a" 'evil-multiedit-beginning-of-line
+   "C-e" 'evil-multiedit-end-of-line)
   )
 
 
@@ -279,9 +288,20 @@
           evil-mc-custom-known-commands)))
 
 
-(use-package evil-ediff
-  :init
-  (evil-ediff-init))
+(use-package evil-collection
+  :demand t
+  :after evil
+  :config
+  ;; modes I don't want evil-collection to setup
+  (dolist (mode '(vterm (term term ansi-term multi-term)))
+    (setq evil-collection-mode-list (delete mode evil-collection-mode-list)))
+  (evil-collection-init)
+
+  ;; modify a bit after evil-collection setup
+  (general-define-key
+   :states '(normal)
+   :keymaps 'magit-mode-map
+   "/" 'jester/swiper-dwim))
 
 
 (use-package evil-numbers
@@ -342,7 +362,18 @@
   (evil-goggles-use-diff-refine-faces))
 
 
-;; TODO use more "y i remote o"; bind it to be "y i m"?
+(use-package evil-escape
+  :init
+  (setq evil-escape-excluded-states '(normal visual multiedit emacs motion)
+        evil-escape-excluded-major-modes '(neotree-mode treemacs-mode vterm-mode)
+        evil-escape-key-sequence "fd"
+        evil-escape-unordered-key-sequence t)
+  ;; (evil-define-key* '(insert replace visual operator) 'global "\C-g" #'evil-escape)
+  :demand t
+  :config
+  (evil-escape-mode))
+
+
 (push (expand-file-name "targets" jester-submodules-dir) load-path)
 (require 'targets)
 ;; not needed if `targets-setup'?
@@ -399,9 +430,6 @@
 ;;----------------------------------------------------------------------------
 (evil-set-initial-state 'debugger-mode 'motion)
 (evil-set-initial-state 'messages-buffer-mode 'motion)
-;; special mode is for viewing info, e.g. "q" is bound to quit,
-;; but it's normal state there so we lose the bindings. Use motion state.
-(evil-set-initial-state 'special-mode 'motion)
 
 (advice-add
  'yas-new-snippet :after
@@ -417,15 +445,12 @@
 ;; With-leader keys...
 ;;----------------------------------------------------------------------------
 (jester/with-leader
- "u" 'universal-argument
  "f i" (lambda! (find-file (expand-file-name "init.el" user-emacs-directory)))
  "f a" 'find-alternate-file
- "j f" 'find-function
- "j k" 'find-function-on-key
- "j v" 'find-variable
  "h f" 'describe-function
  "h F" 'list-faces-display
  "h v" 'describe-variable
+ "h s" 'describe-symbol
  "h c" 'describe-char
  "h k" 'describe-key
  "h p" 'describe-package
@@ -439,7 +464,7 @@
  "q q" 'save-buffers-kill-terminal
  "t o" 'just-one-space
  "t a" 'aggressive-indent-mode
- ;; NOTE: "a" "d" "'" are still there for the taking
+ ;; NOTE: "a" "'" are still there for the taking
  "," 'evil-indent
  "." 'jester/evil-portal-set-portal-location
  ">" 'jester/evil-portal-clear-portal-location
@@ -459,10 +484,12 @@
 (eval `(jester/major-leader-def ,jester-mode-leader-emacs (general-key "C-c C-c")))
 
 ;;----------------------------------------------------------------------------
-;; Other evil keys...
+;; other evil keys / keys for specific evil states
 ;;----------------------------------------------------------------------------
 (general-define-key
  :states '(normal)
+ "r" 'evil-redo
+ "t" 'evil-replace
  "Q" "@q"
  "gJ" 'jester/evil-join-no-whitespace
  "<" nil
@@ -512,9 +539,6 @@
 
 (general-define-key
  :states '(normal motion visual)
- "C-u" 'evil-scroll-up
- "C-j" 'evil-scroll-line-down
- "C-k" 'evil-scroll-line-up
  "'" 'evil-goto-mark)
 
 (general-define-key
@@ -535,6 +559,8 @@
  "C-k" 'kill-line
  "C-w" 'evil-delete-backward-word
  "C-v" 'yank
+ ;; leave C-r for commands similar to backward-search
+ "C-y" 'evil-paste-from-register
  "M-d" 'backward-word
  "M-b" 'kill-word
  "H-x" 'kill-region)
@@ -579,8 +605,21 @@
  "z p" 'jester/evil-paste-after--from-copy-register
  "z P" 'jester/evil-paste-before--from-copy-register)
 
+
 (setq isearch-lazy-count t)
 ;; TODO use symbol-overlay ... or?
+;; (defun jester/evil-search-region-or-symbol-forward (count forward)
+;;   "Search the region."
+;;   (isearch-forward nil ))
+
+;; (evil-define-command jester/evil-search-under-point-forward (&optional count)
+;;   "Search symbol under point forward."
+;;   :repeat nil
+;;   (interactive "p")
+;;   (jester/evil-search-region-or-symbol-forward (or count 1) t))
+
+
+
 (evil-define-command jester/evil-normal-search-forward (&optional count)
   "Search symbol under point forward."
   :repeat nil
@@ -642,6 +681,18 @@
       (setq jester-evil-portal-location 0))))
 (dolist (cmd '(evil-yank evil-delete lispyville-yank lispyville-delete))
   (advice-add cmd :after 'jester/evil-portal-jump-advice))
+
+(defun jester/goto-line-beginning-or-end ()
+  "Go to line text beginning, line end, line very beginning, in turn."
+  (interactive)
+  (cl-block 'my-return
+    (when (and (looking-at "[^\s]") (looking-back "^\s+")) (evil-end-of-line) (cl-return-from 'my-return)) ; at beg of line text
+    (when (looking-at ".$") (evil-beginning-of-line) (cl-return-from 'my-return)) ; at end of line
+    (when (bolp) (evil-first-non-blank) (cl-return-from 'my-return)) ; at very beg of line
+    (evil-first-non-blank)))
+(general-define-key
+ :states '(normal visual operator)
+ "0" 'jester/goto-line-beginning-or-end)
 
 ;; TODO try citre-read
 

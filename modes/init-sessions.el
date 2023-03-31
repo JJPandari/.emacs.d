@@ -76,7 +76,8 @@
         (shell-command-history    . 50)
         tags-file-name
         tags-table-list
-        evil-markers-alist))
+        evil-markers-alist
+        jester/eyebrowse-random-number-seed))
 
 (setq desktop-locals-to-save
       '(evil-markers-alist

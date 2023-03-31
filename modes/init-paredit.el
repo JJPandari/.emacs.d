@@ -29,7 +29,7 @@
    )
   (general-define-key
    :states '(emacs insert normal visual)
-   "M-u" (lambda! (awesome-pair-wrap-round-pair)))
+   "H-w" (lambda! (awesome-pair-wrap-round-pair)))
 
   ;; TODO append \n to make it evil style
   (defun jester/semantic-kill-maybe-whole-line ()
@@ -78,8 +78,8 @@
    :states '(normal)
    :keymaps 'prog-mode-map
    ;; manipulating commands
-   "<" 'puni-slurp-forward
-   ">" 'puni-barf-forward
+   ">" 'puni-slurp-forward
+   "<" 'puni-barf-forward
    "M->" 'puni-slurp-backward
    "M-<" 'puni-barf-backward))
 

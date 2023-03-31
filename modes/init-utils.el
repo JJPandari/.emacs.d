@@ -73,6 +73,16 @@
                        beg end))
                   (thing-at-point 'symbol t))))
 
+(defun jester/region-or-empty ()
+  "Get active region or return empthy string."
+  (regexp-quote (if (region-active-p)
+                    (let ((beg (region-beginning))
+                          (end (region-end)))
+                      (deactivate-mark)
+                      (buffer-substring-no-properties
+                       beg end))
+                  "")))
+
 ;;----------------------------------------------------------------------------
 ;; Merge imenus.
 ;;----------------------------------------------------------------------------

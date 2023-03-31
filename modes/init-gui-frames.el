@@ -38,6 +38,8 @@
 
 (setq frame-title-format "看，灰机！ ✈✈✈✈✈✈✈✈✈"
       frame-resize-pixelwise t)
+(when (and (boundp 'server-name) (string= server-name "maid"))
+  (setq frame-title-format "maid"))
 
 ;; Non-zero values for `line-spacing' can mess up ansi-term and co,
 ;; so we zero it explicitly in those cases.

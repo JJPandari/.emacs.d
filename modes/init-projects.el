@@ -34,6 +34,7 @@
      (lambda (project-dir) (let ((default-directory project-dir))
                         (magit-status)))
      "magit"))
+  ;; TODO pre select the same file name as current buffer
   (defun jester/select-project-and-open-file ()
     "Select a project with projectile, and open a file."
     (interactive)

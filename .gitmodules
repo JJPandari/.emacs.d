@@ -19,3 +19,6 @@
 [submodule "company-anywhere"]
 	path = extensions/company-anywhere
 	url = https://github.com/zk-phi/company-anywhere.git
+[submodule "popweb"]
+	path = extensions/popweb
+	url = https://github.com/manateelazycat/popweb.git

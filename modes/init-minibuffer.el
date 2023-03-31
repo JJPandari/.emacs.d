@@ -11,6 +11,7 @@
  "C-d" #'backward-char
  "C-b" #'delete-char
  "C-v" #'yank
+ "C-y" #'evil-paste-from-register
  "C-S-k" 'jester/kill-back-to-indentation
  "C-r" 'counsel-minibuffer-history
  "H-x" 'kill-region
