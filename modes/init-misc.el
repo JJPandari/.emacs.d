@@ -49,6 +49,14 @@
 
 ;; (zone-when-idle 300)
 
+
+(use-package no-littering
+  :demand t
+  :config
+  (after-load 'recentf
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory)))
+
 ;; TODO remember layout when ediff
 
 

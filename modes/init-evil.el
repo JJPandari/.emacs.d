@@ -60,7 +60,6 @@
   (evil-want-Y-yank-to-eol t "Y yanks to eol, not whole line")
   (evil-want-visual-char-semi-exclusive t "don't include line feed in visual select")
   (evil-move-beyond-eol nil "stay at eol but no further")
-  (evil-undo-system 'undo-tree "use undo-tree, evil")
   (evil-want-keybinding nil) ; required by evil-collection
   :init
   :config
@@ -428,6 +427,10 @@
 ;;----------------------------------------------------------------------------
 ;; Set initial states for modes.
 ;;----------------------------------------------------------------------------
+;; TODO what happened to `evil-motion-state-modes'???
+(evil-set-initial-state 'help-mode 'motion)
+(evil-set-initial-state 'Info-mode 'motion)
+
 (evil-set-initial-state 'debugger-mode 'motion)
 (evil-set-initial-state 'messages-buffer-mode 'motion)
 
@@ -686,7 +689,7 @@
   "Go to line text beginning, line end, line very beginning, in turn."
   (interactive)
   (cl-block 'my-return
-    (when (and (looking-at "[^\s]") (looking-back "^\s+")) (evil-end-of-line) (cl-return-from 'my-return)) ; at beg of line text
+    (when (and (looking-at "[^\s]") (looking-back "^\s*")) (evil-end-of-line) (cl-return-from 'my-return)) ; at beg of line text
     (when (looking-at ".$") (evil-beginning-of-line) (cl-return-from 'my-return)) ; at end of line
     (when (bolp) (evil-first-non-blank) (cl-return-from 'my-return)) ; at very beg of line
     (evil-first-non-blank)))

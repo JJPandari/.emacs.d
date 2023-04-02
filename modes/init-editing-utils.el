@@ -46,11 +46,20 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-
-(use-package undo-tree
+;;----------------------------------------------------------------------------
+;; undo
+;;----------------------------------------------------------------------------
+(use-package undo-fu
   :demand t
   :config
-  (global-undo-tree-mode))
+  (customize-set-variable 'evil-undo-system 'undo-fu))
+(use-package undo-fu-session
+  :demand t
+  :after undo-fu
+  :config
+  (undo-fu-session-global-mode))
+
+(use-package vundo)
 
 
 (use-package expand-region
@@ -102,6 +111,13 @@
          (c-mode . electric-operator-mode)
          (php-mode . electric-operator-mode)))
 
+
+(use-package eldoc-box
+  :demand t
+  :after prog-mode
+  :config
+  (add-hook 'prog-mode-hook 'eldoc-box-hover-mode))
+
 ;;----------------------------------------------------------------------------
 ;; smart ; key
 ;;----------------------------------------------------------------------------
@@ -129,6 +145,9 @@
 ;;  ";" 'jester/insert-\;or-:
 ;;  ":" 'jester/toggle-char-before-point-\;-or-:)
 
+;;****************************************************************************
+;; functions
+;;****************************************************************************
 ;;----------------------------------------------------------------------------
 ;; kill back to indentation
 ;;----------------------------------------------------------------------------

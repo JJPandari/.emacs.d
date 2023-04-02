@@ -24,6 +24,7 @@ cookies
 site-lisp/package/
 /swank
 /.mc-lists.el
+/etc
 /var
 /.sqli_history
 /frame-restore-parameters
