@@ -210,22 +210,24 @@ If called interactively, let the user select start directory first."
   :commands ivy-wgrep-change-to-wgrep-mode)
 
 
-;; (use-package ivy-posframe
-;;   :demand t
-;;   :after ivy
-;;   :if window-system
-;;   :config
-;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display)))
-;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
-;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-left)))
-;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-bottom-left)))
-;;   ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center)))
-;;   (setq ivy-posframe-hide-minibuffer t)
-;;   (setq ivy-posframe-parameters
-;;         `((background-color . ,(face-attribute 'default :background))
-;;           (foreground-color . ,(face-attribute 'default :foreground))))
-;;   (ivy-posframe-mode 1))
+(use-package ivy-posframe
+  :demand t
+  :after ivy
+  :if window-system
+  :config
+  (setq ivy-posframe-hide-minibuffer t)
+  (setq ivy-posframe-parameters
+        `((background-color . ,(face-attribute 'default :background))
+          (foreground-color . ,(face-attribute 'default :foreground))
+          (left-fringe . 8)))
+  (set-face-attribute 'ivy-posframe-cursor nil :foreground "RoyalBlue")
+  (setq ivy-posframe-style 'frame-bottom-left
+        ivy-posframe-display-functions-alist
+        '((swiper          . ivy-display-function-fallback)
+          (swiper-all      . ivy-display-function-fallback)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (t               . ivy-posframe-display)))
+  (ivy-posframe-mode 1))
 
 
 (use-package ivy-rich

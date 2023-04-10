@@ -80,7 +80,7 @@
    evil-motion-state-cursor '("plum3" box)
    evil-visual-state-cursor '("gray" (hbar . 2))
    evil-insert-state-cursor '("chartreuse3" (bar . 2))
-   evil-emacs-state-cursor '("SkyBlue2" box)
+   evil-emacs-state-cursor '("RoyalBlue" bar)
    evil-operator-state-cursor '("chocolate" box)
    evil-replace-state-cursor '("chocolate" (hbar . 2))
    evil-multiedit-state-cursor '("MediumPurple1" box)
@@ -233,14 +233,11 @@
               (evil-multiedit-toggle-or-restrict-region)))))))
   :config
   (general-define-key
-   :keymaps 'evil-multiedit-mode-map
-   "<return>" 'evil-multiedit-toggle-or-restrict-region
-   "<S-tab>" 'evil-multiedit-prev)
-  ;; these have to be loaded before company so they don't shadow tab bindings in `company-active-map'
-  (general-define-key
    :states '(normal)
    :keymaps 'evil-multiedit-mode-map
+   "<return>" 'evil-multiedit-toggle-or-restrict-region
    "<tab>" 'evil-multiedit-next
+   "<S-tab>" 'evil-multiedit-prev
    "C-n" 'evil-multiedit-match-and-next
    "C-p" 'evil-multiedit-match-and-prev)
   (general-define-key
@@ -256,14 +253,14 @@
   :init
   ;; don't bind any keys
   (setq evil-mc-key-map (make-sparse-keymap))
-  (general-define-key
-   :states '(normal visual)
-   "K" 'evil-mc-make-all-cursors
-   "M-n" 'evil-mc-make-and-goto-next-match
-   "M-p" 'evil-mc-make-and-goto-prev-match
-   "M-j" 'evil-mc-make-cursor-move-next-line
-   "M-k" 'evil-mc-make-cursor-move-prev-line
-   "<M-return>" 'jester/evil-mc-toggle-cursors-pause)
+  ;; (general-define-key
+  ;;  :states '(normal visual)
+  ;;  "K" 'evil-mc-make-all-cursors
+  ;;  "M-n" 'evil-mc-make-and-goto-next-match
+  ;;  "M-p" 'evil-mc-make-and-goto-prev-match
+  ;;  "M-j" 'evil-mc-make-cursor-move-next-line
+  ;;  "M-k" 'evil-mc-make-cursor-move-prev-line
+  ;;  "<M-return>" 'jester/evil-mc-toggle-cursors-pause)
   (defun jester/evil-mc-toggle-cursors-pause ()
     "Toggle between pausing or resuming all cursors."
     (interactive)
@@ -287,19 +284,65 @@
           evil-mc-custom-known-commands)))
 
 
+;; https://github.com/abo-abo/hydra/wiki/multiple-cursors
+(use-package multiple-cursors
+  :init
+  (general-define-key
+   :states '(emacs)
+   "M-j" 'mc/mark-next-like-this
+   "M-k" 'mc/mark-previous-like-this
+   "M-n" 'mc/mark-next-like-this-symbol
+   "M-p" 'mc/mark-previous-like-this-symbol)
+  ;; TODO not work
+  (general-define-key
+   :states '(emacs)
+   :keymaps 'mc/keymap
+   "<escape>" 'mc/keyboard-quit)
+  (general-define-key :keymaps 'mc/keymap "<return>" nil)
+
+  (defhydra hydra-multiple-cursors (:hint nil :exit nil)
+    "
+ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
+------------------------------------------------------------------
+ [_p_]   Next     [_n_]   Next     [_l_] Edit lines  [_0_] Insert numbers
+ [_P_]   Skip     [_N_]   Skip     [_a_] Mark all    [_A_] Insert letters
+ [_M-p_] Unmark   [_M-n_] Unmark   [_s_] Search      [_q_] Quit
+ [_|_] Align with input CHAR       [Click] Cursor at point"
+    ("l" mc/edit-lines :exit t)
+    ("a" mc/mark-all-like-this :exit t)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("M-n" mc/unmark-next-like-this)
+    ("p" mc/mark-previous-like-this)
+    ("P" mc/skip-to-previous-like-this)
+    ("M-p" mc/unmark-previous-like-this)
+    ("|" mc/vertical-align)
+    ("s" mc/mark-all-in-region-regexp :exit t)
+    ("0" mc/insert-numbers :exit t)
+    ("A" mc/insert-letters :exit t)
+    ("<mouse-1>" mc/add-cursor-on-click)
+    ;; Help with click recognition in this hydra
+    ("<down-mouse-1>" ignore)
+    ("<drag-mouse-1>" ignore)
+    ("q" nil)))
+
+
 (use-package evil-collection
   :demand t
   :after evil
   :config
-  ;; modes I don't want evil-collection to setup
-  (dolist (mode '(vterm (term term ansi-term multi-term)))
+  ;; modes I don't want evil-collection to touch
+  (dolist (mode '(company compile comint help info ivy vterm (term term ansi-term multi-term)))
     (setq evil-collection-mode-list (delete mode evil-collection-mode-list)))
+  (setq evil-collection-want-unimpaired-p nil
+        evil-collection-want-find-usages-bindings nil)
   (evil-collection-init)
 
   ;; modify a bit after evil-collection setup
+  ;; TODO not overridding evil-collection?
   (general-define-key
    :states '(normal)
-   :keymaps 'magit-mode-map
+   :keymaps '(magit-mode-map magit-diff-mode-map magit-log-mode-map)
    "/" 'jester/swiper-dwim))
 
 
@@ -427,10 +470,6 @@
 ;;----------------------------------------------------------------------------
 ;; Set initial states for modes.
 ;;----------------------------------------------------------------------------
-;; TODO what happened to `evil-motion-state-modes'???
-(evil-set-initial-state 'help-mode 'motion)
-(evil-set-initial-state 'Info-mode 'motion)
-
 (evil-set-initial-state 'debugger-mode 'motion)
 (evil-set-initial-state 'messages-buffer-mode 'motion)
 
@@ -495,6 +534,7 @@
  "t" 'evil-replace
  "Q" "@q"
  "gJ" 'jester/evil-join-no-whitespace
+ "z i" 'evil-emacs-state
  "<" nil
  ">" nil)
 
@@ -550,7 +590,7 @@
  "C-e" 'evil-end-of-line)
 
 (general-define-key
- :states '(insert emacs)
+ :states '(insert)
  "M-v" 'evil-scroll-down
  "M-c" 'evil-scroll-up
  "C-b" 'delete-forward-char
@@ -561,12 +601,34 @@
  "C-e" 'move-end-of-line
  "C-k" 'kill-line
  "C-w" 'evil-delete-backward-word
+ "C-x" 'kill-region
  "C-v" 'yank
  ;; leave C-r for commands similar to backward-search
  "C-y" 'evil-paste-from-register
  "M-d" 'backward-word
  "M-b" 'kill-word
- "H-x" 'kill-region)
+ "H-x" ctl-x-map)
+
+(general-define-key
+ :states '(emacs)
+ "M-v" 'evil-scroll-down
+ "M-c" 'evil-scroll-up
+ "C-b" 'delete-forward-char
+ "C-d" 'backward-char
+ "C-n" 'next-line
+ "C-p" 'previous-line
+ "C-a" 'beginning-of-line-text
+ "C-e" 'move-end-of-line
+ "C-k" 'kill-line
+ "C-w" 'backward-kill-word
+ "C-x" 'kill-region
+ "C-v" 'yank
+ ;; leave C-r for commands similar to backward-search
+ ;; "C-y" 'evil-paste-from-register
+ "M-d" 'backward-word
+ "M-b" 'kill-word
+ "H-x" ctl-x-map
+ "<escape>" 'evil-exit-emacs-state)
 
 ;;----------------------------------------------------------------------------
 ;; Not-so-evil keys...
@@ -577,6 +639,8 @@
  "C-h c" 'describe-char
  "C-h K" 'find-function-on-key
  ;; copy insert state bindings here, so keys do the same when evil disabled
+ "M-v" 'evil-scroll-down
+ "M-c" 'evil-scroll-up
  "C-b" 'delete-forward-char
  "C-d" 'backward-char
  "C-n" 'next-line
@@ -584,11 +648,15 @@
  "C-a" 'beginning-of-line-text
  "C-e" 'move-end-of-line
  "C-k" 'kill-line
- "C-w" 'evil-delete-backward-word
+ "C-w" 'backward-kill-word
+ "C-x" 'kill-region
  "C-v" 'yank
+ ;; leave C-r for commands similar to backward-search
+ ;; "C-y" 'evil-paste-from-register
  "M-d" 'backward-word
  "M-b" 'kill-word
- "H-x" 'kill-region)
+ "H-x" ctl-x-map
+ "<escape>" 'keyboard-quit)
 
 ;;----------------------------------------------------------------------------
 ;; Some functions.
@@ -685,21 +753,21 @@
 (dolist (cmd '(evil-yank evil-delete lispyville-yank lispyville-delete))
   (advice-add cmd :after 'jester/evil-portal-jump-advice))
 
-(defun jester/goto-line-beginning-or-end ()
+(defun jester/cycle-line-beginning-end ()
   "Go to line text beginning, line end, line very beginning, in turn."
   (interactive)
   (cl-block 'my-return
     (when (and (looking-at "[^\s]") (looking-back "^\s*")) (evil-end-of-line) (cl-return-from 'my-return)) ; at beg of line text
-    (when (looking-at ".$") (evil-beginning-of-line) (cl-return-from 'my-return)) ; at end of line
+    (when (looking-at (if evil-move-beyond-eol "$" ".$")) (evil-beginning-of-line) (cl-return-from 'my-return)) ; at end of line
     (when (bolp) (evil-first-non-blank) (cl-return-from 'my-return)) ; at very beg of line
     (evil-first-non-blank)))
 (general-define-key
  :states '(normal visual operator)
- "0" 'jester/goto-line-beginning-or-end)
+ "0" 'jester/cycle-line-beginning-end)
 
-;; TODO try citre-read
+;; TODO try citre-read or clue
 
-;; TODO "vio" vs "yio": make visual "auto line-wise"?
+;; TODO show bookmark name in fringe
 
 
 (provide 'init-evil)

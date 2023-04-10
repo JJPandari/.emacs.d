@@ -50,6 +50,11 @@
 ;; undo
 ;;----------------------------------------------------------------------------
 (use-package undo-fu
+  :init
+  (general-define-key
+   :states '(emacs)
+   "C-/" 'undo-fu-only-undo
+   "C-?" 'undo-fu-only-redo)
   :demand t
   :config
   (customize-set-variable 'evil-undo-system 'undo-fu))
@@ -59,7 +64,11 @@
   :config
   (undo-fu-session-global-mode))
 
-(use-package vundo)
+(use-package vundo
+  :init
+  (jester/with-leader "v u" 'vundo)
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 
 (use-package expand-region

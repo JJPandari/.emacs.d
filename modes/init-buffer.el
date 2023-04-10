@@ -3,6 +3,7 @@
  "b i" 'ibuffer
  "b k" 'jester/kill-this-buffer
  "b r" 'rename-buffer
+ "b q" 'bury-buffer
  "b h" (lambda! (switch-to-buffer (help-buffer)))
  "b m" (lambda! (switch-to-buffer (messages-buffer)))
  "b s" 'jester/switch-to-scratch-buffer

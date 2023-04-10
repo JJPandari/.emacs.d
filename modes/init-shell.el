@@ -46,7 +46,7 @@
   (dolist (key '("<tab>"
                  "C-f" "C-d" "C-a" "C-e" "C-n" "C-p"
                  "C-b" "C-w" "C-k"
-                 "C-r" "C-t" "C-v" "C-/"
+                 "C-r" "C-t" "C-/"
                  "M-c" "M-f" "M-d" "M-b"))
     (general-define-key
      :states '(insert emacs)
@@ -62,6 +62,7 @@
    :keymaps 'vterm-mode-map
    "C-h" nil
    "C-c" 'vterm--self-insert
+   "C-v" 'vterm-yank
    "C-s" 'swiper)
 
   (general-define-key

@@ -163,17 +163,25 @@ bound to KEY in the leader sub-keymap."
   (cl-incf jester/eyebrowse-random-number-seed)
   (eyebrowse-switch-to-window-config (+ jester/eyebrowse-random-number-seed 10000)))
 
-
-;; set to 0 so we jump a lot by default, making sure we land at middle of window when using marks
-(setq scroll-conservatively 0)
-;; use 999 when moving the cursor, so it stays at top/bottom of window, not being jumpy
-;; TODO not work
-(dolist (no-jumpy-command '(evil-next-line evil-previous-line next-line previous-line))
-  (advice-add no-jumpy-command :around 'jester/run-command-no-jumpy))
-(defun jester/run-command-no-jumpy (old-fun &rest args)
-  "Around advice. Run OLD-FUN (next-line, prev-line etc.) without jumping cursor to middle of screen."
-  (let ((scroll-conservatively 999))
-    (apply old-fun args)))
+;;----------------------------------------------------------------------------
+;; scroll smoothly, press scroll easily, scroll to center sometimes...
+;;----------------------------------------------------------------------------
+(setq scroll-conservatively 999
+      scroll-margin 0
+      scroll-preserve-screen-position t)
+;; when `scroll-conservatively' is 0, recenter happens automatically, not when 999
+(add-hook 'counsel-grep-post-action-hook 'recenter)
+(defun jester/recenter (&rest _)
+  "Wrapper for `recenter', taking whatever arguments and ignore them."
+  (recenter))
+(dolist (command '(xref-pop-marker-stack
+                   evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse
+                   evil-search-next evil-search-previous
+                   evilmi-jump-items
+                   symbol-overlay-jump-next symbol-overlay-jump-prev
+                   flycheck-next-error flycheck-previous-error
+                   magit-diff-visit-file))
+  (advice-add command :after 'jester/recenter))
 
 (use-package smooth-scroll
   :demand t

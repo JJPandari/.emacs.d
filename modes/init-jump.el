@@ -1,6 +1,11 @@
 ;;----------------------------------------------------------------------------
 ;; bookmark
 ;;----------------------------------------------------------------------------
+;; (defun jester/bookmark-set-auto-name ()
+;;   "Do `bookmark-set', if region is active, use the region as bookmark name."
+;;   (interactive)
+;;   )
+;; TODO use the macro for "/"
 (jester/with-leader
  "b n" 'bookmark-set
  "b j" 'bookmark-jump)
