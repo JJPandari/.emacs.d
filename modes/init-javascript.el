@@ -88,7 +88,7 @@
                       ((t (:inherit web-mode-html-tag-face)))))
   :mode "\\.jsx\\'"
   :config
-  (evil-define-key 'insert rjsx-mode-map (kbd "C-b") #'rjsx-delete-creates-full-tag)
+  (evil-define-key 'insert rjsx-mode-map (kbd "S-<backspace>") #'rjsx-delete-creates-full-tag)
   (modify-syntax-entry ?_ "w" rjsx-mode-syntax-table))
 
 
@@ -113,9 +113,9 @@
 
 (use-package eacl
   :init
-  (general-define-key
-   "H-," 'eacl-complete-line
-   "H-." 'eacl-complete-multiline)
+  ;; (general-define-key
+  ;;  "H-," 'eacl-complete-line
+  ;;  "H-." 'eacl-complete-multiline)
   :commands (eacl-complete-line eacl-complete-multiline))
 
 

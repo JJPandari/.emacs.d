@@ -25,11 +25,11 @@
    ;; "\"" 'awesome-pair-double-quote
    "SPC" 'awesome-pair-space
    ;; "<backspace>" 'awesome-pair-backward-delete
-   ;; "C-b" 'awesome-pair-forward-delete
+   ;; "S-<backspace>" 'awesome-pair-forward-delete
    )
   (general-define-key
    :states '(emacs insert normal visual)
-   "H-w" (lambda! (awesome-pair-wrap-round-pair)))
+   "H-a" (lambda! (awesome-pair-wrap-round-pair)))
 
   ;; TODO append \n to make it evil style
   (defun jester/semantic-kill-maybe-whole-line ()
@@ -42,9 +42,9 @@
   (general-define-key
    :states '(normal)
    "d" (general-key-dispatch 'evil-delete
-         "L" 'jester/semantic-kill-maybe-whole-line)
+         "l" 'jester/semantic-kill-maybe-whole-line)
    "c" (general-key-dispatch 'evil-change
-         "L" (lambda! (awesome-pair-kill) (evil-insert-state))))
+         "l" (lambda! (awesome-pair-kill) (evil-insert-state))))
   ;; binding to normal state implicitly binds to visual state, gotta fix it.
   (general-define-key
    :states '(visual)

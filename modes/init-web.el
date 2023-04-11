@@ -87,7 +87,7 @@
   (general-define-key
    :states '(insert emacs)
    :keymaps '(web-mode-map js2-mode-map typescript-mode-map css-mode-map sass-mode-map)
-   "C-l" 'emmet-expand-line))
+   "H-e" 'emmet-expand-line))
 
 ;;----------------------------------------------------------------------------
 ;; evil text object for html attribute

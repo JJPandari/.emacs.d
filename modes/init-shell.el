@@ -5,14 +5,14 @@
  :states '(insert emacs)
  :keymaps 'comint-mode-map
  "C-d" 'backward-char
- "C-b" 'comint-delchar-or-maybe-eof
- "C-r" 'comint-history-isearch-backward
+ "S-<backspace>" 'comint-delchar-or-maybe-eof
+ "H-r" 'comint-history-isearch-backward
  "C-l" 'comint-clear-buffer)
 
 (general-define-key
  :states '(insert emacs)
  :keymaps 'shell-mode-map
- "C-r" 'counsel-shell-history)
+ "H-r" 'counsel-shell-history)
 
 (defface jester-shell-face '((t :family "JetBrains Mono" :height 140))
   "Face for shell buffers. Use a different font and smaller font size.")
@@ -42,10 +42,10 @@
   :hook (vterm-mode . evil-insert-state)
   :config
   ;; vterm-mode-map won't work because evil-insert-state-map takes precedence
-  ;; copy them to insert-state|vterm-mode map
+  ;; copy them to insert-state>vterm-mode map
   (dolist (key '("<tab>"
                  "C-f" "C-d" "C-a" "C-e" "C-n" "C-p"
-                 "C-b" "C-w" "C-k"
+                 "S-<backspace>" "C-w" "C-k"
                  "C-r" "C-t" "C-/"
                  "M-c" "M-f" "M-d" "M-b"))
     (general-define-key
@@ -62,8 +62,19 @@
    :keymaps 'vterm-mode-map
    "C-h" nil
    "C-c" 'vterm--self-insert
-   "C-v" 'vterm-yank
-   "C-s" 'swiper)
+   "C-," (lambda! (vterm--backward-char))
+   "C-." (lambda! (vterm--forward-char))
+   "<C-i>" 'vterm-beginning-of-line
+   "C-o" 'vterm-end-of-line
+   "S-<backspace>" 'vterm-send-delete
+   "H-w" (lambda! (vterm-send "C-w"))
+   "H-v" 'vterm-yank
+   "H-s" 'swiper
+   "H-r" (lambda! (vterm-send "C-r"))
+   "<escape>" 'evil-motion-state
+   "M-." (lambda! (vterm-send "M-f"))
+   "M-," (lambda! (vterm-send "M-d"))
+   "M-<backspace>" (lambda! (vterm-send "M-b")))
 
   (general-define-key
    :states '(normal motion)

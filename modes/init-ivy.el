@@ -21,6 +21,7 @@
    "g r" 'ivy-occur-revert-buffer
    "<return>" 'ivy-occur-press-and-switch
    "f" 'ivy-occur-press)
+  (evil-set-initial-state 'ivy-occur-mode 'motion)
   (defun jester/ivy-copy-current-line ()
     "Copy current line in ivy."
     (interactive)
@@ -38,9 +39,9 @@
    "s B" (lambda! (swiper-all (jester/region-or-symbol))))
 
   (general-define-key
-   "C-s" 'swiper
-   "C-S-s" (lambda! (swiper (jester/region-or-symbol)))
-   "H-s" 'swiper-isearch)
+   "H-s" 'swiper
+   "H-S-s" (lambda! (swiper (jester/region-or-symbol)))
+   "C-s" 'swiper-isearch)
 
   (defun jester/maybe-run-ivy-hydra ()
     "Run `hydra-ivy/body' if there is any content in minibuffer."
@@ -126,14 +127,19 @@ If swiper started with any input, enable ivy-hydra automatically. (so I can h/j/
    "M-d" #'backward-word
    "M-b" #'kill-word
    "C-w" #'backward-kill-word
-   "C-d" #'backward-char
-   "C-b" #'delete-char
-   "C-v" 'yank
-   "C-S-k" 'jester/kill-back-to-indentation
+   "C-," #'backward-char
+   "C-." #'forward-char
+   "<C-i>" 'beginning-of-line-text
+   "C-o" 'move-end-of-line
+   "S-<backspace>" 'delete-forward-char
+   "H-w" 'evil-delete-backward-word
    "H-x" 'kill-region
+   "H-c" 'jester/ivy-copy-current-line
+   "H-v" 'yank
+   "C-S-k" 'jester/kill-back-to-indentation
+   "H-r" 'ivy-reverse-i-search
    "<escape>" #'keyboard-escape-quit
    "C-g" #'keyboard-escape-quit
-   "M-w" 'jester/ivy-copy-current-line
    "<C-return>" 'ivy-call)
 
   (general-define-key

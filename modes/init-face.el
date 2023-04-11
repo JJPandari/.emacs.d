@@ -33,6 +33,8 @@
 
 (use-package all-the-icons
   :demand t)
+;; (use-package nerd-icons
+;;   :demand t)
 
 ;;----------------------------------------------------------------------------
 ;; highlight region with symbol-overlay

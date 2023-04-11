@@ -12,7 +12,7 @@
    "<return>" #'yas-next-field
    "C-g" 'jester/abort-company-or-yas
    "C-d" nil
-   "C-b" 'yas-skip-and-clear-or-delete-char)
+   "S-<backspace>" 'yas-skip-and-clear-or-delete-char)
 
   (jester/with-leader
    "s v" 'yas-visit-snippet-file

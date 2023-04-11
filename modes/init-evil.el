@@ -586,48 +586,52 @@
 
 (general-define-key
  :states '(normal visual motion operator)
- "C-a" 'evil-first-non-blank
- "C-e" 'evil-end-of-line)
+ "C-," 'evil-first-non-blank
+ "C-." 'evil-end-of-line)
 
 (general-define-key
  :states '(insert)
  "M-v" 'evil-scroll-down
  "M-c" 'evil-scroll-up
- "C-b" 'delete-forward-char
- "C-d" 'backward-char
+ "S-<backspace>" 'delete-forward-char
+ "C-," 'backward-char
+ "C-." 'forward-char
  "C-n" 'next-line
  "C-p" 'previous-line
- "C-a" 'beginning-of-line-text
- "C-e" 'move-end-of-line
+ "<C-i>" 'beginning-of-line-text
+ "C-o" 'move-end-of-line
  "C-k" 'kill-line
- "C-w" 'evil-delete-backward-word
- "C-x" 'kill-region
- "C-v" 'yank
- ;; leave C-r for commands similar to backward-search
+ "H-w" 'evil-delete-backward-word
+ "H-x" 'kill-region
+ "H-c" 'kill-ring-save
+ "H-v" 'yank
+ ;; reserve C-r for commands similar to backward-search
  "C-y" 'evil-paste-from-register
- "M-d" 'backward-word
- "M-b" 'kill-word
- "H-x" ctl-x-map)
+ "M-." 'forward-word
+ "M-," 'backward-word
+ "M-<backspace>" 'kill-word)
 
 (general-define-key
  :states '(emacs)
  "M-v" 'evil-scroll-down
  "M-c" 'evil-scroll-up
- "C-b" 'delete-forward-char
- "C-d" 'backward-char
+ "S-<backspace>" 'delete-forward-char
+ "C-," 'backward-char
+ "C-." 'forward-char
  "C-n" 'next-line
  "C-p" 'previous-line
- "C-a" 'beginning-of-line-text
- "C-e" 'move-end-of-line
+ "<C-i>" 'beginning-of-line-text
+ "C-o" 'move-end-of-line
  "C-k" 'kill-line
- "C-w" 'backward-kill-word
- "C-x" 'kill-region
- "C-v" 'yank
- ;; leave C-r for commands similar to backward-search
+ "H-w" 'backward-kill-word
+ "H-x" 'kill-region
+ "H-c" 'kill-ring-save
+ "H-v" 'yank
+ ;; reserve C-r for commands similar to backward-search
  ;; "C-y" 'evil-paste-from-register
- "M-d" 'backward-word
- "M-b" 'kill-word
- "H-x" ctl-x-map
+ "M-." 'forward-word
+ "M-," 'backward-word
+ "M-<backspace>" 'kill-word
  "<escape>" 'evil-exit-emacs-state)
 
 ;;----------------------------------------------------------------------------
@@ -641,21 +645,23 @@
  ;; copy insert state bindings here, so keys do the same when evil disabled
  "M-v" 'evil-scroll-down
  "M-c" 'evil-scroll-up
- "C-b" 'delete-forward-char
- "C-d" 'backward-char
+ "S-<backspace>" 'delete-forward-char
+ "C-," 'backward-char
+ "C-." 'forward-char
  "C-n" 'next-line
  "C-p" 'previous-line
- "C-a" 'beginning-of-line-text
- "C-e" 'move-end-of-line
+ "<C-i>" 'beginning-of-line-text
+ "C-o" 'move-end-of-line
  "C-k" 'kill-line
- "C-w" 'backward-kill-word
- "C-x" 'kill-region
- "C-v" 'yank
- ;; leave C-r for commands similar to backward-search
+ "H-w" 'backward-kill-word
+ "H-x" 'kill-region
+ "H-c" 'kill-ring-save
+ "H-v" 'yank
+ ;; reserve C-r for commands similar to backward-search
  ;; "C-y" 'evil-paste-from-register
- "M-d" 'backward-word
- "M-b" 'kill-word
- "H-x" ctl-x-map
+ "M-." 'forward-word
+ "M-," 'backward-word
+ "M-<backspace>" 'kill-word
  "<escape>" 'keyboard-quit)
 
 ;;----------------------------------------------------------------------------

@@ -12,7 +12,7 @@
   (setq golden-ratio-auto-scale t))
 
 (jester/with-leader
- "w h" 'split-window-below
+ "w j" 'split-window-below
  "w l" 'split-window-right
  "w k" 'delete-window
  "w H" 'evil-window-move-far-left
@@ -59,10 +59,11 @@
 
 
 (use-package ace-window
-  :commands ace-swap-window
+  :commands (ace-window ace-swap-window)
   :init
   (jester/with-leader
-   "w M" 'ace-swap-window))
+   "w w" 'ace-window
+   "w s" 'ace-swap-window))
 
 
 (use-package shackle
@@ -175,9 +176,10 @@ bound to KEY in the leader sub-keymap."
   "Wrapper for `recenter', taking whatever arguments and ignore them."
   (recenter))
 (dolist (command '(xref-pop-marker-stack
-                   evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse
+                   ;; evil-goto-mark ; advicing this would recenter when paste, bad
+                   evil-goto-last-change evil-goto-last-change-reverse
                    evil-search-next evil-search-previous
-                   evilmi-jump-items
+                   ;; evilmi-jump-items
                    symbol-overlay-jump-next symbol-overlay-jump-prev
                    flycheck-next-error flycheck-previous-error
                    magit-diff-visit-file))

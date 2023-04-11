@@ -16,7 +16,7 @@
  "U" 'Info-up
  "H" 'Info-prev
  "L" 'Info-next
- "C-r" 'Info-history
+ "H-r" 'Info-history
  "f" 'link-hint-open-link
  "<return>" 'Info-follow-nearest-node
  "g g" 'evil-goto-first-line)

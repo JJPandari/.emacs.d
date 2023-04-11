@@ -75,7 +75,7 @@
   :commands er/expand-region
   :init
   (general-define-key
-   "<C-backspace>" 'er/expand-region))
+   "C-l" 'er/expand-region))
 
 
 (use-package page-break-lines
@@ -203,8 +203,8 @@
   (insert-or-remove-trailing-char ?,))
 
 (general-define-key
- "C-;" 'insert-or-remove-trailing-semi
- "C-," 'insert-or-remove-trailing-comma)
+ "H-;" 'insert-or-remove-trailing-semi
+ "H-," 'insert-or-remove-trailing-comma)
 
 ;;----------------------------------------------------------------------------
 ;; Move lines up and down.

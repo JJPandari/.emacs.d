@@ -9,11 +9,11 @@
  "C-w" #'backward-kill-word
  "C-f" #'forward-char
  "C-d" #'backward-char
- "C-b" #'delete-char
+ "S-<backspace>" #'delete-char
  "C-v" #'yank
  "C-y" #'evil-paste-from-register
  "C-S-k" 'jester/kill-back-to-indentation
- "C-r" 'counsel-minibuffer-history
+ "H-r" 'counsel-minibuffer-history
  "H-x" 'kill-region
  "<escape>" 'keyboard-escape-quit)
 

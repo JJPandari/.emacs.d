@@ -28,7 +28,8 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold)
               (run-with-idle-timer 30 t 'garbage-collect)
-              (add-hook 'focus-out-hook 'garbage-collect))))
+              ;; (add-hook 'focus-out-hook 'garbage-collect)
+              )))
 
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
