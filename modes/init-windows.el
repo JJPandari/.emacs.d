@@ -170,20 +170,29 @@ bound to KEY in the leader sub-keymap."
 (setq scroll-conservatively 999
       scroll-margin 0
       scroll-preserve-screen-position t)
+
 ;; when `scroll-conservatively' is 0, recenter happens automatically, not when 999
 (add-hook 'counsel-grep-post-action-hook 'recenter)
-(defun jester/recenter (&rest _)
-  "Wrapper for `recenter', taking whatever arguments and ignore them."
-  (recenter))
+
+;; learned from `swiper--maybe-recenter', yay!
+(defun jester/maybe-recenter (orig-fun &rest args)
+  "If point moved out of the original (before ORIG-FUN runs) window, recenter."
+  (let ((prev-window-start (window-start))
+        (prev-window-end (window-end)))
+    (apply orig-fun args)
+    (when (or
+           (< (point) prev-window-start)
+           (> (point) prev-window-end))
+      (recenter))))
+
 (dolist (command '(xref-pop-marker-stack
-                   ;; evil-goto-mark ; advicing this would recenter when paste, bad
-                   evil-goto-last-change evil-goto-last-change-reverse
+                   evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse
                    evil-search-next evil-search-previous
                    ;; evilmi-jump-items
                    symbol-overlay-jump-next symbol-overlay-jump-prev
                    flycheck-next-error flycheck-previous-error
                    magit-diff-visit-file))
-  (advice-add command :after 'jester/recenter))
+  (advice-add command :around 'jester/maybe-recenter))
 
 (use-package smooth-scroll
   :demand t

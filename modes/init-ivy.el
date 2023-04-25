@@ -8,7 +8,7 @@
    (ivy-height 20))
   :config
   (ivy-mode 1)
-  (jester/with-leader "i r" 'ivy-resume)
+  (jester/with-leader "r" 'ivy-resume)
   (jester/with-major-leader '(ivy-occur-mode-map ivy-occur-grep-mode-map wgrep-mode-map)
     "w" (lambda! (ivy-wgrep-change-to-wgrep-mode) (evil-normal-state))
     "," (lambda! (wgrep-finish-edit) (evil-motion-state))
@@ -138,6 +138,7 @@ If swiper started with any input, enable ivy-hydra automatically. (so I can h/j/
    "H-v" 'yank
    "C-S-k" 'jester/kill-back-to-indentation
    "H-r" 'ivy-reverse-i-search
+   "H-e" 'hydra-ivy/body
    "<escape>" #'keyboard-escape-quit
    "C-g" #'keyboard-escape-quit
    "<C-return>" 'ivy-call)
