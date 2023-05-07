@@ -22,11 +22,23 @@
  :states '(normal motion)
  "g d" 'xref-find-definitions
  "g p" 'xref-pop-marker-stack)
+
 (general-define-key
- :definer 'minor-mode
+ :states '(normal motion)
+ :keymaps '(typescript-mode-map web-mode-map)
+ "g d" 'lsp-bridge-find-def
+ "g p" 'lsp-bridge-find-def-return)
+(general-define-key
  :states 'normal
- :keymaps 'lsp-mode
- "g r" 'jester/xref-find-references-at-point)
+ :keymaps '(typescript-mode-map web-mode-map)
+ "g r" 'lsp-bridge-find-references
+ "g t" 'lsp-bridge-find-type-def)
+(jester/with-major-leader '(typescript-mode-map web-mode-map)
+  "r" 'lsp-bridge-rename)
+(jester/with-leader
+ "e l" 'lsp-bridge-diagnostic-list
+ "e n" 'lsp-bridge-diagnostic-jump-next
+ "e p" 'lsp-bridge-diagnostic-jump-prev)
 
 
 ;; TODO xref-ring
@@ -55,8 +67,7 @@
 
 (use-package citre
   :custom ((citre-enable-imenu-integration nil)
-           (citre-update-tags-file-when-no-definitions nil)
-           (citre-tags-files '("tagz" ".tags" "tags")))
+           (citre-tags-file-names '("tagz" ".tags" "tags")))
   :init
   (require 'citre-config))
 ;; TODO try `citre-peek'

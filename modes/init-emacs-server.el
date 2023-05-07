@@ -8,11 +8,10 @@
   (server-start))
 ;; when opened as maid, start server with name "maid"
 (when (string= (getenv "EMACS_SOCKET") "maid")
-  (unless (server-running-p "maid")
-    (setq server-name "maid")
-    (setq frame-title-format "maid")
-    (setq desktop-base-file-name ".emacs.maid.desktop"
-          desktop-base-lock-name ".emacs.maid.desktop.lock")
-    (server-start)))
+  (setq server-name "maid")
+  (setq frame-title-format "maid")
+  (setq desktop-base-file-name ".emacs.maid.desktop"
+        desktop-base-lock-name ".emacs.maid.desktop.lock")
+  (server-start))
 
 (provide 'init-emacs-server)

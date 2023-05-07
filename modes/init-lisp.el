@@ -153,6 +153,7 @@
 (push (expand-file-name "elispfl" jester-submodules-dir) load-path)
 (use-package elispfl
   :ensure nil
+  :straight nil
   :demand t
   :config (elispfl-mode 1))
 

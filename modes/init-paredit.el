@@ -5,6 +5,7 @@
 (push (expand-file-name "awesome-pair" jester-submodules-dir) load-path)
 (use-package awesome-pair
   :ensure nil
+  :straight nil
   :commands (awesome-pair-kill
              awesome-pair-backward-delete awesome-pair-forward-delete
              awesome-pair-equal awesome-pair-double-quote awesome-pair-space

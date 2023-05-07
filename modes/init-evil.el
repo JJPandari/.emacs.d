@@ -199,8 +199,8 @@
    :keymaps 'evil-snipe-local-mode-map
    "g s" 'evil-snipe-s
    "g S" 'evil-snipe-S
-   "g t" 'evil-snipe-x
-   "g T" 'evil-snipe-X)
+   "g c" 'evil-snipe-x
+   "g C" 'evil-snipe-X)
   (define-key evil-normal-state-map (kbd "DEL") 'evil-snipe-repeat-reverse))
 
 
@@ -243,7 +243,7 @@
   (general-define-key
    :states '(insert emacs)
    :keymaps 'evil-multiedit-mode-map
-   "<tab>" 'jester/yas-or-company-or-hippie
+   "<tab>" 'jester/start-complete
    "C-a" 'evil-multiedit-beginning-of-line
    "C-e" 'evil-multiedit-end-of-line)
   )
@@ -768,7 +768,7 @@
     (when (bolp) (evil-first-non-blank) (cl-return-from 'my-return)) ; at very beg of line
     (evil-first-non-blank)))
 (general-define-key
- :states '(normal visual operator)
+ :states '(normal visual operator motion)
  "0" 'jester/cycle-line-beginning-end)
 
 ;; TODO try citre-read or clue

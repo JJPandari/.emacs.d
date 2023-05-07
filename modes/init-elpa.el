@@ -50,10 +50,7 @@ locate PACKAGE."
 
 
 ;;; Fire up package.el
-
-(setq package-enable-at-startup nil)
 (package-initialize)
-
 
 
 (require-package 'fullframe)

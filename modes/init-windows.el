@@ -186,9 +186,9 @@ bound to KEY in the leader sub-keymap."
       (recenter))))
 
 (dolist (command '(xref-pop-marker-stack
-                   evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse
+                   evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse evil-goto-line
                    evil-search-next evil-search-previous
-                   ;; evilmi-jump-items
+                   evilmi-jump-items
                    symbol-overlay-jump-next symbol-overlay-jump-prev
                    flycheck-next-error flycheck-previous-error
                    magit-diff-visit-file))

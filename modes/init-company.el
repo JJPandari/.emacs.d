@@ -155,6 +155,7 @@ In that case, insert the number."
 (push (expand-file-name "company-anywhere" jester-submodules-dir) load-path)
 (use-package company-anywhere
   :ensure nil
+  :straight nil
   :after company
   :demand t)
 

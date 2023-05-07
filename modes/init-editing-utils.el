@@ -89,6 +89,7 @@
 
 (use-package subword
   :ensure nil
+  :straight nil
   :init
   (general-define-key
    :states '(operator)

@@ -1,4 +1,4 @@
-(when (string= server-name "server")
+(when (and (boundp 'server-name) (string= server-name "maid"))
   (use-package keyfreq
     :hook (after-init . keyfreq-mode)
     :config

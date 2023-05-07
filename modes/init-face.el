@@ -53,27 +53,12 @@
   (general-define-key
    :states '(normal visual motion)
    :keymaps '(prog-mode-map css-mode yaml-mode conf-mode markdown-mode help-mode)
-   "<tab>" 'jester/probably-symbol-overlay-put
+   "<tab>" 'symbol-overlay-put
    "H-n" 'symbol-overlay-jump-next
    "H-p" 'symbol-overlay-jump-prev)
-  (jester/with-leader "o p" 'jester/probably-symbol-overlay-put)
+  (jester/with-leader "o p" 'symbol-overlay-put)
   ;; don't bind any key
-  (setq symbol-overlay-map (make-sparse-keymap))
-
-  ;; TODO off when region active. maybe PR?
-  (defun jester/probably-symbol-overlay-put ()
-    "Probably highlight region or symbol at point with symbol-overlay, but:
-toggle file when peeking definitions with lsp-ui."
-    (interactive)
-    (if (and (featurep 'lsp-ui) lsp-ui-peek-mode)
-        (call-interactively 'lsp-ui-peek--toggle-file)
-      (if (region-active-p)
-          (progn
-            (symbol-overlay-put-all
-             (regexp-quote (buffer-substring-no-properties (region-beginning) (region-end)))
-             symbol-overlay-scope)
-            (deactivate-mark))
-        (symbol-overlay-put)))))
+  (setq symbol-overlay-map (make-sparse-keymap)))
 
 ;;----------------------------------------------------------------------------
 ;; Set fonts.

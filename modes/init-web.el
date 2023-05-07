@@ -43,10 +43,7 @@
   (modify-syntax-entry ?# "_" web-mode-syntax-table)
   (modify-syntax-entry ?+ "." web-mode-syntax-table)
 
-  (define-key web-mode-map (kbd "TAB") nil)
-  (define-key web-mode-map (kbd "<tab>") nil)
-  (evil-define-key 'insert web-mode-map (kbd "TAB") #'jester/yas-or-company-or-hippie)
-  (evil-define-key 'insert web-mode-map (kbd "<tab>") #'jester/yas-or-company-or-hippie)
+  ;; (evil-define-key 'insert web-mode-map (kbd "<tab>") #'jester/start-complete)
 
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue)
   (defun jester/web-mode-maybe-setup-vue ()
@@ -63,12 +60,12 @@
   (defun jester/web-mode-maybe-setup-tsx ()
     "Do something if it's a .tsx file."
     (when (string-equal (file-name-extension (buffer-name)) "tsx")
-      (lsp-diagnostics--enable)
-      (flycheck-add-next-checker 'javascript-eslint 'lsp)
-      (lsp)
-      ;; lsp sets checker to lsp, set it back
-      ;; `flycheck-add-next-checker'
-      (setq flycheck-checker 'javascript-eslint)
+      ;; (lsp-diagnostics--enable)
+      ;; (flycheck-add-next-checker 'javascript-eslint 'lsp)
+      ;; (lsp)
+      ;; ;; lsp sets checker to lsp, set it back
+      ;; ;; `flycheck-add-next-checker'
+      ;; (setq flycheck-checker 'javascript-eslint)
       (jester/make-default-evil-markers-for-js)
       (setq-local emmet-expand-jsx-className? t
                   web-mode-auto-quote-style 3)

@@ -16,6 +16,7 @@
 (push (expand-file-name "popweb/extension/dict" jester-submodules-dir) load-path)
 (use-package popweb-dict
   :ensure nil
+  :straight nil
   :commands popweb-dict-bing-pointer)
 
 
@@ -45,6 +46,6 @@
   :demand t
   :after pyim
   :config
-  (pyim-wbdict-v98-enable))
+  (pyim-wbdict-v86-enable))
 
 (provide 'init-chinese)

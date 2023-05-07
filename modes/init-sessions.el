@@ -92,6 +92,7 @@
 ;;----------------------------------------------------------------------------
 (use-package saveplace
   :ensure nil
+  :straight nil
   :hook (after-init . save-place-mode))
 
 

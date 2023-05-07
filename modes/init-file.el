@@ -29,7 +29,7 @@
   "Save all buffers."
   ;; yas overlay and company-select-next has problem with this.
   (when (and (not yas--active-snippets)
-             (not company-candidates)
+             ;; (not company-candidates)
              (not (eq major-mode 'snippet-mode)))
     ;; https://github.com/manateelazycat/lazycat-emacs/commit/da13a688ef89f8ab2c577a3e9d2a7bcf0ef9b71d
     ;; https://emacs-china.org/t/topic/7687/30?u=jjpandari

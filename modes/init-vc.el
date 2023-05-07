@@ -1,5 +1,6 @@
 (use-package smerge-mode
   :ensure nil
+  :straight nil
   :init
   (jester/with-leader
    "m u" 'smerge-keep-upper

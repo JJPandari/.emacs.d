@@ -5,6 +5,7 @@
   (use-package deferred :defer t)
   (use-package epc :defer t)
   :ensure nil
+  :straight nil
   :demand t
   :custom
   (eaf-browser-continue-where-left-off t)

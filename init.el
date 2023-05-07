@@ -35,9 +35,10 @@
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
 ;; Calls (package-initialize)
-(require 'init-elpa)      ;; Machinery for installing required packages
+(require 'init-elpa)
+(require 'init-straight)
 (require 'init-utils)
-(require 'init-exec-path) ;; Set up $PATH
+(require 'init-exec-path)
 
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
@@ -66,8 +67,11 @@
 ;; (require 'init-helm)
 (require 'init-ivy)
 ;; (require 'init-selectrum)
-(require 'init-company)
+
+;; (require 'init-company)
+(require 'init-lsp-bridge)
 (require 'init-yas)
+
 (require 'init-windows)
 (require 'init-mode-line)
 (require 'init-sessions)
@@ -76,7 +80,7 @@
 (require 'init-help)
 (require 'init-read)
 
-(require 'init-flycheck)
+;; (require 'init-flycheck)
 (require 'init-vc)
 (require 'init-git)
 (require 'init-compile)
@@ -92,7 +96,7 @@
 ;; (require 'init-common-lisp)
 
 (require 'init-projects)
-(require 'init-lsp)
+;; (require 'init-lsp)
 (require 'init-jump)
 (require 'init-text)
 (require 'init-org)

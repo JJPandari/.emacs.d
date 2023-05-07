@@ -10,7 +10,7 @@
 
 ;; If you don't customize it, this is the theme you get.
 (setq custom-enabled-themes (if (string= (getenv "EMACS_SOCKET") "maid")
-                                '(doom-tomorrow-night)
+                                '(doom-tomorrow-day)
                               '(solarized-light)))
 
 ;; Ensure that themes will be applied even if they have not been customized
