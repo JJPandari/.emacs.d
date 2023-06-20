@@ -52,7 +52,6 @@
 (use-package undo-fu
   :init
   (general-define-key
-   :states '(emacs)
    "C-/" 'undo-fu-only-undo
    "C-?" 'undo-fu-only-redo)
   :demand t
@@ -127,6 +126,36 @@
   :after prog-mode
   :config
   (add-hook 'prog-mode-hook 'eldoc-box-hover-mode))
+
+;;----------------------------------------------------------------------------
+;; highlight region with symbol-overlay
+;;----------------------------------------------------------------------------
+(use-package symbol-overlay
+  :hook ((prog-mode . symbol-overlay-mode)
+         (css-mode . symbol-overlay-mode)
+         (yaml-mode . symbol-overlay-mode)
+         (conf-mode . symbol-overlay-mode)
+         (markdown-mode . symbol-overlay-mode)
+         (help-mode . symbol-overlay-mode))
+  :init
+  ;; don't put temporary highlight
+  (setq symbol-overlay-idle-time 0)
+  :config
+  (general-define-key
+   :states '(normal visual motion)
+   :keymaps '(prog-mode-map css-mode yaml-mode conf-mode markdown-mode help-mode)
+   "<tab>" 'symbol-overlay-put
+   "H-n" 'symbol-overlay-jump-next
+   "H-p" 'symbol-overlay-jump-prev)
+  (jester/with-leader "o p" 'symbol-overlay-put)
+  ;; don't bind any key
+  (setq symbol-overlay-map (make-sparse-keymap)))
+
+;;----------------------------------------------------------------------------
+;; face related key bindings
+;;----------------------------------------------------------------------------
+(jester/with-leader
+ "t c" 'text-scale-adjust)
 
 ;;----------------------------------------------------------------------------
 ;; smart ; key
@@ -204,8 +233,9 @@
   (insert-or-remove-trailing-char ?,))
 
 (general-define-key
- "H-;" 'insert-or-remove-trailing-semi
- "H-," 'insert-or-remove-trailing-comma)
+ "C-;" 'insert-or-remove-trailing-semi
+ "C-:" 'insert-or-remove-trailing-comma)
+;; TODO merge these two, use treesit to know which to do
 
 ;;----------------------------------------------------------------------------
 ;; Move lines up and down.

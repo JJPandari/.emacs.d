@@ -8,20 +8,10 @@
       solarized-scale-org-headlines nil
       solarized-scale-outline-headlines nil)
 
-;; If you don't customize it, this is the theme you get.
-(setq custom-enabled-themes (if (string= (getenv "EMACS_SOCKET") "maid")
-                                '(doom-tomorrow-day)
-                              '(solarized-light)))
-
-;; Ensure that themes will be applied even if they have not been customized
-(defun reapply-themes ()
-  "Forcibly load the themes listed in `custom-enabled-themes'."
-  (dolist (theme custom-enabled-themes)
-    (unless (custom-theme-p theme)
-      (load-theme theme t)))
-  (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
-
-(add-hook 'after-init-hook 'reapply-themes)
+(load-theme (if (and (boundp 'server-name) (string= server-name "maid"))
+                'doom-tomorrow-night
+              'solarized-light)
+            t)
 
 
 ;; https://gist.github.com/hlissner/1ace77658c772cf150a43dc9396fa2ed
@@ -35,14 +25,7 @@
 
 (advice-add #'load-theme :after #'run-load-theme-hooks)
 
-;; TODO not work
-(add-hook! 'load-theme-hook
-  (when (memq 'solarized-dark-high-contrast custom-enabled-themes)
-    ;; (custom-theme-set-faces
-    ;;  'solarized-dark-high-contrast
-    ;;  '(default ((t (:foreground "#9AABAC")))))
-    ))
-
+;; TODO `enable-theme-functions' when 29
 (add-hook! 'load-theme-hook
   (when (memq 'solarized-light custom-enabled-themes)
     (custom-theme-set-faces

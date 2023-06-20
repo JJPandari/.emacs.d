@@ -23,7 +23,7 @@
    "g t" 'git-timemachine)
   :commands git-timemachine
   :config
-  (add-hook! 'git-timemachine-mode-hook (evil-motion-state 1))
+  (evil-set-initial-state 'git-timemachine-mode 'motion)
   (general-define-key
    :states 'motion
    :keymaps 'git-timemachine-mode-map
@@ -54,7 +54,7 @@
         magit-bury-buffer-function 'magit-restore-window-configuration
         magit-log-margin '(t "周%u %Y-%m-%d %H:%M:%S %z" magit-log-margin-width t 18))
   (jester/with-leader
-   "g s" 'magit-status
+   "g j" 'magit-status
    "g d" 'magit-diff-buffer-file
    "g r" 'diff-hl-revert-hunk
    "g l" 'magit-log

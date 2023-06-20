@@ -223,10 +223,11 @@ If called interactively, let the user select start directory first."
   :if window-system
   :config
   (setq ivy-posframe-hide-minibuffer t)
-  (setq ivy-posframe-parameters
-        `((background-color . ,(face-attribute 'default :background))
-          (foreground-color . ,(face-attribute 'default :foreground))
-          (left-fringe . 8)))
+  (add-hook! 'load-theme-hook
+    (setq ivy-posframe-parameters
+          `((background-color . ,(face-attribute 'default :background))
+            (foreground-color . ,(face-attribute 'default :foreground))
+            (left-fringe . 8))))
   (set-face-attribute 'ivy-posframe-cursor nil :foreground "RoyalBlue")
   (setq ivy-posframe-style 'frame-bottom-left
         ivy-posframe-display-functions-alist

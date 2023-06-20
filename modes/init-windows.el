@@ -188,6 +188,7 @@ bound to KEY in the leader sub-keymap."
 (dolist (command '(xref-pop-marker-stack
                    evil-goto-mark evil-goto-last-change evil-goto-last-change-reverse evil-goto-line
                    evil-search-next evil-search-previous
+                   ;; backward-up-list up-list ; used by some idle timer, causing my point bouncing everywhere!
                    evilmi-jump-items
                    symbol-overlay-jump-next symbol-overlay-jump-prev
                    flycheck-next-error flycheck-previous-error

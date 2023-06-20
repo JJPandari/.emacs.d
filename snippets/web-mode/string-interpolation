@@ -2,4 +2,4 @@
 # name: string interpolation
 # key: si
 # --
-\${$0}
+\$\{$0\}

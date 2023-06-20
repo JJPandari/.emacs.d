@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: form-item
+# key: formitem
+# --
+<FormItem
+  label='$1'
+  name='${1:$(s-lower-camel-case (s-replace " " "" yas-text))}'
+  rules={[{ required: true, message: '${1:$(s-capitalize (downcase yas-text))} is required.' }]}
+>
+  <Input />
+</FormItem>

@@ -147,7 +147,7 @@
 (general-define-key
  :states '(emacs insert)
  :keymaps jester-lispy-maps
- "H-;" 'jester/insert-lisp-comment-start)
+ "C-;" 'jester/insert-lisp-comment-start)
 
 
 (push (expand-file-name "elispfl" jester-submodules-dir) load-path)
@@ -214,7 +214,7 @@
   (general-define-key
    :states '(emacs insert normal visual)
    :keymaps jester-lispy-maps
-   "H-a" 'lispyville-wrap-round)
+   "H-f" 'lispyville-wrap-round)
   ;; ugly fix
   (general-define-key
    :states '(emacs insert normal visual)

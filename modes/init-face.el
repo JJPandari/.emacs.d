@@ -16,13 +16,17 @@
 
 (use-package highlight-parentheses
   :demand t
+  :init
+  (customize-set-variable 'highlight-parentheses-colors
+                          '("springgreen3" "IndianRed1" "IndianRed3" "IndianRed4"
+                            "#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
   :config
   (global-highlight-parentheses-mode 1)
-  ;; run after init due to `reapply-themes'
-  ;; TODO load-theme-hook
-  (add-hook! :append 'after-init-hook
+  (add-hook! 'load-theme-hook
     ;; the theme's setting will take precedence if simply `setq'
-    (customize-set-variable 'hl-paren-colors '("Springgreen3" "firebrick1" "IndianRed1" "IndianRed3" "IndianRed4")))
+    (customize-set-variable 'highlight-parentheses-colors
+                            '("springgreen3" "IndianRed1" "IndianRed3" "IndianRed4"
+                              "#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
   (set-face-attribute 'hl-paren-face nil :weight 'bold))
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -35,30 +39,6 @@
   :demand t)
 ;; (use-package nerd-icons
 ;;   :demand t)
-
-;;----------------------------------------------------------------------------
-;; highlight region with symbol-overlay
-;;----------------------------------------------------------------------------
-(use-package symbol-overlay
-  :hook ((prog-mode . symbol-overlay-mode)
-         (css-mode . symbol-overlay-mode)
-         (yaml-mode . symbol-overlay-mode)
-         (conf-mode . symbol-overlay-mode)
-         (markdown-mode . symbol-overlay-mode)
-         (help-mode . symbol-overlay-mode))
-  :init
-  ;; don't put temporary highlight
-  (setq symbol-overlay-idle-time 0)
-  :config
-  (general-define-key
-   :states '(normal visual motion)
-   :keymaps '(prog-mode-map css-mode yaml-mode conf-mode markdown-mode help-mode)
-   "<tab>" 'symbol-overlay-put
-   "H-n" 'symbol-overlay-jump-next
-   "H-p" 'symbol-overlay-jump-prev)
-  (jester/with-leader "o p" 'symbol-overlay-put)
-  ;; don't bind any key
-  (setq symbol-overlay-map (make-sparse-keymap)))
 
 ;;----------------------------------------------------------------------------
 ;; Set fonts.
@@ -136,12 +116,6 @@ This is helpful for writeroom-mode, in particular."
 
 (add-hook 'visual-fill-column-mode-hook
           'jester/maybe-adjust-visual-fill-column)
-
-;;----------------------------------------------------------------------------
-;; face related key bindings
-;;----------------------------------------------------------------------------
-(jester/with-leader
- "t c" 'text-scale-adjust)
 
 
 (provide 'init-face)

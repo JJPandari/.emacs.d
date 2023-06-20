@@ -1,5 +1,7 @@
 (define-key global-map (kbd "C-c l") 'org-store-link)
 (define-key global-map (kbd "C-c a") 'org-agenda)
+(jester/with-leader
+ "o s" 'org-store-link)
 
 ;; Various preferences
 (setq org-log-done t
@@ -295,13 +297,16 @@ typical word processor."
    "H" 'org-shiftleft
    "L" 'org-shiftright)
   (jester/with-major-leader 'org-mode-map
-    "t t" 'org-todo)
+    "t t" 'org-todo
+    "t a" 'counsel-org-tag
+    "l" 'org-insert-link)
   (general-define-key
    :states '(insert emacs)
    :keymaps 'org-mode-map
    "<tab>" 'org-cycle
    "C-d" 'backward-char))
 
+;; TODO org-superstar
 (use-package org-bullets
   :if *is-a-mac*
   :hook (org-mode . org-bullets-mode)

@@ -30,7 +30,7 @@
    )
   (general-define-key
    :states '(emacs insert normal visual)
-   "H-a" (lambda! (awesome-pair-wrap-round-pair)))
+   "H-f" (lambda! (awesome-pair-wrap-round-pair)))
 
   ;; TODO append \n to make it evil style
   (defun jester/semantic-kill-maybe-whole-line ()

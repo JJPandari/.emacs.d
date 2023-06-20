@@ -48,6 +48,7 @@
 (require 'init-frame-hooks)
 (require 'init-themes)
 (require 'init-gui-frames)
+(require 'init-face)
 ;; (require 'init-eaf)
 
 (require 'init-osx-keys)
@@ -55,6 +56,7 @@
 ;; (require 'init-meow)
 (require 'init-which-key)
 (require 'init-hydra)
+(require 'init-multi-cursors)
 
 (require 'init-editing-utils)
 
@@ -75,7 +77,6 @@
 (require 'init-windows)
 (require 'init-mode-line)
 (require 'init-sessions)
-(require 'init-face)
 (require 'init-avy)
 (require 'init-help)
 (require 'init-read)

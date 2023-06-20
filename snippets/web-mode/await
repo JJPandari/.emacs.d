@@ -1,5 +1,9 @@
 # -*- mode: snippet -*-
 # name: await
 # key: aw
+# type: command
 # --
-await 
+(insert "await ")
+(unless (eolp)
+  (evil-normal-state))
+(yas-expand-snippet "")

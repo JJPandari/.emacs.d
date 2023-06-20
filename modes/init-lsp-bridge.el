@@ -8,15 +8,21 @@
         ;; TODO acm-enable-codeium
         acm-enable-yas nil
         ;; TODO acm-enable-citre
+        lsp-bridge-enable-completion-in-string t
         acm-candidate-match-function 'orderless-flex
-        acm-enable-quick-access t ; only decides whether indexes are shown
-        lsp-bridge-signature-show-function 'lsp-bridge-signature-posframe
+        acm-enable-quick-access t ; select candidate with number key
+        acm-quick-access-use-number-select t
+        lsp-bridge-signature-show-function 'lsp-bridge-signature-show-with-frame
+        lsp-bridge-signature-show-with-frame-position "top-left"
         lsp-bridge-enable-hover-diagnostic t)
   :demand t
   :config
-  (plist-put lsp-bridge-signature-posframe-params :poshandler 'posframe-poshandler-frame-top-center)
-
   (global-lsp-bridge-mode)
+
+  (evil-set-initial-state 'lsp-bridge-ref-mode 'emacs)
+
+  (jester/with-minor-leader 'lsp-bridge-mode
+    "d" 'lsp-bridge-popup-documentation)
 
   (general-define-key
    :states '(insert emacs)
@@ -28,12 +34,9 @@
    "TAB" nil
    "<tab>" 'jester/do-complete-or-yas
    "<C-m>" 'acm-insert-common
-   "RET" nil
-   "<return>" nil)
+   "RET" 'newline
+   "<return>" 'newline)
   (dotimes (i 10)
-    (general-define-key
-     :keymaps 'acm-mode-map
-     (number-to-string i) 'acm-complete-quick-access)
     (general-define-key
      :keymaps 'acm-mode-map
      (format "M-%d" i) (eval `(lambda! (insert ,(number-to-string i)))))))
@@ -56,8 +59,6 @@
 
 (use-package orderless
   :autoload (orderless-initialism orderless-flex))
-
-;; TODO flycheck
 
 
 (provide 'init-lsp-bridge)
