@@ -13,7 +13,14 @@
               'solarized-light)
             t)
 
+;; TODO duplicate with theme hook, how to dedup?
+(when (memq 'solarized-light custom-enabled-themes)
+  (custom-set-faces '(web-mode-keyword-face ((t (:inherit font-lock-keyword-face
+                                                          :foreground unspecified
+                                                          :weight unspecified))))))
+
 
+;; TODO `enable-theme-functions' when 29
 ;; https://gist.github.com/hlissner/1ace77658c772cf150a43dc9396fa2ed
 (defvar load-theme-hook nil
   "Hook run after the theme is loaded with `load-theme'.")
@@ -25,12 +32,11 @@
 
 (advice-add #'load-theme :after #'run-load-theme-hooks)
 
-;; TODO `enable-theme-functions' when 29
 (add-hook! 'load-theme-hook
   (when (memq 'solarized-light custom-enabled-themes)
-    (custom-theme-set-faces
-     'solarized-light
-     '(web-mode-keyword-face ((t (:inherit 'font-lock-keyword-face)))))))
+    (custom-set-faces '(web-mode-keyword-face ((t (:inherit font-lock-keyword-face
+                                                            :foreground unspecified
+                                                            :weight unspecified)))))))
 
 
 (provide 'init-themes)

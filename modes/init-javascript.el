@@ -192,7 +192,7 @@
                           ".test.jsx" ".spec.jsx"
                           ".test.ts" ".spec.ts"
                           ".test.tsx" ".spec.tsx")))
-      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
+      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest --detectOpenHandles --forceExit %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
 
 (add-hook! '(js2-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
 
@@ -207,12 +207,12 @@
     (condition-case err
         (js2-jump-to-definition)
       (error (citre-jump)))))
-(general-define-key
- :states '(normal motion)
- :keymaps '(js2-mode-map)
- "g d" 'jester/js2-jump-or-citre-jump
- ;; "g r" 'jester/xref-find-references-at-point
- )
+;; (general-define-key
+;;  :states '(normal motion)
+;;  :keymaps '(js2-mode-map)
+;;  "g d" 'jester/js2-jump-or-citre-jump
+;;  ;; "g r" 'jester/xref-find-references-at-point
+;;  "g p" 'xref-pop-marker-stack)
 
 
 (provide 'init-javascript)

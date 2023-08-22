@@ -5,7 +5,9 @@
   :commands markdown-mode
   :mode "\\.md\\.html\\'"
   :config
-  (set-face-attribute 'markdown-code-face nil :family "Fira Code"))
+  (set-face-attribute 'markdown-code-face nil
+                      :family "Fira Code"
+                      :height 140))
 
 
 (provide 'init-markdown)

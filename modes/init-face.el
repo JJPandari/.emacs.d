@@ -66,7 +66,7 @@
                       ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-small-font-size
-                      :weight 'normal
+                      :weight 'medium
                       :width 'normal)
   (jester/set-fallback-fonts))
 
@@ -78,7 +78,7 @@
                       ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-large-font-size
-                      :weight 'normal
+                      :weight 'medium
                       :width 'normal)
   (jester/set-fallback-fonts))
 

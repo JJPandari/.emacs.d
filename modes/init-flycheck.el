@@ -1,12 +1,13 @@
 (use-package flycheck
-  :hook (prog-mode . flycheck-mode)
+  ;; using lsp-bridge now, but still require this file since flycheck-* is used in many places
+  ;; :hook (prog-mode . flycheck-mode)
   :config
   (setq flycheck-idle-change-delay 1)
   (evil-set-initial-state 'flycheck-error-list-mode 'motion)
-  (jester/with-leader
-   "e l" 'flycheck-list-errors
-   "e p" 'flycheck-previous-error
-   "e n" 'flycheck-next-error)
+  ;; (jester/with-leader
+  ;;  "e l" 'flycheck-list-errors
+  ;;  "e p" 'flycheck-previous-error
+  ;;  "e n" 'flycheck-next-error)
   (general-define-key
    :states '(motion)
    :keymaps 'flycheck-error-list-mode-map

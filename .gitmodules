@@ -7,9 +7,6 @@
 [submodule "elispfl"]
 	path = extensions/elispfl
 	url = git@github.com:cireu/elispfl.git
-[submodule "apheleia"]
-	path = extensions/apheleia
-	url = git@github.com:raxod502/apheleia.git
 [submodule "emacs-application-framework"]
 	path = extensions/emacs-application-framework
 	url = git@github.com:manateelazycat/emacs-application-framework.git

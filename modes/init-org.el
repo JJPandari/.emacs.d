@@ -304,7 +304,8 @@ typical word processor."
    :states '(insert emacs)
    :keymaps 'org-mode-map
    "<tab>" 'org-cycle
-   "C-d" 'backward-char))
+   "C-d" 'org-metaleft
+   "C-f" 'org-metaright))
 
 ;; TODO org-superstar
 (use-package org-bullets
@@ -321,7 +322,8 @@ typical word processor."
   (general-define-key
    :states '(insert)
    :keymaps 'evil-org-mode-map
-   "C-d" 'backward-char))
+   "C-d" 'org-metaleft
+   "C-f" 'org-metaright))
 
 
 (provide 'init-org)

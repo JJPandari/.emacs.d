@@ -28,9 +28,9 @@
 (defun jester/save-all-buffers ()
   "Save all buffers."
   ;; yas overlay and company-select-next has problem with this.
-  (when (and (not yas--active-snippets)
+  (when (and (or (not (boundp 'yas--active-snippets)) (not yas--active-snippets))
              ;; (not company-candidates)
-             (not acm-mode)
+             (or (not (boundp 'acm-mode)) (not acm-mode))
              (not (eq major-mode 'snippet-mode)))
     ;; https://github.com/manateelazycat/lazycat-emacs/commit/da13a688ef89f8ab2c577a3e9d2a7bcf0ef9b71d
     ;; https://emacs-china.org/t/topic/7687/30?u=jjpandari
@@ -147,7 +147,7 @@
   ;; list-buffers-directory is the variable set in dired buffers
   (let ((file-name (or (buffer-file-name) list-buffers-directory)))
     (if file-name
-        (message (kill-new file-name))
+        (kill-new (message file-name))
       (error "Buffer not visiting a file"))))
 
 

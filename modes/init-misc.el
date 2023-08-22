@@ -57,6 +57,10 @@
     (add-to-list 'recentf-exclude no-littering-var-directory)
     (add-to-list 'recentf-exclude no-littering-etc-directory)))
 
+
+;; (use-package emacs-gc-stats
+;;   )
+
 ;; TODO remember layout when ediff
 
 

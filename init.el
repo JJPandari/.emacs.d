@@ -81,7 +81,7 @@
 (require 'init-help)
 (require 'init-read)
 
-;; (require 'init-flycheck)
+(require 'init-flycheck)
 (require 'init-vc)
 (require 'init-git)
 (require 'init-compile)

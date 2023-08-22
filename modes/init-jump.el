@@ -27,12 +27,10 @@
  :states '(normal motion)
  :keymaps '(typescript-mode-map web-mode-map js2-mode-map)
  "g d" 'lsp-bridge-find-def
- "g p" 'lsp-bridge-find-def-return)
-(general-define-key
- :states 'normal
- :keymaps '(typescript-mode-map web-mode-map js2-mode-map)
+ "g p" 'lsp-bridge-find-def-return
  "g r" 'lsp-bridge-find-references
  "g t" 'lsp-bridge-find-type-def)
+
 (jester/with-major-leader '(typescript-mode-map web-mode-map js2-mode-map)
   "r" 'lsp-bridge-rename)
 (jester/with-leader
@@ -65,11 +63,11 @@
   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
 
 
-(use-package citre
-  :custom ((citre-enable-imenu-integration nil)
-           (citre-tags-file-names '("tagz" ".tags" "tags")))
-  :init
-  (require 'citre-config))
+;; (use-package citre
+;;   :custom ((citre-enable-imenu-integration nil)
+;;            (citre-tags-file-names '("tagz" ".tags" "tags")))
+;;   :init
+;;   (require 'citre-config))
 ;; TODO try `citre-peek'
 
 

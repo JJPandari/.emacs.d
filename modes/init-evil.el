@@ -644,10 +644,8 @@
 (dolist (cmd '(evil-yank evil-delete lispyville-yank lispyville-delete))
   (advice-add cmd :after 'jester/evil-portal-jump-advice))
 
-(evil-define-command jester/cycle-line-beginning-end ()
+(evil-define-motion jester/cycle-line-beginning-end (count)
   "Go to line text beginning, line end, line very beginning, in turn."
-  :repeat nil
-  (interactive)
   (cl-block 'my-return
     (when (and (looking-at "[^\s]") (looking-back "^\s*")) (evil-end-of-line) (cl-return-from 'my-return)) ; at beg of line text
     (when (looking-at (if evil-move-beyond-eol "$" ".$")) (evil-beginning-of-line) (cl-return-from 'my-return)) ; at end of line

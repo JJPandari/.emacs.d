@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (use-package ivy
   :demand t
   :custom
@@ -207,10 +208,12 @@ If called interactively, let the user select start directory first."
   :demand t
   :after ivy
   :config
-  (defhydra+ hydra-ivy ()
-    ("a" nil)
-    ("<escape>" keyboard-escape-quit :exit t)
-    ("q" keyboard-escape-quit :exit t)))
+  ;; TODO eager macro expansion error
+  ;; (defhydra+ hydra-ivy ()
+  ;;   ("a" nil)
+  ;;   ("<escape>" keyboard-escape-quit :exit t)
+  ;;   ("q" keyboard-escape-quit :exit t))
+  )
 
 
 (use-package wgrep

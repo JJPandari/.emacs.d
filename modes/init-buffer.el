@@ -73,7 +73,7 @@ current window."
 (defun jester/copy-buffer-name ()
   "Copy the buffer name, show it in minibuffer."
   (interactive)
-  (message (kill-new (buffer-name))))
+  (kill-new (message (buffer-name))))
 
 ;;----------------------------------------------------------------------------
 ;; switch major mode
