@@ -60,8 +60,8 @@
    "g l" 'magit-log
    "g f" 'magit-find-file
    ;; "a" ≈ "actions"
-   "g a" 'magit-dispatch-popup)
-  :commands (magit-status magit-diff-buffer-file magit-dispatch-popup)
+   "g a" 'magit-dispatch)
+  :commands (magit-status magit-diff-buffer-file magit-dispatch)
   :config
   ;; quit rev selection in a rebase or something
   (jester/with-major-leader

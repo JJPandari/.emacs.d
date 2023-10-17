@@ -45,6 +45,7 @@
 ;;----------------------------------------------------------------------------
 (defvar jester-small-font-size
   (pcase window-system
+    ('ns 150)
     ('mac 150)
     ('w32 140)
     ('x 140)
@@ -52,6 +53,7 @@
   "small font size depending on system.")
 (defvar jester-large-font-size
   (pcase window-system
+    ('ns 160)
     ('mac 160)
     ('w32 150)
     ('x 150)
@@ -66,6 +68,7 @@
                       ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-small-font-size
+                      ;; :weight 'regular
                       :weight 'medium
                       :width 'normal)
   (jester/set-fallback-fonts))
@@ -78,6 +81,7 @@
                       ;; :family "JetBrains Mono"
                       ;; :family "Fira Code"
                       :height jester-large-font-size
+                      ;; :weight 'regular
                       :weight 'medium
                       :width 'normal)
   (jester/set-fallback-fonts))
@@ -93,7 +97,7 @@
 
 (jester/use-large-font)
 ;; try out ligatures
-(when *is-a-mac* (mac-auto-operator-composition-mode 1))
+(when (and *is-a-mac* (boundp 'mac-auto-operator-composition-mode)) (mac-auto-operator-composition-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; show trailing whitespace

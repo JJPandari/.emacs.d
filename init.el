@@ -87,6 +87,7 @@
 (require 'init-compile)
 (require 'init-formatter)
 
+(require 'init-tree-sitter)
 (require 'init-paredit)
 
 (require 'init-lisp)

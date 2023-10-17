@@ -655,9 +655,9 @@
  :states '(normal visual operator motion)
  "0" 'jester/cycle-line-beginning-end)
 
-;; TODO try citre-read or clue
-
 ;; TODO show bookmark name in fringe
+
+;; TODO in jsx, "' s" if no useState register yet, auto create one
 
 
 (provide 'init-evil)

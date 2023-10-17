@@ -7,6 +7,7 @@
 ;;   )
 ;; TODO use the macro for "/"
 (jester/with-leader
+ "b l" 'counsel-evil-marks
  "b n" 'bookmark-set
  "b j" 'bookmark-jump)
 
@@ -38,10 +39,6 @@
  "e n" 'lsp-bridge-diagnostic-jump-next
  "e p" 'lsp-bridge-diagnostic-jump-prev)
 
-
-;; TODO xref-ring
-;; (advice-add 'xref-find-definitions :after )
-
 
 (use-package dumb-jump
   :init
@@ -68,7 +65,62 @@
 ;;            (citre-tags-file-names '("tagz" ".tags" "tags")))
 ;;   :init
 ;;   (require 'citre-config))
-;; TODO try `citre-peek'
+
+;;----------------------------------------------------------------------------
+;; save recent find-def(find-ref ?) targets in a ring, one ring for each project,
+;; so they can be looked up with ivy
+;;----------------------------------------------------------------------------
+(ignore-errors (make-directory (locate-user-emacs-file "var/jester")))
+(setq jester-project-symbol-history-file (locate-user-emacs-file "var/jester/project-symbol-history.el"))
+
+(defun jester/read-symbol-history ()
+  "Read symbol history from `jester-project-symbol-history-file'."
+  (setq jester-project-symbols-map
+        (if (file-exists-p jester-project-symbol-history-file)
+            (with-temp-buffer
+              (insert-file-contents jester-project-symbol-history-file)
+              (read (current-buffer)))
+          (ht-create))))
+
+(jester/read-symbol-history)
+
+(defun jester/write-symbol-history ()
+  "Save `jester-project-symbols-map.'"
+  (let ((filename jester-project-symbol-history-file))
+    (with-temp-buffer
+      (insert ";;; -*- lisp-data -*-\n")
+      (let ((print-length nil)
+            (print-level nil))
+        (pp jester-project-symbols-map (current-buffer)))
+      (write-region nil nil filename nil 'silent))))
+
+(defun jester/save-symbol-history (&optional sym-arg)
+  "Advice for find def, save current symbol to history."
+  (let* ((project-root (projectile-project-root))
+         (sym (if sym-arg sym-arg (thing-at-point 'symbol t)))
+         (sym-map-in-project (or (ht-get jester-project-symbols-map project-root)
+                                 (ht-create))))
+    ;; clear text properties
+    (set-text-properties 0 (length sym) nil sym)
+    (ht-set! sym-map-in-project sym (list (buffer-file-name) (point)))
+    (ht-set! jester-project-symbols-map project-root sym-map-in-project)
+    (jester/write-symbol-history)))
+
+(advice-add 'xref-find-definitions :before 'jester/save-symbol-history)
+(advice-add 'lsp-bridge-find-def :before 'jester/save-symbol-history)
+
+(defun jester/recent-symbol ()
+  "Select a recent symbol, goto it (place before find-def)."
+  (interactive)
+  (let ((sym-map-in-project (ht-get jester-project-symbols-map (projectile-project-root))))
+    (ivy-read "recent symbol: "
+              (ht-map (lambda (sym _) sym)
+                      sym-map-in-project)
+              :action (lambda (selected-sym) (let ((place-info (ht-get sym-map-in-project selected-sym)))
+                                          (find-file (car place-info))
+                                          (goto-char (nth 1 place-info)))))))
+
+(jester/with-leader "s l" 'jester/recent-symbol)
 
 
 (provide 'init-jump)

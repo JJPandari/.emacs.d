@@ -7,6 +7,9 @@
 (use-package dash
   :demand t)
 
+(use-package ht
+  :demand t)
+
 (use-package move-text
   :demand t)
 

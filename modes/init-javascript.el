@@ -104,6 +104,9 @@
   ;;   (setq flycheck-checker 'javascript-eslint))
   :mode "\\.ts\\'"
   :config
+
+  (setq auto-mode-alist (cl-remove "\\.tsx?\\'" auto-mode-alist :test 'string-equal :key 'car))
+
   ;; (require 'ansi-color)
   ;; (defun colorize-compilation-buffer ()
   ;;   (ansi-color-apply-on-region compilation-filter-start (point-max)))
@@ -192,7 +195,7 @@
                           ".test.jsx" ".spec.jsx"
                           ".test.ts" ".spec.ts"
                           ".test.tsx" ".spec.tsx")))
-      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest --detectOpenHandles --forceExit %s --collectCoverageOnlyFrom '')" (projectile-project-root) file-name)))))
+      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest --detectOpenHandles --forceExit %s --collectCoverageFrom '')" (projectile-project-root) file-name)))))
 
 (add-hook! '(js2-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
 

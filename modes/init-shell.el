@@ -64,8 +64,8 @@
    "C-c" 'vterm--self-insert
    "C-," (lambda! (vterm--backward-char))
    "C-." (lambda! (vterm--forward-char))
-   "<C-i>" 'vterm-beginning-of-line
-   "C-o" 'vterm-end-of-line
+   "<C-i>" 'vterm-send-C-a
+   "C-o" 'vterm-send-C-e
    "S-<backspace>" 'vterm-send-delete
    "H-w" (lambda! (vterm-send "C-w"))
    "H-v" 'vterm-yank

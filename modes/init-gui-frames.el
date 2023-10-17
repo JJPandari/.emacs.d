@@ -51,12 +51,26 @@
       `((fullscreen . ,(cond
                         ;; ((eq window-system 'x) 'fullboth)
                         ((eq window-system 'x) 'maximized) ;; wsl favours maximized
-                        ((eq window-system 'mac) 'fullboth)
+                        ;; ((eq window-system 'mac) 'fullboth)
+                        ((eq window-system 'ns) 'maximized)
+                        ((eq window-system 'mac) 'maximized)
                         (t 'maximized)))
         ;; left & top are required on wsl to correctly position
         (left . (+ 0))
         (top . (+ 0))
         (undecorated . t)))
+
+
+;; (use-package holo-layer
+;;   :ensure nil
+;;   :straight (holo-layer :type git :host github :repo "manateelazycat/holo-layer"
+;;                         :files ("*" (:exclude ".git" "test")))
+;;   :init
+;;   (setq holo-layer-enable-cursor-animation t)
+;;   :demand t
+;;   :if window-system
+;;   :config
+;;   (holo-layer-enable))
 
 
 (provide 'init-gui-frames)

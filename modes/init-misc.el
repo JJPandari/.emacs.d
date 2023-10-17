@@ -55,7 +55,8 @@
   :config
   (after-load 'recentf
     (add-to-list 'recentf-exclude no-littering-var-directory)
-    (add-to-list 'recentf-exclude no-littering-etc-directory)))
+    (add-to-list 'recentf-exclude no-littering-etc-directory))
+  (setq yas-snippet-dirs (list (expand-file-name "snippets" user-emacs-directory))))
 
 
 ;; (use-package emacs-gc-stats

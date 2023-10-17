@@ -156,6 +156,7 @@ bound to KEY in the leader sub-keymap."
   (jester/make-eyebrowse-switcher "config" 9 "c")
   (jester/make-eyebrowse-switcher "org" 0 "g"))
 
+;; TODO don't use this count/seed, just try 10000, 10001... till we find an available one
 (defvar jester/eyebrowse-random-number-seed 1 "For generating a layout number for `jester/eyebrowse-duplicate-window-config'.")
 
 (defun jester/eyebrowse-duplicate-window-config ()
@@ -192,15 +193,16 @@ bound to KEY in the leader sub-keymap."
                    evilmi-jump-items
                    symbol-overlay-jump-next symbol-overlay-jump-prev
                    flycheck-next-error flycheck-previous-error
-                   magit-diff-visit-file))
+                   magit-diff-visit-file
+                   jester/recent-symbol))
   (advice-add command :around 'jester/maybe-recenter))
 
 (use-package smooth-scroll
   :demand t
   :config
   (smooth-scroll-mode 1)
-  (setq smooth-scroll/hscroll-step-size 2
-        smooth-scroll/vscroll-step-size 2)
+  (setq smooth-scroll/hscroll-step-size 4
+        smooth-scroll/vscroll-step-size 4)
   (general-define-key
    :states '(normal motion)
    "C-j" 'evil-scroll-line-down
@@ -235,6 +237,9 @@ bound to KEY in the leader sub-keymap."
  "j" 'jester/hydra-scroll-line/scroll-up-line)
 
 
+(jester/with-leader
+ "w =" 'balance-windows)
+
 (defun jester/kill-buffer-and-window ()
   "Kill current buffer and window."
   (interactive)

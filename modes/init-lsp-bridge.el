@@ -23,9 +23,6 @@
 
   (evil-set-initial-state 'lsp-bridge-ref-mode 'emacs)
 
-  ;; TODO what's the face for error pop?
-  (set-face-attribute 'lsp-bridge-ref-font-lock-diagnostic nil :foreground (face-attribute 'error :foreground))
-
   (jester/with-minor-leader 'lsp-bridge-mode
     "d" 'lsp-bridge-popup-documentation)
 

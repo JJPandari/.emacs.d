@@ -83,7 +83,8 @@
   (global-page-break-lines-mode))
 
 
-(use-package string-inflection)
+(use-package string-inflection
+  :demand t)
 
 
 (use-package subword

@@ -44,43 +44,6 @@
    "H-S-s" (lambda! (swiper (jester/region-or-symbol)))
    "C-s" 'swiper-isearch)
 
-  (defun jester/maybe-run-ivy-hydra ()
-    "Run `hydra-ivy/body' if there is any content in minibuffer."
-    (unless (save-excursion (beginning-of-line) (looking-at "$"))
-      (hydra-ivy/body)))
-
-  (defmacro jester/make-fuzzy-search-dwim-command (search-cmd)
-    "Make a fuzzy search dwim command with the search command `search-cmd'."
-    ;; TODO ...
-    ())
-
-  (defun jester/swiper-dwim ()
-    "If region is not active, just start swiper. If region contain 1 char, grab the symbol as swiper input, otherwise use the region content.
-If swiper started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
-    (interactive)
-    (if (region-active-p)
-        (minibuffer-with-setup-hook 'jester/maybe-run-ivy-hydra
-          (swiper (regexp-quote (let* ((beg (region-beginning))
-                                       (end (region-end))
-                                       (text (progn (deactivate-mark)
-                                                    (buffer-substring-no-properties
-                                                     beg end))))
-                                  (if (= (- end beg) 1)
-                                      (thing-at-point 'symbol t)
-                                    text)))))
-      (swiper)))
-
-  (general-define-key
-   :states '(normal motion)
-   "/" 'jester/swiper-dwim)
-
-  (defun jester/self-insert-or-search-previous ()
-    "Search previous if nothing in the input area, otherwise self insert."
-    (interactive)
-    (if (save-excursion (beginning-of-line) (looking-at "$"))
-        (progn (call-interactively 'previous-complete-history-element)
-               (end-of-line))
-      (call-interactively 'self-insert-command)))
   (general-define-key
    :keymaps 'swiper-map
    "/" 'jester/self-insert-or-search-previous
@@ -148,22 +111,6 @@ If swiper started with any input, enable ivy-hydra automatically. (so I can h/j/
    :keymaps 'counsel-ag-map
    "/" 'jester/self-insert-or-search-previous
    "M-/" (lambda! (insert "/")))
-
-  (defun jester/counsel-rg-dwim ()
-    "If region is not active, just start counsel-rg. If region contain 1 char, grab the symbol as counsel-rg input, otherwise use the region content.
-If counsel-rg started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
-    (interactive)
-    (if (region-active-p)
-        (minibuffer-with-setup-hook 'jester/maybe-run-ivy-hydra
-          (counsel-rg (regexp-quote (let* ((beg (region-beginning))
-                                           (end (region-end))
-                                           (text (progn (deactivate-mark)
-                                                        (buffer-substring-no-properties
-                                                         beg end))))
-                                      (if (= (- end beg) 1)
-                                          (thing-at-point 'symbol t)
-                                        text)))))
-      (counsel-rg)))
 
   (defun jester/fzf-somewhere (&optional start-dir)
     "Do `counsel-fzf' in directory START-DIR.
@@ -280,6 +227,50 @@ If called interactively, let the user select start directory first."
 ;;   :after (company prescient)
 ;;   :config
 ;;   (company-prescient-mode 1))
+
+;;----------------------------------------------------------------------------
+;; search buffer/project, with easy-to-use key bindings
+;;----------------------------------------------------------------------------
+(defun jester/maybe-run-ivy-hydra ()
+  "Run `hydra-ivy/body' if there is any content in minibuffer."
+  (unless (save-excursion (beginning-of-line) (looking-at "$"))
+    (hydra-ivy/body)))
+
+(defmacro jester/make-fuzzy-search-dwim-command (search-cmd)
+  "Make a dwim fuzzy search command, using `search-cmd'."
+  `(defun ,(intern (format "jester/%s-dwim" search-cmd)) ()
+     ,(format "If region is not active, just start %s. If region contain 1 char, grab the symbol as %s input, otherwise use the region content.
+If %s started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
+              search-cmd search-cmd search-cmd)
+     (interactive)
+     (if (region-active-p)
+         (minibuffer-with-setup-hook 'jester/maybe-run-ivy-hydra
+           (,search-cmd (regexp-quote (let* ((beg (region-beginning))
+                                             (end (region-end))
+                                             (text (progn (deactivate-mark)
+                                                          (buffer-substring-no-properties
+                                                           beg end))))
+                                        (if (= (- end beg) 1)
+                                            (thing-at-point 'symbol t)
+                                          text)))))
+       (,search-cmd))))
+
+(jester/make-fuzzy-search-dwim-command swiper) ; jester/swiper-dwim
+
+(general-define-key
+ :states '(normal motion)
+ "/" 'jester/swiper-dwim)
+
+(jester/make-fuzzy-search-dwim-command counsel-rg) ; jester/counsel-rg-dwim
+
+(defun jester/self-insert-or-search-previous ()
+  "Search previous if nothing in the input area, otherwise self insert."
+  (interactive)
+  (if (save-excursion (beginning-of-line) (looking-at "$"))
+      (progn (call-interactively 'previous-complete-history-element)
+             (end-of-line))
+    (call-interactively 'self-insert-command)))
+
 
 ;;----------------------------------------------------------------------------
 ;; Pre-fill search keywords
