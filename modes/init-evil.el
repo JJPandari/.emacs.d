@@ -289,7 +289,7 @@
   (setq evil-escape-excluded-states '(normal visual multiedit emacs motion)
         evil-escape-excluded-major-modes '(neotree-mode treemacs-mode vterm-mode)
         evil-escape-key-sequence "fd"
-        evil-escape-unordered-key-sequence t)
+        evil-escape-unordered-key-sequence nil)
   ;; (evil-define-key* '(insert replace visual operator) 'global "\C-g" #'evil-escape)
   :demand t
   :config
@@ -449,7 +449,9 @@
 
  ;; fix keys bound by motion state
  "r" 'evil-replace
- "d" 'evil-delete)
+ "d" 'evil-delete
+ "<C-i>" 'beginning-of-line-text
+ "C-o" 'move-end-of-line)
 
 (general-define-key
  :states 'motion

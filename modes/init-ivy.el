@@ -153,14 +153,14 @@ If called interactively, let the user select start directory first."
 
 (use-package ivy-hydra
   :demand t
-  :after ivy
+  :after (hydra ivy)
   :config
-  ;; TODO eager macro expansion error
-  ;; (defhydra+ hydra-ivy ()
-  ;;   ("a" nil)
-  ;;   ("<escape>" keyboard-escape-quit :exit t)
-  ;;   ("q" keyboard-escape-quit :exit t))
-  )
+  ;; learned from doom: putting macro in eval avoids following error:
+  ;; error: Eager macro-expansion failure: (void-variable hydra-ivy/params)
+  (eval '(defhydra+ hydra-ivy ()
+           ("a" nil)
+           ("<escape>" keyboard-escape-quit :exit t)
+           ("q" keyboard-escape-quit :exit t))))
 
 
 (use-package wgrep
@@ -172,7 +172,8 @@ If called interactively, let the user select start directory first."
   :after ivy
   :if window-system
   :config
-  (setq ivy-posframe-hide-minibuffer t)
+  (setq ivy-posframe-hide-minibuffer t
+        ivy-posframe-width 9999)
   (add-hook! 'load-theme-hook
     (setq ivy-posframe-parameters
           `((background-color . ,(face-attribute 'default :background))
@@ -239,8 +240,8 @@ If called interactively, let the user select start directory first."
 (defmacro jester/make-fuzzy-search-dwim-command (search-cmd)
   "Make a dwim fuzzy search command, using `search-cmd'."
   `(defun ,(intern (format "jester/%s-dwim" search-cmd)) ()
-     ,(format "If region is not active, just start %s. If region contain 1 char, grab the symbol as %s input, otherwise use the region content.
-If %s started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
+     ,(format "If region is not active, just start `%s'. If region contain 1 char, grab the symbol as `%s' input, otherwise use the region content.
+If `%s' started with any input, enable ivy-hydra automatically. (so I can h/j/k/l the list)"
               search-cmd search-cmd search-cmd)
      (interactive)
      (if (region-active-p)

@@ -14,6 +14,9 @@
 
 (global-hl-line-mode 1)
 
+(setq pulse-delay 0.08
+      pulse-iterations 2)
+
 (use-package highlight-parentheses
   :demand t
   :init

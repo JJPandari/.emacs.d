@@ -92,26 +92,15 @@
   (modify-syntax-entry ?_ "w" rjsx-mode-syntax-table))
 
 
-(use-package typescript-mode
-  :custom (typescript-indent-level 2)
-  :init
-  (after-load 'flycheck
-    (flycheck-add-mode 'javascript-eslint 'typescript-mode))
-  ;; lsp would set checker to lsp, set it back
-  ;; lsp and eslint show different errors, using lsp for now...
-  ;; `flycheck-add-next-checker'
-  ;; (add-hook! :append 'typescript-mode-hook
-  ;;   (setq flycheck-checker 'javascript-eslint))
+(use-package typescript-ts-mode
   :mode "\\.ts\\'"
   :config
-
+  // remove auto mode for tsx files because we want web-mode there
+  (setq auto-mode-alist (cl-remove "\\.tsx\\'" auto-mode-alist :test 'string-equal :key 'car))
   (setq auto-mode-alist (cl-remove "\\.tsx?\\'" auto-mode-alist :test 'string-equal :key 'car))
-
-  ;; (require 'ansi-color)
-  ;; (defun colorize-compilation-buffer ()
-  ;;   (ansi-color-apply-on-region compilation-filter-start (point-max)))
-  ;; (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-  )
+  // web-mode is also removed, add it back
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook! 'typescript-ts-mode-hook (setq mode-name "TypeScript(ts)")))
 
 
 (use-package eacl

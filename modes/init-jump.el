@@ -11,6 +11,8 @@
  "b n" 'bookmark-set
  "b j" 'bookmark-jump)
 
+;; TODO "SPC '" to cycle evil markers in current buffer (hydra it)
+
 ;;----------------------------------------------------------------------------
 ;; xref
 ;;----------------------------------------------------------------------------
@@ -26,7 +28,7 @@
 
 (general-define-key
  :states '(normal motion)
- :keymaps '(typescript-mode-map web-mode-map js2-mode-map)
+ :keymaps '(typescript-mode-map typescript-ts-mode-map web-mode-map js2-mode-map)
  "g d" 'lsp-bridge-find-def
  "g p" 'lsp-bridge-find-def-return
  "g r" 'lsp-bridge-find-references
