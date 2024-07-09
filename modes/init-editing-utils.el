@@ -366,7 +366,7 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
 
 (general-define-key
  :states '(insert emacs)
- :keymaps '(web-mode-map js2-mode-map typescript-mode-map)
+ :keymaps '(web-mode-map js2-mode-map typescript-mode-map typescript-ts-mode-map)
  "C-j" 'jester/make-javascript-assignment)
 
 (defun jester/make-simple-assignment ()
@@ -651,18 +651,21 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
     ("GET" . "POST")
     ("POST" . "GET")
     ("when" . "unless")
-    ("unless" . "when"))
+    ("unless" . "when")
+    ("\"\"" . "{}")
+    ("{}" . "\"\""))
   "symbols to be quick flipped when editing")
 
 (defun jester/just-do-what-i-mean ()
   "\"I don't want to type here, just do it for me.\" (check source for what this function does)"
   (interactive)
-  (-let* (((beg . end) (bounds-of-thing-at-point 'symbol))
+  (-let* (((beg . end) (or (bounds-of-thing-at-point 'symbol) (cons (- (point) 1) (+ (point) 1))))
           (sym (buffer-substring-no-properties beg end)))
     (when (member sym (cl-loop for cell in jester-flip-symbol-alist
                                collect (car cell)))
       (delete-region beg end)
-      (insert (alist-get sym jester-flip-symbol-alist "" nil 'string-equal)))))
+      (insert (alist-get sym jester-flip-symbol-alist "" nil 'string-equal))
+      (backward-char))))
 
 (jester/with-leader
  "SPC" 'jester/just-do-what-i-mean)

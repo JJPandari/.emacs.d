@@ -95,10 +95,10 @@
 (use-package typescript-ts-mode
   :mode "\\.ts\\'"
   :config
-  // remove auto mode for tsx files because we want web-mode there
+  ;; remove auto mode for tsx files because we want web-mode there
   (setq auto-mode-alist (cl-remove "\\.tsx\\'" auto-mode-alist :test 'string-equal :key 'car))
   (setq auto-mode-alist (cl-remove "\\.tsx?\\'" auto-mode-alist :test 'string-equal :key 'car))
-  // web-mode is also removed, add it back
+  ;; web-mode is also removed, add it back
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-hook! 'typescript-ts-mode-hook (setq mode-name "TypeScript(ts)")))
 
@@ -186,7 +186,7 @@
                           ".test.tsx" ".spec.tsx")))
       (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest --detectOpenHandles --forceExit %s --collectCoverageFrom '')" (projectile-project-root) file-name)))))
 
-(add-hook! '(js2-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
+(add-hook! '(js2-mode-hook typescript-ts-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
 
 
 (defun jester/js2-jump-or-citre-jump ()

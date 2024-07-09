@@ -34,7 +34,7 @@
  "g r" 'lsp-bridge-find-references
  "g t" 'lsp-bridge-find-type-def)
 
-(jester/with-major-leader '(typescript-mode-map web-mode-map js2-mode-map)
+(jester/with-major-leader '(typescript-mode-map typescript-ts-mode-map web-mode-map js2-mode-map)
   "r" 'lsp-bridge-rename)
 (jester/with-leader
  "e l" 'lsp-bridge-diagnostic-list
@@ -108,11 +108,14 @@
     (ht-set! jester-project-symbols-map project-root sym-map-in-project)
     (jester/write-symbol-history)))
 
-(advice-add 'xref-find-definitions :before 'jester/save-symbol-history)
-(advice-add 'lsp-bridge-find-def :before 'jester/save-symbol-history)
+;; TODO we want after but the behavior is still before (is find-def async?)
+(advice-add 'xref-find-definitions :after 'jester/save-symbol-history)
+(advice-add 'lsp-bridge-find-def :after 'jester/save-symbol-history)
+;; FIXME: find type def not work well because key is symbol before jump, but this symbol is var name not type name
+;; (advice-add 'lsp-bridge-find-type-def :after 'jester/save-symbol-history)
 
 (defun jester/recent-symbol ()
-  "Select a recent symbol, goto it (place before find-def)."
+  "Select a recent symbol, goto it (place after find-def)."
   (interactive)
   (let ((sym-map-in-project (ht-get jester-project-symbols-map (projectile-project-root))))
     (ivy-read "recent symbol: "

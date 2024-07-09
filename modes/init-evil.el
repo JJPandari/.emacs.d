@@ -201,7 +201,7 @@
    "g S" 'evil-snipe-S
    "g c" 'evil-snipe-x
    "g C" 'evil-snipe-X)
-  (define-key evil-normal-state-map (kbd "DEL") 'evil-snipe-repeat-reverse))
+  (define-key evil-normal-state-map (kbd "<backspace>") 'evil-snipe-repeat-reverse))
 
 
 (use-package evil-collection
@@ -416,8 +416,6 @@
  "Q" "@q"
  "gJ" 'jester/evil-join-no-whitespace
  "z i" 'evil-emacs-state
- "<C-i>" 'beginning-of-line-text
- "C-o" 'move-end-of-line
  "<" nil
  ">" nil)
 
@@ -450,8 +448,8 @@
  ;; fix keys bound by motion state
  "r" 'evil-replace
  "d" 'evil-delete
- "<C-i>" 'beginning-of-line-text
- "C-o" 'move-end-of-line)
+ "<C-i>" 'evil-first-non-blank
+ "C-o" 'evil-end-of-line)
 
 (general-define-key
  :states 'motion
@@ -463,6 +461,8 @@
  :states '(normal motion)
  "*" 'jester/evil-normal-search-forward
  "#" 'jester/evil-normal-search-backward
+ "<C-i>" 'evil-first-non-blank
+ "C-o" 'evil-end-of-line
  "C-q" (lambda! (evil-ex-nohighlight)
                 (when (fboundp 'symbol-overlay-remove-all) (call-interactively 'symbol-overlay-remove-all))))
 

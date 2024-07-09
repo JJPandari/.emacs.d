@@ -1,6 +1,6 @@
 (use-package avy
   :init
-  (setq avy-all-windows t)
+  (setq avy-all-windows nil)
   ;; (general-define-key
   ;;  :states '(normal visual motion)
   ;;  "g a" 'avy-goto-char-timer)

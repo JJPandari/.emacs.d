@@ -134,6 +134,7 @@
 (require 'init-browser)
 (require 'init-player)
 (require 'init-time)
+(require 'init-ai)
 (require 'init-misc)
 
 ;; Extra packages which don't require any configuration

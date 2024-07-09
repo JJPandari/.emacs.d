@@ -25,12 +25,12 @@
 ;;  :keymaps '(css-mode-map sass-mode-map)
 ;;  "<tab>" 'jester/css-emmet-or-normal-tab)
 ;; TODO how to make a buffer-local company-active-map?
-(add-hook! 'css-mode-hook
+;; (add-hook! 'css-mode-hook
   ;; (make-local-variable 'company-active-map)
   ;; (general-define-key
   ;;  :keymaps 'company-active-map
   ;;  "<tab>" 'jester/css-emmet-or-normal-tab)
   ;; (setf (alist-get 'tab (cdr company-active-map)) 'jester/css-emmet-or-normal-tab)
-  )
+  ;; )
 
 (provide 'init-css)

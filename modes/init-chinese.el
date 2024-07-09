@@ -34,7 +34,7 @@
                   pyim-probe-punctuation-after-punctuation))
   (setq default-input-method "pyim"
         pyim-default-scheme 'wubi
-        pyim-page-tooltip (if window-system 'posframe 'popup)
+        pyim-page-tooltip (if (display-graphic-p) 'posframe 'popup)
         pyim-page-length 5)
   :bind
   (("M-l" . pyim-convert-string-at-point)

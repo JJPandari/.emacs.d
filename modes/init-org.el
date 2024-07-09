@@ -299,7 +299,8 @@ typical word processor."
   (jester/with-major-leader 'org-mode-map
     "t t" 'org-todo
     "t a" 'counsel-org-tag
-    "l" 'org-insert-link)
+    "l" 'org-insert-link
+    "s" 'org-insert-structure-template)
   (general-define-key
    :states '(insert emacs)
    :keymaps 'org-mode-map

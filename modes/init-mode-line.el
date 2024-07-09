@@ -43,6 +43,11 @@
         (`interrupted ".")
         (`suspicious '(propertize "?" 'face 'warning))))))
 
+(defvar jester/lsp-bridge-mode-line
+  '(:eval
+    (when (and (featurep 'lsp-bridge) lsp-bridge-mode)
+      ())))
+
 (defvar jester/number-unicode-char-list
   '("⓿" "➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒" "⓿"))
 

@@ -76,6 +76,7 @@
       "*Youdao Dictionary*"
       "JsDocTagDescription"
       "*skewer-error*"
+      "*Moonshot*"
       ("^\\*.*build.*\\*$" :regexp t)
       ("^\\*evil-.+\\*$" :regexp t)
       ("-indirect-" :regexp t)

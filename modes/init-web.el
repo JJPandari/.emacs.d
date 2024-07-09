@@ -83,7 +83,7 @@
   :config
   (general-define-key
    :states '(insert emacs)
-   :keymaps '(web-mode-map js2-mode-map typescript-mode-map css-mode-map sass-mode-map)
+   :keymaps '(web-mode-map js2-mode-map typescript-mode-map typescript-ts-mode-map css-mode-map sass-mode-map)
    "H-e" 'emmet-expand-line))
 
 ;;----------------------------------------------------------------------------
