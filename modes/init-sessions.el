@@ -87,6 +87,10 @@
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
 
+(when (and (boundp 'server-name) (string= server-name "maid"))
+  ;; default desktop-buffers-not-to-save is temp buffers (*foo*), tell desktop to save *vterm* buffers when maid
+  (setq desktop-buffers-not-to-save nil))
+
 ;;----------------------------------------------------------------------------
 ;; save cursor place in file
 ;;----------------------------------------------------------------------------

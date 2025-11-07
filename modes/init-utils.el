@@ -236,5 +236,15 @@ Body forms can access the hook's arguments through the let-bound variable
   "Return EXP wrapped in a list, or as-is if already a list."
   (if (listp exp) exp (list exp)))
 
+;;----------------------------------------------------------------------------
+;; auto evil-normal-state when not eol
+;;----------------------------------------------------------------------------
+(defun jester/yas-expand-snippet-maybe-evil-normal (snippet-string)
+  "Auto evil-normal-state when not eol"
+  (when (not (eolp))
+    (evil-normal-state)
+    (forward-char))
+  (yas-expand-snippet snippet-string))
+
 
 (provide 'init-utils)

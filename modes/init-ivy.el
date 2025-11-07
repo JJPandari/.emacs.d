@@ -72,8 +72,8 @@
    "f z" 'jester/fzf-somewhere
    "t s" 'counsel-load-theme
    "s j" 'counsel-imenu
-   "i u" 'counsel-unicode-char
-   "i f" 'counsel-fonts
+   "o u" 'counsel-unicode-char
+   "o f" 'counsel-fonts
    "v s" 'counsel-set-variable)
 
   (general-define-key
@@ -174,11 +174,11 @@ If called interactively, let the user select start directory first."
   :config
   (setq ivy-posframe-hide-minibuffer t
         ivy-posframe-width 9999)
-  (add-hook! 'load-theme-hook
-    (setq ivy-posframe-parameters
-          `((background-color . ,(face-attribute 'default :background))
-            (foreground-color . ,(face-attribute 'default :foreground))
-            (left-fringe . 8))))
+  ;; (add-hook! 'load-theme-hook
+  ;;   (setq ivy-posframe-parameters
+  ;;         `((background-color . ,(face-attribute 'default :background))
+  ;;           (foreground-color . ,(face-attribute 'default :foreground))
+  ;;           (left-fringe . 8))))
   (set-face-attribute 'ivy-posframe-cursor nil :foreground "RoyalBlue")
   (setq ivy-posframe-style 'frame-bottom-left
         ivy-posframe-display-functions-alist

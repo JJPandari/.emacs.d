@@ -59,9 +59,16 @@
   (setq yas-snippet-dirs (list (expand-file-name "snippets" user-emacs-directory))))
 
 
-;; (use-package emacs-gc-stats
-;;   )
+;; to make large files smoother:
+;; 1. disable bidirectional/right-to-left text calculation
+;; 2. lower the threshold of definition of "long lines"
+(setq-default bidi-display-reordering nil)
+(setq bidi-inhibit-bpa t
+      long-line-threshold 1000
+      large-hscroll-threshold 1000
+      syntax-wholeline-max 1000)
 
+
 ;; TODO remember layout when ediff
 
 

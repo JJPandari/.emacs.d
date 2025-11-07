@@ -25,11 +25,6 @@
                             "#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
   :config
   (global-highlight-parentheses-mode 1)
-  (add-hook! 'load-theme-hook
-    ;; the theme's setting will take precedence if simply `setq'
-    (customize-set-variable 'highlight-parentheses-colors
-                            '("springgreen3" "IndianRed1" "IndianRed3" "IndianRed4"
-                              "#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
   (set-face-attribute 'hl-paren-face nil :weight 'bold))
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))

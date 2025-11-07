@@ -176,7 +176,7 @@
 
 
 (defun jester/set-js-ts-test-command ()
-  "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"node node_modules/.bin/jest ...\"."
+  "If file ends with \".test.js\" or \".spec.js\", set `jester-test-command' to \"npx jest ...\"."
   (let ((file-name (buffer-file-name)))
     (when (and file-name
                (cl-some (lambda (suffix) (s-suffix-p suffix file-name))
@@ -184,9 +184,9 @@
                           ".test.jsx" ".spec.jsx"
                           ".test.ts" ".spec.ts"
                           ".test.tsx" ".spec.tsx")))
-      (setq jester-test-command (format "(cd %s && node node_modules/.bin/jest --detectOpenHandles --forceExit %s --collectCoverageFrom '')" (projectile-project-root) file-name)))))
+      (setq jester-test-command (format "(cd %s && TZ=UTC npx jest --detectOpenHandles --forceExit %s --collectCoverageFrom '')" (projectile-project-root) file-name)))))
 
-(add-hook! '(js2-mode-hook typescript-ts-mode-hook typescript-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
+(add-hook! '(js2-mode-hook typescript-ts-mode-hook web-mode-hook) 'jester/set-js-ts-test-command)
 
 
 (defun jester/js2-jump-or-citre-jump ()

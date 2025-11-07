@@ -37,13 +37,11 @@
 
   (modify-syntax-entry ?' "\"" web-mode-syntax-table)
   (modify-syntax-entry ?` "\"" web-mode-syntax-table)
-  ;; "-" as word so company completes kabeb-case
-  (modify-syntax-entry ?_ "w" web-mode-syntax-table)
-  (modify-syntax-entry ?- "w" web-mode-syntax-table)
+  (modify-syntax-entry ?_ "_" web-mode-syntax-table)
+  (modify-syntax-entry ?- "_" web-mode-syntax-table)
   (modify-syntax-entry ?# "_" web-mode-syntax-table)
   (modify-syntax-entry ?+ "." web-mode-syntax-table)
-
-  ;; (evil-define-key 'insert web-mode-map (kbd "<tab>") #'jester/start-complete)
+  (modify-syntax-entry ?| "." web-mode-syntax-table)
 
   (add-hook 'web-mode-hook 'jester/web-mode-maybe-setup-vue)
   (defun jester/web-mode-maybe-setup-vue ()
@@ -79,11 +77,11 @@
 
 (use-package emmet-mode
   :custom (emmet-self-closing-tag-style " /")
-  :hook (js2-mode web-mode typescript-mode css-mode less-css-mode scss-mode sass-mode)
+  :hook (js2-mode web-mode typescript-ts-mode css-mode less-css-mode scss-mode sass-mode)
   :config
   (general-define-key
    :states '(insert emacs)
-   :keymaps '(web-mode-map js2-mode-map typescript-mode-map typescript-ts-mode-map css-mode-map sass-mode-map)
+   :keymaps '(web-mode-map js2-mode-map typescript-ts-mode-map css-mode-map sass-mode-map)
    "H-e" 'emmet-expand-line))
 
 ;;----------------------------------------------------------------------------
@@ -116,6 +114,30 @@
  "a" (general-predicate-dispatch 'jester/evil-a-arg
        (memq major-mode jester-lispy-modes) 'lispyville-a-atom
        (eq major-mode 'web-mode) 'jester/evil-web-a-attribute-or-arg))
+
+;;----------------------------------------------------------------------------
+;; enable treesit
+;;----------------------------------------------------------------------------
+(defun jester/web-mode-maybe-enable-tsx-treesit ()
+  "Enable treesit if it's a tsx file."
+  (when (string-suffix-p "\.tsx" buffer-file-name)
+    (require 'evil-textobj-tree-sitter)
+    (add-to-list 'evil-textobj-tree-sitter-major-mode-language-alist '(web-mode . "tsx"))
+
+    ;; evil-textobj only want to work in *-ts-mode, override it
+    (defun evil-textobj-tree-sitter--use-builtin-treesitter ()
+      "Return non-nil if we should use builtin treesitter."
+      (and evil-textobj-tree-sitter--can-use-builtin-treesit
+           (let ((major-mode-name (symbol-name major-mode)))
+             (or (string-suffix-p "-ts-mode" major-mode-name)
+                 (string-equal major-mode-name "web-mode") ; allow web-mode here
+                 (and (boundp 'rust-mode-treesitter-derive)
+                      rust-mode-treesitter-derive
+                      (string= "rustic-mode" major-mode-name))))))
+
+    (treesit-parser-create 'tsx)))
+
+(add-hook 'web-mode-hook 'jester/web-mode-maybe-enable-tsx-treesit)
 
 
 (provide 'init-web)

@@ -4,7 +4,8 @@
   ;; (general-define-key
   ;;  :states '(normal visual motion)
   ;;  "g a" 'avy-goto-char-timer)
-  (jester/with-leader "a" 'evil-avy-goto-char-timer))
+  ;; (jester/with-leader "'" 'evil-avy-goto-char-timer)
+  )
 
 (use-package link-hint
   :after avy

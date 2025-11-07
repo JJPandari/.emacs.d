@@ -233,10 +233,17 @@
   (interactive "*P")
   (insert-or-remove-trailing-char ?,))
 
+(defun insert-or-remove-trailing-semi-or-comma (&optional arg)
+  "Toggle trailing semi or comma,
+try to be smart when adding a trailing char: when previous line ends with a \",\", add a \",\" at this line, otherwise use \";\""
+  (interactive "*P")
+  (if (save-excursion (previous-line) (move-end-of-line 1) (backward-char)
+                      (looking-at ","))
+      (insert-or-remove-trailing-char ?,)
+    (insert-or-remove-trailing-char ?\;)))
+
 (general-define-key
- "C-;" 'insert-or-remove-trailing-semi
- "C-:" 'insert-or-remove-trailing-comma)
-;; TODO merge these two, use treesit to know which to do
+ "C-;" 'insert-or-remove-trailing-semi-or-comma)
 
 ;;----------------------------------------------------------------------------
 ;; Move lines up and down.
@@ -366,7 +373,7 @@ If this line is already an assignment (has a \"=\"), cycle through styles in thi
 
 (general-define-key
  :states '(insert emacs)
- :keymaps '(web-mode-map js2-mode-map typescript-mode-map typescript-ts-mode-map)
+ :keymaps '(web-mode-map js2-mode-map typescript-ts-mode-map)
  "C-j" 'jester/make-javascript-assignment)
 
 (defun jester/make-simple-assignment ()
@@ -439,7 +446,7 @@ otherwise move to before semicolon."
   "Decides whether `jester/backward-bracket' and `jester/forward-bracket' will move to \"<\" and \">\",
 by telling whether the language in current buffer has generic types (which are usually denoted by \"<T>\") or jsx.")
 (push (lambda () (eq major-mode 'rust-mode)) jester-buffer-has-generic-or-jsx-p-list)
-(push (lambda () (eq major-mode 'typescript-mode)) jester-buffer-has-generic-or-jsx-p-list)
+(push (lambda () (eq major-mode 'typescript-ts-mode)) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (eq major-mode 'rjsx-mode)) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (and (eq major-mode 'web-mode) (string-equal web-mode-engine "none"))) jester-buffer-has-generic-or-jsx-p-list)
 (push (lambda () (and (buffer-file-name)
@@ -592,55 +599,70 @@ If use-indirect-buffer is not nil, use `indirect-buffer' to hold the widen conte
 ;;----------------------------------------------------------------------------
 ;; select an argument
 ;;----------------------------------------------------------------------------
+(defun jester/treesit-get-arg-and-comma-points ()
+  "Get points of current arg, and start&end of the neighbour \",\"."
+  (let* ((depth-left 20)
+         (node (treesit-node-at (point))))
+    (while (> depth-left 0)
+      (setq depth-left (1- depth-left)))))
+
 (evil-define-text-object jester/evil-inner-arg (count &optional beg end type)
-  "Select an argument, without the punctuations."
+  "Select an argument, without the punctuations.
+When have treesit, select a node that has \"\s*,\s*\" at its left or right,
+when don't, select a node that has \"\s*,\s*\" on one side and bracket on the other."
   :extend-selection nil
-  (list (progn
-          (re-search-backward (rx (sequence (or ","
-                                                "("
-                                                "["
-                                                "{")
-                                            (optional " "))))
-          (forward-char)
-          (when (eq (char-after (point)) ? ) (forward-char))
-          (point))
-        (progn (re-search-forward (rx (or (sequence ","
-                                                    (optional " "))
-                                          (sequence (optional " ")
-                                                    (or ")"
-                                                        "]"
-                                                        "}")))))
-               (while (memq (char-before) (list ?, ?  ?\) ?\] ?})) (backward-char))
-               (point))))
+  (if (treesit-parser-list)
+      '()
+    (list (progn
+            (re-search-backward (rx (sequence (or ","
+                                                  "("
+                                                  "["
+                                                  "{")
+                                              (optional " "))))
+            (forward-char)
+            (when (eq (char-after (point)) ? ) (forward-char))
+            (point))
+          (progn (re-search-forward (rx (or (sequence ","
+                                                      (optional " "))
+                                            (sequence (optional " ")
+                                                      (or ")"
+                                                          "]"
+                                                          "}")))))
+                 (while (memq (char-before) (list ?, ?  ?\) ?\] ?})) (backward-char))
+                 (point)))))
 
 (evil-define-text-object jester/evil-a-arg (count &optional beg end type)
-  "Select an argument."
+  "Select an argument.
+When have treesit, select a node that has \"\s*,\s*\" at its left or right,
+when don't, select a node that has \"\s*,\s*\" on one side and bracket on the other."
   :extend-selection nil
-  (let* (last-arg-p
-         (head (progn
-                 (re-search-backward (rx (sequence (or ","
-                                                       "("
-                                                       "["
-                                                       "{")
-                                                   (optional " "))))
-                 (forward-char)
-                 (when (eq (char-after (point)) ? ) (forward-char))
-                 (point)))
-         (tail (progn (re-search-forward (rx (or (sequence ","
-                                                           (optional " "))
-                                                 (sequence (optional " ")
-                                                           (or ")"
-                                                               "]"
-                                                               "}")))))
-                      (setq last-arg-p (memq (char-before) (list ?\) ?\] ?})))
-                      (when (memq (char-before) (list ?\) ?\] ?}))
-                        (while (memq (char-before) (list ?  ?\) ?\] ?})) (backward-char)))
-                      (point))))
-    (when last-arg-p
-      (setq head (progn (goto-char head)
-                        (while (memq (char-before) (list ?, ? )) (backward-char))
+  (if (treesit-parser-list)
+      '()
+    (let* (last-arg-p
+           (head (progn
+                   (re-search-backward (rx (sequence (or ","
+                                                         "("
+                                                         "["
+                                                         "{")
+                                                     (optional " "))))
+                   (forward-char)
+                   (when (eq (char-after (point)) ? ) (forward-char))
+                   (point)))
+           (tail (progn (re-search-forward (rx (or (sequence ","
+                                                             (optional " "))
+                                                   (sequence (optional " ")
+                                                             (or ")"
+                                                                 "]"
+                                                                 "}")))))
+                        (setq last-arg-p (memq (char-before) (list ?\) ?\] ?})))
+                        (when (memq (char-before) (list ?\) ?\] ?}))
+                          (while (memq (char-before) (list ?  ?\) ?\] ?})) (backward-char)))
                         (point))))
-    (list head tail)))
+      (when last-arg-p
+        (setq head (progn (goto-char head)
+                          (while (memq (char-before) (list ?, ? )) (backward-char))
+                          (point))))
+      (list head tail))))
 
 ;;----------------------------------------------------------------------------
 ;; "just do what I mean"

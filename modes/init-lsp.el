@@ -12,7 +12,7 @@
   (lsp-completion-enable nil)
   (lsp-headerline-breadcrumb-enable nil)
   :init
-  :hook ((rust-mode . lsp) (typescript-mode . lsp) (elm-mode . lsp))
+  :hook ((rust-mode . lsp) (typescript-ts-mode . lsp) (elm-mode . lsp))
   :commands (lsp lsp-deferred))
 ;; TODO add a hook to 'lsp-completion-mode to fix company-backends (hook does sth when 'jester-tabnine-active-modes)
 

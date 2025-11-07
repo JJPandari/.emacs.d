@@ -1,5 +1,9 @@
 # -*- mode: snippet -*-
 # name: async
 # key: as
+# type: command
 # --
-async 
+(insert "async ")
+(unless (eolp)
+  (evil-normal-state))
+(yas-expand-snippet "")

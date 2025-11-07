@@ -31,7 +31,8 @@
   (when (and (or (not (boundp 'yas--active-snippets)) (not yas--active-snippets))
              ;; (not company-candidates)
              (or (not (boundp 'acm-mode)) (not acm-mode))
-             (not (eq major-mode 'snippet-mode)))
+             (not (eq major-mode 'snippet-mode))
+             (not (eq evil-state 'insert)))
     ;; https://github.com/manateelazycat/lazycat-emacs/commit/da13a688ef89f8ab2c577a3e9d2a7bcf0ef9b71d
     ;; https://emacs-china.org/t/topic/7687/30?u=jjpandari
     ;; this prevents blink of eldoc

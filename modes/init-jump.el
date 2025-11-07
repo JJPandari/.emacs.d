@@ -28,13 +28,13 @@
 
 (general-define-key
  :states '(normal motion)
- :keymaps '(typescript-mode-map typescript-ts-mode-map web-mode-map js2-mode-map)
+ :keymaps '(typescript-ts-mode-map web-mode-map js2-mode-map)
  "g d" 'lsp-bridge-find-def
  "g p" 'lsp-bridge-find-def-return
  "g r" 'lsp-bridge-find-references
  "g t" 'lsp-bridge-find-type-def)
 
-(jester/with-major-leader '(typescript-mode-map typescript-ts-mode-map web-mode-map js2-mode-map)
+(jester/with-major-leader '(typescript-ts-mode-map web-mode-map js2-mode-map)
   "r" 'lsp-bridge-rename)
 (jester/with-leader
  "e l" 'lsp-bridge-diagnostic-list

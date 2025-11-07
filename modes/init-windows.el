@@ -77,6 +77,7 @@
       "JsDocTagDescription"
       "*skewer-error*"
       "*Moonshot*"
+      "*DeepSeek*"
       ("^\\*.*build.*\\*$" :regexp t)
       ("^\\*evil-.+\\*$" :regexp t)
       ("-indirect-" :regexp t)

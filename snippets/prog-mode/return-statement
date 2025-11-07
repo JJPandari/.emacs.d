@@ -9,7 +9,7 @@
   (when (not (looking-at " "))
     (insert " "))
   (move-end-of-line 1)
-  (when (not (looking-back ";"))
+  (when (not (looking-back "[;\(\{]"))
     (insert ";"))
   (evil-normal-state)
   (yas-expand-snippet ""))

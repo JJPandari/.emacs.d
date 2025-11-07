@@ -111,7 +111,7 @@ In that case, insert the number."
           (company-dabbrev-code company-gtags company-etags company-keywords)
           company-dabbrev))
   (defvar jester-tabnine-active-modes
-    '(js2-mode web-mode typescript-mode)
+    '(js2-mode web-mode typescript-ts-mode)
     "major modes I would like to use tabnine")
   (defun jester/use-tabnine-for-major-mode (major-mode)
     "add tabnine to `COMPANY-BACKENDS' in `MAJOR-MODE'."

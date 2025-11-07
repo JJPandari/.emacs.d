@@ -416,6 +416,7 @@
  "Q" "@q"
  "gJ" 'jester/evil-join-no-whitespace
  "z i" 'evil-emacs-state
+ "g i" 'evil-execute-in-emacs-state
  "<" nil
  ">" nil)
 
@@ -442,6 +443,8 @@
  :states '(visual)
  "*" 'jester/evil-visual-search-forward
  "#" 'jester/evil-visual-search-backward
+ "n" 'jester/evil-search-dwim-forward
+ "N" 'jester/evil-search-dwim-backward
  ;; run macro in the q register on all selected lines
  "Q" ":norm @q <return>"
 
@@ -610,6 +613,36 @@
   (when (eql (point) (region-end))
     (exchange-point-and-mark))
   (jester/evil-visual-search nil))
+
+(evil-define-command jester/evil-search-dwim-forward (&optional count)
+  "Only used when region is active. Search forward, if region contains 1 char, grab the symbol, otherwise use region content."
+  :repeat nil
+  (interactive "p")
+  (when (region-active-p)
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (text (progn (deactivate-mark)
+                        (buffer-substring-no-properties
+                         beg end))))
+      (if (= (- end beg) 1)
+          (evil-search-word-forward (or count 1) t)
+        (jester/evil-visual-search t)))))
+
+(evil-define-command jester/evil-search-dwim-backward (&optional count)
+  "Only used when region is active. Search backward, if region contains 1 char, grab the symbol, otherwise use region content."
+  :repeat nil
+  (interactive "p")
+  (when (region-active-p)
+    (let* ((beg (region-beginning))
+           (end (region-end))
+           (text (progn (deactivate-mark)
+                        (buffer-substring-no-properties
+                         beg end))))
+      (if (= (- end beg) 1)
+          (evil-search-word-backward (or count 1) t)
+        (when (eql (point) (region-end))
+          (exchange-point-and-mark))
+        (jester/evil-visual-search nil)))))
 
 (defun jester/evil-visual-search (forward)
   "Search the region."

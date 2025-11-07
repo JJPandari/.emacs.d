@@ -38,6 +38,7 @@
   :custom ((vterm-shell "/bin/zsh")
            (vterm-kill-buffer-on-exit t))
   :init
+  (jester/with-leader "t v" (lambda! (vterm 'new-session)))
   (jester/with-leader "t n" (lambda! (vterm 'new-session)))
   :hook (vterm-mode . evil-insert-state)
   :config
@@ -72,6 +73,7 @@
    "H-s" 'swiper
    "H-r" (lambda! (vterm-send "C-r"))
    "<escape>" 'evil-motion-state
+   "S-<escape>" 'vterm-send-escape
    "M-." (lambda! (vterm-send "M-f"))
    "M-," (lambda! (vterm-send "M-d"))
    "M-<backspace>" (lambda! (vterm-send "M-b")))
@@ -82,6 +84,22 @@
    "<return>" 'switch-to-buffer
    "i" (lambda! (vterm-reset-cursor-point) (evil-insert-state))
    "a" (lambda! (vterm-reset-cursor-point) (evil-insert-state))))
+
+;;----------------------------------------------------------------------------
+;; eat
+;;----------------------------------------------------------------------------
+(use-package eat
+  :ensure nil
+  :straight '(eat :type git
+                  :host codeberg
+                  :repo "akib/emacs-eat"
+                  :files ("*.el" ("term" "term/*.el") "*.texi"
+                          "*.ti" ("terminfo/e" "terminfo/e/*")
+                          ("terminfo/65" "terminfo/65/*")
+                          ("integration" "integration/*")
+                          (:exclude ".dir-locals.el" "*-tests.el")))
+  :init
+  (jester/with-leader "t e" 'eat))
 
 
 (provide 'init-shell)

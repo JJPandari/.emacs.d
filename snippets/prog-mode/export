@@ -1,5 +1,9 @@
 # -*- mode: snippet -*-
 # name: export
 # key: ex
+# type: command
 # --
-export 
+(insert "export ")
+(unless (eolp)
+  (evil-normal-state))
+(yas-expand-snippet "")

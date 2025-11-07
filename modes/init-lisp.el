@@ -181,13 +181,13 @@
   (general-define-key
    :keymaps 'evil-inner-text-objects-map
    "l" 'lispyville-inner-list
-   "f" 'lispyville-inner-function
+   ;; "f" 'lispyville-inner-function
    "c" 'lispyville-inner-comment)
   ;; `lispyville-inner-atom' is bound in init-web.el
   (general-define-key
    :keymaps 'evil-outer-text-objects-map
    "l" 'lispyville-a-list
-   "f" 'lispyville-a-function
+   ;; "f" 'lispyville-a-function
    "c" 'lispyville-a-comment)
 
   ;; manually set prettify and comment key
