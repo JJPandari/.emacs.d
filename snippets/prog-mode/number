@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: number
+# key: nb
+# type: command
+# --
+(jester/yas-expand-snippet-maybe-evil-normal "number")
